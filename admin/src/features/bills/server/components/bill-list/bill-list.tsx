@@ -1,5 +1,5 @@
 import type { Route } from "next";
-import { Plus } from "lucide-react";
+import { FileUp, Plus } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -51,12 +51,20 @@ export async function BillList({ sortConfig }: { sortConfig: BillSortConfig }) {
     <div>
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="text-sm text-gray-600">{bills.length}件の議案</div>
-        <Link href={routes.billNew()}>
-          <Button>
-            <Plus className="h-4 w-4 mr-1" />
-            新規作成
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href={routes.billNewFromDocument()}>
+            <Button variant="outline">
+              <FileUp className="h-4 w-4 mr-1" />
+              資料から作成
+            </Button>
+          </Link>
+          <Link href={routes.billNew()}>
+            <Button>
+              <Plus className="h-4 w-4 mr-1" />
+              新規作成
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="rounded-md border bg-white">

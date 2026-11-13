@@ -1,0 +1,12 @@
+import { TopicFromDocumentForm } from "@/features/topic-from-document/client/components/topic-from-document-form";
+
+export default function BillNewFromDocumentPage() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        資料からトピックを作成
+      </h1>
+      <TopicFromDocumentForm />
+    </div>
+  );
+}

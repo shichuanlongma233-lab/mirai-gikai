@@ -3,19 +3,27 @@ import type { Route } from "next";
 import Link from "next/link";
 import { getBillDetailLink } from "@/features/interview-config/shared/utils/interview-links";
 import { routes } from "@/lib/routes";
+import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
 
 interface BackToBillButtonProps {
   billId: string;
   /** "opinions" の場合、レポート一覧に戻るボタンを表示 */
   from?: "complete" | "opinions";
+  /** 表示する言語の文言（省略時は日本語） */
+  t?: Dictionary;
 }
 
-export function BackToBillButton({ billId, from }: BackToBillButtonProps) {
+export function BackToBillButton({
+  billId,
+  from,
+  t = getDictionary("ja"),
+}: BackToBillButtonProps) {
   const href =
     from === "opinions"
       ? routes.billOpinions(billId)
       : getBillDetailLink(billId);
-  const label = from === "opinions" ? "レポート一覧に戻る" : "法案の記事に戻る";
+  const label =
+    from === "opinions" ? t.report.backToReports : t.report.backToBill;
 
   return (
     <Link

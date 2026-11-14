@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { getInterviewChatLink } from "@/features/interview-config/shared/utils/interview-links";
 import { routes } from "@/lib/routes";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewConsentModalProps {
   open: boolean;
@@ -28,6 +29,7 @@ export function InterviewConsentModal({
   billId,
   previewToken,
 }: InterviewConsentModalProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [agreed, setAgreed] = useState(false);
@@ -52,18 +54,16 @@ export function InterviewConsentModal({
       <DialogContent className="px-8 py-12">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold text-primary text-center">
-            AIインタビュー同意事項
+            {t.consent.title}
           </DialogTitle>
           <div className="h-[1px] bg-mirai-gradient mt-6" />
         </DialogHeader>
 
         <div className="flex flex-col gap-6 mt-6">
           <ul className="flex flex-col gap-3 list-disc pl-5 text-sm font-bold text-gray-800 leading-[22px]">
-            <li>回答データは党内での政策検討に利用します。</li>
-            <li>個人情報や機密情報の記載はお控えください。</li>
-            <li>
-              インタビュー回答後に公開を許可するかを選択できます。公開を許可した場合、のちにみらい議会に全文が掲載される場合があります。
-            </li>
+            <li>{t.consent.item1}</li>
+            <li>{t.consent.item2}</li>
+            <li>{t.consent.item3}</li>
           </ul>
 
           <div className="flex items-center gap-3">
@@ -78,24 +78,25 @@ export function InterviewConsentModal({
               htmlFor="consent-agree"
               className="text-sm font-bold text-black"
             >
+              {t.consent.termsBefore}
               <Link
                 href={routes.terms()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline"
               >
-                利用規約
+                {t.consent.terms}
               </Link>
-              と
+              {t.consent.and}
               <Link
                 href={routes.privacy()}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline"
               >
-                プライバシーポリシー
+                {t.consent.privacy}
               </Link>
-              に同意する
+              {t.consent.termsAfter}
             </label>
           </div>
         </div>
@@ -109,11 +110,11 @@ export function InterviewConsentModal({
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 size-4 animate-spin" />
-                処理中...
+                {t.common.processing}
               </>
             ) : (
               <>
-                同意してはじめる
+                {t.consent.agree}
                 <ArrowRight className="ml-2 size-4" />
               </>
             )}
@@ -124,7 +125,7 @@ export function InterviewConsentModal({
             disabled={isLoading}
             className="w-full"
           >
-            同意せずに戻る
+            {t.consent.decline}
           </Button>
         </div>
       </DialogContent>

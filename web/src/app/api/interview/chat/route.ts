@@ -6,6 +6,7 @@ import {
 import { chatErrorToResponse } from "@/features/chat/server/utils/chat-error-response";
 import { handleInterviewChatRequest } from "@/features/interview-session/server/services/handle-interview-chat-request";
 import { jsonResponse } from "@/lib/api/response";
+import { getRequestLocale } from "@/lib/i18n/server";
 import { registerNodeTelemetry } from "@/lib/telemetry/register";
 
 export async function POST(req: Request) {
@@ -53,6 +54,7 @@ export async function POST(req: Request) {
       isRetry,
       // 文字列以外は検証対象にしない（不正な型のトークンは未指定として扱う）
       previewToken: typeof previewToken === "string" ? previewToken : undefined,
+      locale: await getRequestLocale(),
       userId: user.id,
     });
   } catch (error) {

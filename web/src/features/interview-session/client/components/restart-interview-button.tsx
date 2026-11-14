@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useArchiveAndNavigate } from "../hooks/use-archive-and-navigate";
 import { RestartConfirmDialog } from "./restart-confirm-dialog";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface RestartInterviewButtonProps {
   sessionId: string;
@@ -17,6 +18,7 @@ export function RestartInterviewButton({
   billId,
   previewToken,
 }: RestartInterviewButtonProps) {
+  const { t } = useI18n();
   const [showConfirm, setShowConfirm] = useState(false);
   const { execute, isLoading } = useArchiveAndNavigate(
     sessionId,
@@ -40,7 +42,7 @@ export function RestartInterviewButton({
         disabled={isLoading}
       >
         <RotateCcw className="size-4" />
-        <span>もう一度最初から回答する</span>
+        <span>{t.lp.restartFromBeginning}</span>
       </Button>
       <RestartConfirmDialog
         open={showConfirm}

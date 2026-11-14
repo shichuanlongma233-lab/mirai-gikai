@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { routes } from "@/lib/routes";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 export function ConsentCheckListItem({ children }: { children: ReactNode }) {
   return (
@@ -25,17 +26,18 @@ export function ConsentCheckListItem({ children }: { children: ReactNode }) {
  * 含まれることを知らせる告知。公開同意を求めるモーダルで共通利用する。
  */
 export function OpenDataNoticeItem() {
+  const { t } = useI18n();
   return (
     <ConsentCheckListItem>
-      公開を許可した内容は、「
+      {t.publicConsent.openDataBefore}
       <Link
         href={routes.interviewDataTerms()}
         target="_blank"
         className="text-primary-accent underline"
       >
-        みらい議会AIインタビューデータ利用規約
+        {t.publicConsent.openDataTerms}
       </Link>
-      」に基づき、第三者にオープンデータとして提供されることがあります。公開をやめた場合、以後の提供は停止されますが、既に取得されたデータの利用停止までは保証できません。
+      {t.publicConsent.openDataAfter}
     </ConsentCheckListItem>
   );
 }

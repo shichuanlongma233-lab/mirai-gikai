@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { updatePublicSetting } from "../../server/actions/update-public-setting";
 import { MakePrivateModal } from "./make-private-modal";
 import { MakePublicModal } from "./make-public-modal";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface PublicStatusSectionProps {
   sessionId: string;
@@ -15,6 +16,7 @@ export function PublicStatusSection({
   sessionId,
   initialIsPublic,
 }: PublicStatusSectionProps) {
+  const { t } = useI18n();
   const [isPublic, setIsPublic] = useState(initialIsPublic);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,11 +47,11 @@ export function PublicStatusSection({
       <div className="flex flex-col items-center gap-2">
         {isPublic ? (
           <span className="inline-flex items-center gap-1 bg-mirai-gradient text-black text-sm font-bold px-4 py-1.5 rounded-full">
-            公開
+            {t.publicStatus.public}
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 bg-gray-200 text-gray-600 text-sm font-bold px-4 py-1.5 rounded-full">
-            非公開
+            {t.publicStatus.private}
           </span>
         )}
         <Button
@@ -57,7 +59,7 @@ export function PublicStatusSection({
           onClick={() => setIsModalOpen(true)}
           className={`text-sm ${isPublic ? "text-gray-500" : "text-primary-accent"}`}
         >
-          {isPublic ? "非公開に変更する" : "公開に変更する"}
+          {isPublic ? t.publicStatus.toPrivate : t.publicStatus.toPublic}
         </Button>
       </div>
 

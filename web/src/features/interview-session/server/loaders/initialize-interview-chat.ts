@@ -3,6 +3,7 @@ import "server-only";
 import { getChatSupabaseUser } from "@/features/chat/server/utils/supabase-server";
 import { generateInitialQuestion } from "@/features/interview-session/server/services/generate-initial-question";
 import type { LanguageModel } from "ai";
+import type { Locale } from "@/lib/i18n/locales";
 import type { InterviewMessage, InterviewSession } from "../../shared/types";
 import {
   createInterviewSessionRecord,
@@ -14,6 +15,8 @@ import type { GetUserFn } from "../utils/verify-session-ownership";
 type InitializeInterviewChatDeps = {
   getUser?: GetUserFn;
   model?: LanguageModel;
+  /** 回答者が選んだ言語（最初の質問の言語） */
+  locale?: Locale;
 };
 
 type InitializeInterviewChatResult = {
@@ -62,6 +65,7 @@ export async function initializeInterviewChat(
       billId,
       interviewConfigId,
       userId: user.id,
+      locale: deps?.locale,
       deps: { model: deps?.model },
     });
 

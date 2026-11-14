@@ -12,6 +12,7 @@ import {
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
 import { useIsDesktop } from "@/hooks/use-is-desktop";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewChatInputProps {
   input: string;
@@ -31,6 +32,7 @@ export function InterviewChatInput({
   isResponding,
   error,
 }: InterviewChatInputProps) {
+  const { t } = useI18n();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const isDesktop = useIsDesktop();
 
@@ -73,7 +75,7 @@ export function InterviewChatInput({
         >
           <Image
             src="/icons/send-button-icon.svg"
-            alt="送信"
+            alt={t.chat.sendAlt}
             width={40}
             height={40}
             className="w-full h-full"
@@ -82,9 +84,7 @@ export function InterviewChatInput({
       </PromptInput>
       <PromptInputError status={error ? "error" : undefined} error={error} />
       {/* {showHint && <PromptInputHint />} */}
-      <PromptInputHint>
-        個人情報や機密情報は記入しないでください
-      </PromptInputHint>
+      <PromptInputHint>{t.chat.privacyWarning}</PromptInputHint>
     </>
   );
 }

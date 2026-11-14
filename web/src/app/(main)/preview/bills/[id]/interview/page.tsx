@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { getRequestLocale } from "@/lib/i18n/server";
 import { notFound } from "next/navigation";
 import { getBillByIdAdmin } from "@/features/bills/server/loaders/get-bill-by-id-admin";
 import { validatePreviewToken } from "@/features/bills/server/loaders/validate-preview-token";
@@ -76,6 +77,7 @@ export default async function InterviewPreviewPage({
     <>
       <PreviewBanner />
       <InterviewLPPage
+        locale={await getRequestLocale()}
         bill={bill}
         interviewConfig={interviewConfig}
         sessionInfo={latestSession}

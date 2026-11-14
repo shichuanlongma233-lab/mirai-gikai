@@ -7,6 +7,7 @@ import { InterviewPublicConsentModal } from "@/features/interview-report/client/
 import { useEndInterview } from "../hooks/use-end-interview";
 import { useInterviewCompletion } from "../hooks/use-interview-completion";
 import { InterviewChatInput } from "./interview-chat-input";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewSummaryInputProps {
   sessionId: string;
@@ -34,6 +35,7 @@ export function InterviewSummaryInput({
   isLoading,
   error,
 }: InterviewSummaryInputProps) {
+  const { t } = useI18n();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isCompleting, completeError, handleSubmit } = useInterviewCompletion({
     sessionId,
@@ -53,20 +55,20 @@ export function InterviewSummaryInput({
               onClick={() => setIsModalOpen(true)}
               disabled={isCompleting}
             >
-              {isCompleting ? "送信中..." : "レポート内容に同意して提出"}
+              {isCompleting ? t.common.sending : t.summary.submit}
             </Button>
           ) : (
             <>
               <p className="text-sm font-medium leading-[1.8] text-mirai-text mb-2">
-                お話しいただいた内容が短く、レポートを作成できませんでした。もう少しインタビューを続けると、レポートを作成できます。
+                {t.summary.tooShort}
               </p>
-              <Button onClick={() => onResume?.()}>インタビューを続ける</Button>
+              <Button onClick={() => onResume?.()}>{t.summary.continue}</Button>
               <Button
                 variant="outline"
                 onClick={endInterview}
                 disabled={isEnding}
               >
-                {isEnding ? "終了中..." : "インタビューを終了する"}
+                {isEnding ? t.summary.ending : t.summary.end}
               </Button>
             </>
           )}
@@ -80,7 +82,7 @@ export function InterviewSummaryInput({
           input={input}
           onInputChange={onInputChange}
           onSubmit={onSubmit}
-          placeholder="レポートの修正要望を入力する"
+          placeholder={t.summary.placeholder}
           isResponding={isLoading}
           error={error}
         />

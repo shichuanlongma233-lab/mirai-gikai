@@ -146,6 +146,7 @@
     }
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.145",
     "@mirai-gikai/supabase": "workspace:*",
     "server-only": "^0.0.1"
   },

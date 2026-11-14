@@ -10,6 +10,7 @@ import { OpinionsList } from "./opinions-list";
 import { ReportBreadcrumb } from "./report-breadcrumb";
 import { ReportMetaInfo } from "./report-meta-info";
 import { ReportProblemButton } from "./report-problem-button";
+import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
 
 interface ReportContentProps {
   reportId: string;
@@ -40,6 +41,8 @@ interface ReportContentProps {
     ogImageUrl: string;
     shareMessage?: string | null;
   };
+  /** 表示する言語の文言（省略時は日本語） */
+  t?: Dictionary;
 }
 
 export function ReportContent({
@@ -58,6 +61,7 @@ export function ReportContent({
   from,
   children,
   share,
+  t = getDictionary("ja"),
 }: ReportContentProps) {
   return (
     <div className="flex flex-col gap-12">
@@ -79,22 +83,28 @@ export function ReportContent({
           characterCount={characterCount}
           reactionData={reactionData}
           from={from}
+          t={t}
         />
       </div>
 
       {/* インタビューを受けた人 */}
-      <IntervieweeInfo roleDescription={roleDescription} headingLevel="h3" />
+      <IntervieweeInfo
+        roleDescription={roleDescription}
+        headingLevel="h3"
+        t={t}
+      />
 
       {/* 主な意見 */}
       <OpinionsList
         opinions={opinions}
-        title="💬主な意見"
+        title={t.report.mainOpinions}
         reportId={reportId}
         chatLogFrom={from}
+        t={t}
       />
 
       {messages && messages.length > 0 && (
-        <ChatLogSection messages={messages} />
+        <ChatLogSection messages={messages} t={t} />
       )}
 
       {/* 追加セクション（有識者登録バナーなど） */}
@@ -111,13 +121,13 @@ export function ReportContent({
           />
         )}
         {/* 法案の記事に戻るボタン */}
-        <BackToBillButton billId={billId} from={from} />
+        <BackToBillButton billId={billId} from={from} t={t} />
         {/* 問題を報告する */}
-        <ReportProblemButton />
+        <ReportProblemButton t={t} />
       </div>
 
       {/* パンくずリスト */}
-      <ReportBreadcrumb billId={billId} />
+      <ReportBreadcrumb billId={billId} t={t} />
     </div>
   );
 }

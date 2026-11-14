@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/i18n/locales";
 import type { Database } from "@mirai-gikai/supabase";
 
 // Database types
@@ -38,4 +39,6 @@ export interface InterviewChatRequestParams {
    * サーバー側で検証が通った場合に限り、非公開の議案・設定を対象にできる。
    */
   previewToken?: string;
+  /** 回答者が選んだ言語。日本語以外ならその言語でインタビューする */
+  locale?: Locale;
 }

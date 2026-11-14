@@ -1,3 +1,8 @@
+import { configureGeminiDefaultProvider } from "./gemini-provider";
+
+// GOOGLE_GENERATIVE_AI_API_KEY が設定されていれば、モデル指定に関わらず Gemini で動かす
+configureGeminiDefaultProvider();
+
 /**
  * AIモデルの識別子を一元管理する定数（Vercel AI Gateway形式）
  */

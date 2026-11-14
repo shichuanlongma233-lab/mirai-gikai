@@ -10,12 +10,14 @@ import { PublicStatusSection } from "@/features/interview-report/client/componen
 import { getInterviewReportById } from "@/features/interview-report/server/loaders/get-interview-report-by-id";
 import { getInterviewMessages } from "@/features/interview-session/server/loaders/get-interview-messages";
 import { getAuthenticatedUser } from "@/features/interview-session/server/utils/verify-session-ownership";
+import { getRequestLocale } from "@/lib/i18n/server";
 import { ExpertRegistrationSection } from "../../client/components/expert-registration-section";
 import { ReportContent } from "../../shared/components/report-content";
 import { isExpertRegistrationTargetRole } from "../../shared/utils/expert-registration-validation";
 import { parseOpinions } from "../../shared/utils/format-utils";
 import { countCharacters } from "../../shared/utils/report-utils";
 import { getExpertRegistrationStatus } from "../loaders/get-expert-registration-status";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 interface ReportCompletePageProps {
   reportId: string;
@@ -53,6 +55,7 @@ export async function ReportCompletePage({
   const opinions = parseOpinions(report.opinions);
   const characterCount = countCharacters(messages);
   const billName = bill.bill_content?.title || bill.name;
+  const t = getDictionary(await getRequestLocale());
 
   return (
     <div className="min-h-dvh bg-mirai-surface">
@@ -62,22 +65,20 @@ export async function ReportCompletePage({
           {/* 完了イラスト */}
           <Image
             src="/illustrations/interview-complete.svg"
-            alt="完了"
+            alt={t.complete.imageAlt}
             width={236}
             height={152}
           />
 
           {/* 完了メッセージ */}
           <h1 className="text-2xl font-bold text-center text-gray-800 leading-relaxed">
-            提出が完了しました！
+            {t.complete.title}
             <br />
-            ご協力ありがとうございました
+            {t.complete.thanks}
           </h1>
 
           {/* 活用メッセージ */}
-          <p className="text-sm text-gray-800">
-            いただいた声は政策検討に最大限活用します
-          </p>
+          <p className="text-sm text-gray-800">{t.complete.usage}</p>
         </div>
       </div>
 
@@ -87,7 +88,7 @@ export async function ReportCompletePage({
           {/* セクションタイトルと公開ステータス */}
           <div className="flex flex-col items-center gap-4">
             <h2 className="text-2xl font-bold text-black">
-              インタビューレポート
+              {t.complete.reportTitle}
             </h2>
             <Link
               href={getBillDetailLink(billId) as Route}
@@ -115,6 +116,7 @@ export async function ReportCompletePage({
             messages={messages}
             roleDescription={report.role_description}
             opinions={opinions}
+            t={t}
           >
             {/* 有識者リスト登録バナー */}
             {isExpertRole && !isExpertRegistered && (

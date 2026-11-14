@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getRequestLocale } from "@/lib/i18n/server";
 import { notFound } from "next/navigation";
 import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
 import { InterviewLPPage } from "@/features/interview-config/client/components/interview-lp-page";
@@ -82,6 +83,7 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
 
   return (
     <InterviewLPPage
+      locale={await getRequestLocale()}
       bill={bill}
       interviewConfig={interviewConfig}
       sessionInfo={latestSession}

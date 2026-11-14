@@ -13,8 +13,8 @@ export type BillPublishStatus = "draft" | "published" | "coming_soon";
 const billBaseSchema = z.object({
   name: z
     .string()
-    .min(1, "議案名は必須です")
-    .max(200, "議案名は200文字以内で入力してください"),
+    .min(1, "トピック名は必須です")
+    .max(200, "トピック名は200文字以内で入力してください"),
   status: z.enum([
     "preparing",
     "introduced",
@@ -33,7 +33,7 @@ const billBaseSchema = z.object({
     .string()
     .refine(
       (val) => val === "" || /^\d{4}-\d{2}-\d{2}$/.test(val),
-      "法案提出日は YYYY-MM-DD 形式で入力してください"
+      "登録日は YYYY-MM-DD 形式で入力してください"
     )
     .optional(),
   thumbnail_url: z.string().nullable().optional(),

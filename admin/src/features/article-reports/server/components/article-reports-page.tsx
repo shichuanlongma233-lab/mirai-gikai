@@ -30,7 +30,7 @@ export async function ArticleReportsPage({ billId }: { billId: string }) {
   return (
     <div className="container mx-auto py-8">
       <h1 className="mb-1 text-2xl font-bold">誤り報告</h1>
-      <p className="mb-4 text-sm text-gray-600">議案: {billName}</p>
+      <p className="mb-4 text-sm text-gray-600">トピック: {billName}</p>
       {reachedLimit && (
         <p className="mb-4 text-sm text-gray-600">
           直近{limit}件を表示しています

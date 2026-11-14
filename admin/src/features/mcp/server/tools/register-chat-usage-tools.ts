@@ -17,10 +17,10 @@ export function registerChatUsageTools(server: McpServer): void {
         "チャット・AIインタビューのLLM利用イベント（chat_usage_events）をprompt_nameごとに集計して返す。" +
         "各行は prompt_name / event_count（LLM応答回数）/ unique_user_count / unique_session_count / total_tokens / total_cost_usd（USD）で、event_count降順。" +
         "session_idを記録しないイベントは unique_session_count に含まれない（event_countには含まれる）。" +
-        "prompt_nameの内訳: top-chat-system=トップページのチャット、bill-chat-system-normal / bill-chat-system-hard=議案ページのチャット（難易度別）、" +
+        "prompt_nameの内訳: top-chat-system=トップページのチャット、bill-chat-system-normal / bill-chat-system-hard=トピックページのチャット（難易度別）、" +
         "interview-chat / interview-initial-question / interview-summary=AIインタビュー関連。" +
         "from/to は occurred_at の範囲（fromは以上、toは未満）。未指定なら全期間。" +
-        "billId指定時は metadata.billId でフィルタする。議案チャットとインタビュー系はbillIdを記録するが、トップページチャット（top-chat-system）は記録しないため、指定するとトップチャットは結果に含まれない。",
+        "billId指定時は metadata.billId でフィルタする。トピックチャットとインタビュー系はbillIdを記録するが、トップページチャット（top-chat-system）は記録しないため、指定するとトップチャットは結果に含まれない。",
       inputSchema: {
         from: z
           .string()
@@ -40,7 +40,7 @@ export function registerChatUsageTools(server: McpServer): void {
           .string()
           .uuid()
           .optional()
-          .describe("対象議案のID（議案チャットのみに絞る場合に指定）"),
+          .describe("対象トピックのID（トピックチャットのみに絞る場合に指定）"),
       },
     },
     async ({ from, to, billId }) => {

@@ -19,8 +19,8 @@ const isDev = process.env.NODE_ENV === "development";
 const isStaging = process.env.VERCEL_TARGET_ENV === "staging";
 
 export const metadata: Metadata = {
-  title: "みらい議会 Admin",
-  description: "みらい議会の管理者向けダッシュボード",
+  title: "市場調査AIインタビュー 管理画面",
+  description: "市場調査AIインタビューの管理者向けダッシュボード",
   icons: {
     icon: isDev
       ? "/icons/pwa/icon_dev_192_v3.png"

@@ -71,7 +71,7 @@ export function BillEditForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>議案基本情報編集</CardTitle>
+        <CardTitle>トピック基本情報編集</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>

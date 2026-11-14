@@ -1,7 +1,7 @@
 import type { Bill, BillInsert } from "../types";
 
 /**
- * 議案データから複製用のinsertデータを生成する
+ * トピックデータから複製用のinsertデータを生成する
  * ID・タイムスタンプを除去し、名前に「(複製)」を付与、ステータスをdraftに設定
  */
 export function prepareBillForDuplication(originalBill: Bill): BillInsert {
@@ -24,7 +24,7 @@ export function prepareBillForDuplication(originalBill: Bill): BillInsert {
 }
 
 /**
- * 議案コンテンツ配列から複製用のデータを生成する
+ * トピックコンテンツ配列から複製用のデータを生成する
  * IDを除去し、新しいbill_idを設定
  */
 export function prepareBillContentsForDuplication<

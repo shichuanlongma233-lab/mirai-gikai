@@ -195,7 +195,7 @@ export function TagItem({ tag }: TagItemProps) {
                   <AlertDialogHeader>
                     <AlertDialogTitle>タグの削除</AlertDialogTitle>
                     <AlertDialogDescription>
-                      このタグを削除しますか？紐付けられている議案からもタグが削除されます。
+                      このタグを削除しますか？紐付けられているトピックからもタグが削除されます。
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

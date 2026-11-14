@@ -11,7 +11,7 @@ export default function LoginPage() {
             管理者ログイン
           </CardTitle>
           <p className="text-sm text-muted-foreground text-center">
-            みらい議会 Admin
+            市場調査AIインタビュー 管理画面
           </p>
         </CardHeader>
         <CardContent>

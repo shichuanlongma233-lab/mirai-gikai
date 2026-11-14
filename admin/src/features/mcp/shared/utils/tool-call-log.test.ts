@@ -64,8 +64,8 @@ describe("summarizeToolResult", () => {
     expect(
       summarizeToolResult({
         isError: true,
-        content: [{ type: "text", text: "法案が見つかりません" }],
+        content: [{ type: "text", text: "トピックが見つかりません" }],
       })
-    ).toBe("error content=[text(10 chars)] message=法案が見つかりません");
+    ).toBe("error content=[text(12 chars)] message=トピックが見つかりません");
   });
 });

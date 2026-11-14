@@ -55,7 +55,7 @@ export function BillCreateForm({ dietSessions }: BillCreateFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>議案新規作成</CardTitle>
+        <CardTitle>トピック新規作成</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>

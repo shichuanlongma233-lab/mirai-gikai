@@ -5,11 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
-import { getBillDetailLink } from "@/features/interview-config/shared/utils/interview-links";
+import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
 import { PublicStatusSection } from "@/features/interview-report/client/components/public-status-section";
 import { getInterviewReportById } from "@/features/interview-report/server/loaders/get-interview-report-by-id";
 import { getInterviewMessages } from "@/features/interview-session/server/loaders/get-interview-messages";
 import { getAuthenticatedUser } from "@/features/interview-session/server/utils/verify-session-ownership";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { getRequestLocale } from "@/lib/i18n/server";
 import { ExpertRegistrationSection } from "../../client/components/expert-registration-section";
 import { ReportContent } from "../../shared/components/report-content";
@@ -17,7 +18,6 @@ import { isExpertRegistrationTargetRole } from "../../shared/utils/expert-regist
 import { parseOpinions } from "../../shared/utils/format-utils";
 import { countCharacters } from "../../shared/utils/report-utils";
 import { getExpertRegistrationStatus } from "../loaders/get-expert-registration-status";
-import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 interface ReportCompletePageProps {
   reportId: string;
@@ -91,7 +91,7 @@ export async function ReportCompletePage({
               {t.complete.reportTitle}
             </h2>
             <Link
-              href={getBillDetailLink(billId) as Route}
+              href={getInterviewLPLink(billId) as Route}
               className="text-sm text-black underline"
             >
               {billName}

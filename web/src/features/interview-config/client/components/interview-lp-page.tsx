@@ -1,13 +1,11 @@
-import { ArrowRight, Undo2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import ReactMarkdown from "react-markdown";
 import type { BillWithContent } from "@/features/bills/shared/types";
-import {
-  getBillDetailLink,
-  getInterviewDisclosureLink,
-} from "@/features/interview-config/shared/utils/interview-links";
+import type { TopicIntro } from "@/features/interview-config/server/services/translate-topic-intro";
+import { getInterviewDisclosureLink } from "@/features/interview-config/shared/utils/interview-links";
 import { PastReportsSection } from "@/features/interview-report/client/components/past-reports-section";
 import type { UserReportsResult } from "@/features/interview-report/server/loaders/get-user-reports-by-interview-config";
 import { InterviewStatusBadge } from "@/features/interview-session/client/components/interview-status-badge";
@@ -27,6 +25,8 @@ interface InterviewLPPageProps {
   userReports?: UserReportsResult | null;
   /** 回答者が選んだ言語 */
   locale?: Locale;
+  /** 回答者の言語に翻訳したトピックの紹介 */
+  intro?: TopicIntro;
 }
 
 /** 特徴のアイコン。文言は辞書の lp.features と同じ順に対応する */
@@ -57,20 +57,18 @@ function _InterviewLPHeader({ bill }: { bill: BillWithContent }) {
 }
 
 function _InterviewLPHero({
-  bill,
+  topicTitle,
   billId,
   sessionInfo,
   previewToken,
   t,
 }: {
-  bill: BillWithContent;
+  topicTitle: string;
   billId: string;
   sessionInfo: LatestInterviewSession | null;
   previewToken?: string;
   t: Dictionary;
 }) {
-  const billLink = getBillDetailLink(billId, previewToken);
-
   return (
     <div className="flex flex-col items-center gap-6 px-4">
       <LanguageSwitcher className="self-end" />
@@ -83,13 +81,11 @@ function _InterviewLPHero({
         <h1 className="text-2xl font-bold text-center leading-[1.5]">
           {t.lp.title}
         </h1>
-        <Link href={billLink as Route}>
-          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-white rounded-xl hover:bg-gray-50 transition-opacity cursor-pointer">
-            <span className="text-[13px] font-medium text-black leading-[1.87]">
-              {bill.bill_content?.title ?? bill.name}
-            </span>
-          </div>
-        </Link>
+        <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-white rounded-xl">
+          <span className="text-[13px] font-medium text-black leading-[1.87]">
+            {topicTitle}
+          </span>
+        </div>
         {sessionInfo && <InterviewStatusBadge status={sessionInfo.status} />}
       </div>
 
@@ -125,18 +121,12 @@ function _InterviewLPHero({
 }
 
 function _InterviewOverviewSection({
-  billId,
-  billName,
-  previewToken,
+  intro,
   t,
 }: {
-  billId: string;
-  billName: string;
-  previewToken?: string;
+  intro: TopicIntro;
   t: Dictionary;
 }) {
-  const billLink = getBillDetailLink(billId, previewToken);
-
   return (
     <div className="w-full max-w-[560px] mx-auto bg-white rounded-2xl p-6 space-y-4">
       <h2 className="text-[22px] font-bold text-black leading-[1.64]">
@@ -145,27 +135,23 @@ function _InterviewOverviewSection({
       <div className="space-y-4 text-[15px] font-normal text-black leading-[1.87]">
         <p>
           {t.lp.overviewBefore}
-          <Link
-            href={billLink as Route}
-            className="text-primary underline underline-offset-2 hover:opacity-70 transition-opacity"
-          >
-            {billName}
-          </Link>
+          <span className="font-bold">{intro.title}</span>
           {t.lp.overviewAfter}
         </p>
+        {intro.summary && <p>{intro.summary}</p>}
         <p>{t.lp.overviewUsage}</p>
       </div>
-      <div>
-        <Link href={billLink as Route}>
-          <Button
-            variant="outline"
-            className="w-full border border-black rounded-[100px] h-[48px] px-6 font-bold text-[15px] hover:opacity-90 transition-opacity flex items-center justify-center gap-4"
-          >
+      {intro.content && (
+        <details className="group rounded-xl border border-black px-6 py-3">
+          <summary className="cursor-pointer list-none font-bold text-[15px] flex items-center justify-center gap-4">
             <span>{t.lp.billDetailLink}</span>
-            <ArrowRight className="size-4" />
-          </Button>
-        </Link>
-      </div>
+            <ArrowRight className="size-4 transition-transform group-open:rotate-90" />
+          </summary>
+          <div className="prose prose-sm max-w-none mt-4">
+            <ReactMarkdown>{intro.content}</ReactMarkdown>
+          </div>
+        </details>
+      )}
     </div>
   );
 }
@@ -289,8 +275,6 @@ function _InterviewFooterActions({
   previewToken?: string;
   t: Dictionary;
 }) {
-  const billLink = getBillDetailLink(billId, previewToken);
-
   return (
     <div className="flex flex-col w-full max-w-[370px] mx-auto space-y-4">
       <InterviewActionButtons
@@ -298,12 +282,6 @@ function _InterviewFooterActions({
         sessionInfo={sessionInfo}
         previewToken={previewToken}
       />
-      <Link href={billLink as Route}>
-        <Button variant="outline" className="w-full">
-          <Undo2 className="size-5" />
-          <span>{t.lp.backToBill}</span>
-        </Button>
-      </Link>
     </div>
   );
 }
@@ -315,14 +293,22 @@ export function InterviewLPPage({
   previewToken,
   userReports,
   locale = DEFAULT_LOCALE,
+  intro,
 }: InterviewLPPageProps) {
   const t = getDictionary(locale);
+  // 翻訳済みの紹介が渡されなければ、登録された日本語の内容を使う
+  const topicIntro: TopicIntro = intro ?? {
+    title: bill.bill_content?.title ?? bill.name,
+    summary: bill.bill_content?.summary ?? "",
+    content: bill.bill_content?.content ?? "",
+    themes: interviewConfig.themes ?? [],
+  };
   return (
     <div className="flex flex-col gap-8 pb-8 bg-mirai-light-gradient">
       <_InterviewLPHeader bill={bill} />
       <div className="flex flex-col items-center gap-8 px-4">
         <_InterviewLPHero
-          bill={bill}
+          topicTitle={topicIntro.title}
           billId={bill.id}
           sessionInfo={sessionInfo}
           previewToken={previewToken}
@@ -336,17 +322,12 @@ export function InterviewLPPage({
             <NewInterviewButton billId={bill.id} previewToken={previewToken} />
           </div>
         )}
-        <_InterviewOverviewSection
-          billId={bill.id}
-          billName={bill.bill_content?.title ?? bill.name}
-          previewToken={previewToken}
-          t={t}
-        />
+        <_InterviewOverviewSection intro={topicIntro} t={t} />
         <_InterviewDurationSection
           estimatedDuration={interviewConfig.estimated_duration}
           t={t}
         />
-        <_InterviewThemesSection themes={interviewConfig.themes} t={t} />
+        <_InterviewThemesSection themes={topicIntro.themes} t={t} />
         <_InterviewNoticeSection
           t={t}
           showContentLanguageNote={locale !== DEFAULT_LOCALE}

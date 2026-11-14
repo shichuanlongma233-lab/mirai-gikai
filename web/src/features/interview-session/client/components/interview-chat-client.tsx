@@ -6,7 +6,8 @@ import {
   Conversation,
   ConversationContent,
 } from "@/components/ai-elements/conversation";
-import { getBillDetailLink } from "@/features/interview-config/shared/utils/interview-links";
+import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import { isLoopFamilyMode } from "../../shared/utils/is-loop-family-mode";
 import { useInterviewChat } from "../hooks/use-interview-chat";
 import { useInterviewRating } from "../hooks/use-interview-rating";
@@ -22,7 +23,6 @@ import { InterviewSummaryInput } from "./interview-summary-input";
 import { QuickReplyButtons } from "./quick-reply-buttons";
 import { SkipActionPopover } from "./skip-action-popover";
 import { TimeUpPrompt } from "./time-up-prompt";
-import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewChatClientProps {
   billId: string;
@@ -95,7 +95,7 @@ export function InterviewChatClient({
     hasRated,
   });
 
-  const billDetailLink = getBillDetailLink(billId, previewToken);
+  const billDetailLink = getInterviewLPLink(billId, previewToken);
 
   const showProgressBar = isLoopFamilyMode(mode) && progress !== null;
   const timerMinutes =

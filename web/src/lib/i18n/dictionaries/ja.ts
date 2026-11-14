@@ -13,20 +13,20 @@ export const ja = {
     languageLabel: "言語",
   },
   lp: {
-    badge: "当事者・有識者の方へ",
-    title: "法案についてのAIインタビュー",
+    badge: "海外の皆さまへ",
+    title: "日本の文化についてのAIインタビュー",
     features: [
-      "あなたの経験や考えをAIがチャットで深掘りします",
-      "寄せられた回答はチームみらいの政策検討に活用します",
-      "ご意見はチームみらいを通じて国会に届けられる可能性があります",
+      "AIがチャットであなたの感想や考えを伺います",
+      "回答は日本の文化や商品を海外に届けるための調査に活用します",
+      "あなたの声が、今後の商品やサービスづくりに反映されるかもしれません",
     ],
     overviewTitle: "インタビュー概要",
-    overviewBefore: "国会で検討されている",
+    overviewBefore: "「",
     overviewAfter:
-      "について、AIがあなたの考えを深掘りするチャット型インタビューです",
+      "」について、AIがあなたの率直な感想を伺うチャット型インタビューです。",
     overviewUsage:
-      "いただいたご意見は、政策研究や国会での審議に活用し、みらい議会上に公開される可能性があります。",
-    billDetailLink: "法案詳細はこちら",
+      "回答は匿名で集計し、日本の文化や商品を海外に届けるための調査に活用します。",
+    billDetailLink: "くわしい紹介を読む",
     durationTitle: "予定時間",
     themesTitle: "質問テーマ",
     noticeTitle: "注意事項",
@@ -35,14 +35,14 @@ export const ja = {
     notice2:
       "インタビューログは公開される可能性があるため、個人情報や機密情報などセンシティブな内容については記載しないようにしてください。",
     disclosureLink: "AIインタビューに関する情報開示",
-    backToBill: "法案詳細に戻る",
+    backToBill: "トピックの紹介に戻る",
     start: "AIインタビューをはじめる",
     resume: "AIインタビューを再開する",
     newAnswer: "もう一度新たに回答する",
     restartFromBeginning: "もう一度最初から回答する",
     pastReports: "過去のレポート",
     contentLanguageNote:
-      "法案の記事やテーマは日本語で書かれています。インタビューは選んだ言語で行います。",
+      "紹介文とテーマはAIで翻訳しています。インタビューは選んだ言語で行います。",
   },
   status: {
     active: "中断中",
@@ -53,10 +53,10 @@ export const ja = {
   },
   consent: {
     title: "AIインタビュー同意事項",
-    item1: "回答データは党内での政策検討に利用します。",
+    item1: "回答データは市場調査として匿名で集計・分析します。",
     item2: "個人情報や機密情報の記載はお控えください。",
     item3:
-      "インタビュー回答後に公開を許可するかを選択できます。公開を許可した場合、のちにみらい議会に全文が掲載される場合があります。",
+      "インタビュー回答後に、回答の公開を許可するかを選べます。許可した場合、要約と回答が匿名で公開されることがあります。",
     termsBefore: "",
     terms: "利用規約",
     and: "と",
@@ -66,8 +66,8 @@ export const ja = {
     decline: "同意せずに戻る",
   },
   chat: {
-    introTitle: "法案についてのAIインタビューを開始します。",
-    introBody: "あなたの意見や経験をお聞かせください。",
+    introTitle: "AIインタビューを開始します。",
+    introBody: "あなたの率直な感想をお聞かせください。",
     thinking: "考え中...",
     placeholder: "AIの質問に回答する",
     sendAlt: "送信",
@@ -140,14 +140,14 @@ export const ja = {
     questionLine1: "インタビュー内容の公開を",
     questionLine2: "許可しますか？",
     body1:
-      "公開を許可した場合、今後みらい議会にあなたのご意見の要約とインタビュー原文が匿名で掲載されることがあります。",
-    body2: "さまざまな意見が公開されることで、より深い法案議論が実現できます。",
+      "公開を許可した場合、あなたの意見の要約とインタビュー原文が匿名で公開されることがあります。",
+    body2: "さまざまな感想が公開されることで、ほかの人の参考にもなります。",
     privateNote:
-      "非公開で提出した場合でも、ご意見は党内での政策検討に活用させていただきます。",
+      "非公開で提出した場合でも、回答は調査の分析に活用させていただきます。",
     submitPublic: "公開を許可して提出する",
     submitPrivate: "非公開で提出する",
     openDataBefore: "公開を許可した内容は、「",
-    openDataTerms: "みらい議会AIインタビューデータ利用規約",
+    openDataTerms: "AIインタビューデータ利用規約",
     openDataAfter:
       "」に基づき、第三者にオープンデータとして提供されることがあります。公開をやめた場合、以後の提供は停止されますが、既に取得されたデータの利用停止までは保証できません。",
   },
@@ -155,7 +155,7 @@ export const ja = {
     imageAlt: "完了",
     title: "提出が完了しました！",
     thanks: "ご協力ありがとうございました",
-    usage: "いただいた声は政策検討に最大限活用します",
+    usage: "いただいた声は、日本の文化や商品を海外に届けるために活用します",
     reportTitle: "インタビューレポート",
   },
   publicStatus: {
@@ -171,8 +171,7 @@ export const ja = {
     makePrivateLine2: "非公開に切り替えますか？",
     makePrivateBody1:
       "非公開にした場合、あなたのご意見が世の中に公開されることはありません。",
-    makePrivateBody2:
-      "チームみらい党内での政策検討に最大限活用させていただきます。",
+    makePrivateBody2: "回答は調査の分析に活用させていただきます。",
     makePrivate: "非公開にする",
     keepPublic: "公開のまま戻る",
   },
@@ -188,11 +187,11 @@ export const ja = {
     minutes: (n: number) => `${n} 分 / `,
     characters: (n: number) => `${n} 文字`,
     shareArticle: "記事を共有する",
-    backToBill: "法案の記事に戻る",
+    backToBill: "トピックの紹介に戻る",
     opinionN: (n: number) => `意見${n}`,
     viewOriginal: "元の回答を見る",
     interviewee: "👫インタビューを受けた人",
-    crumbBill: "法案詳細",
+    crumbBill: "トピック",
     crumbReports: "レポート一覧",
     crumbReport: "レポート",
     reportProblem: "問題を報告する",
@@ -207,15 +206,15 @@ export const ja = {
     neutral: "期待＆懸念",
   } as Record<string, string>,
   roles: {
-    subject_expert: "専門的な有識者",
-    work_related: "業務に関係",
-    daily_life_affected: "暮らしに影響",
+    subject_expert: "専門家・業界関係者",
+    work_related: "仕事で関わる",
+    daily_life_affected: "日常で使う・体験する",
     general_citizen: "一般的な関心",
   } as Record<string, string>,
   expert: {
-    heading: "法案の有識者の方へ",
+    heading: "この分野にくわしい方へ",
     title: "有識者リストにご登録ください",
-    body: "現場の知見を法案に活かすため、登録をいただいた方には、今後チームみらいから追加のインタビューをお願いする場合があります。",
+    body: "ご登録いただいた方には、今後追加のインタビューをお願いする場合があります。",
     register: "有識者リストに登録する",
   },
 };

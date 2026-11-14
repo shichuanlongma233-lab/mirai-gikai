@@ -11,20 +11,20 @@ export const en: Dictionary = {
     languageLabel: "Language",
   },
   lp: {
-    badge: "For people affected and experts",
-    title: "AI interview about this topic",
+    badge: "For people around the world",
+    title: "AI interview about Japanese culture",
     features: [
-      "An AI chats with you to explore your experiences and views in depth",
-      "Your answers will be used for Team Mirai's policy research",
-      "Your opinions may be conveyed to the National Diet through Team Mirai",
+      "An AI chats with you to hear your impressions and opinions",
+      "Your answers help bring Japanese culture and products to people overseas",
+      "Your voice may shape future products and services",
     ],
     overviewTitle: "About this interview",
     overviewBefore:
-      "This is a chat-style interview in which an AI explores your thoughts on ",
-    overviewAfter: ".",
+      "This is a chat-style interview in which an AI asks for your honest impressions of “",
+    overviewAfter: "”.",
     overviewUsage:
-      "Your opinions will be used for policy research and parliamentary discussion, and may be published on Mirai Gikai.",
-    billDetailLink: "Read the topic details",
+      "Answers are aggregated anonymously and used for research on bringing Japanese culture and products overseas.",
+    billDetailLink: "Read the full introduction",
     durationTitle: "Estimated time",
     themesTitle: "Interview themes",
     noticeTitle: "Please note",
@@ -33,14 +33,14 @@ export const en: Dictionary = {
     notice2:
       "Interview logs may be published, so please do not include personal, confidential or other sensitive information.",
     disclosureLink: "Disclosure about the AI interview (Japanese)",
-    backToBill: "Back to topic details",
+    backToBill: "Back to the introduction",
     start: "Start the AI interview",
     resume: "Resume the AI interview",
     newAnswer: "Answer again from scratch",
     restartFromBeginning: "Start over from the beginning",
     pastReports: "Your past reports",
     contentLanguageNote:
-      "The article and themes are written in Japanese. The interview will be held in the language you choose.",
+      "The introduction and themes are translated by AI. The interview will be held in the language you choose.",
   },
   status: {
     active: "Paused",
@@ -51,10 +51,11 @@ export const en: Dictionary = {
   },
   consent: {
     title: "Consent for the AI interview",
-    item1: "Your answers will be used for policy research within the party.",
+    item1:
+      "Your answers will be aggregated and analyzed anonymously as market research.",
     item2: "Please do not include personal or confidential information.",
     item3:
-      "After the interview, you can choose whether to allow publication. If you allow it, the full text may later be published on Mirai Gikai.",
+      "After the interview, you can choose whether to allow publication. If you allow it, a summary and your answers may be published anonymously.",
     termsBefore: "I agree to the ",
     terms: "Terms of Use",
     and: " and ",
@@ -65,7 +66,7 @@ export const en: Dictionary = {
   },
   chat: {
     introTitle: "Starting the AI interview.",
-    introBody: "Please share your opinions and experiences.",
+    introBody: "Please share your honest impressions.",
     thinking: "Thinking...",
     placeholder: "Answer the AI's question",
     sendAlt: "Send",
@@ -140,16 +141,15 @@ export const en: Dictionary = {
     questionLine1: "Do you allow your interview",
     questionLine2: "to be published?",
     body1:
-      "If you allow publication, a summary of your opinion and the original interview text may be published anonymously on Mirai Gikai.",
-    body2:
-      "Publishing a wide range of opinions enables deeper discussion of policy.",
+      "If you allow publication, a summary of your opinion and the original interview text may be published anonymously.",
+    body2: "Sharing a variety of impressions helps other people too.",
     privateNote:
-      "Even if you submit privately, your opinion will still be used for policy research within the party.",
+      "Even if you submit privately, your answers will still be used in our research analysis.",
     submitPublic: "Allow publication and submit",
     submitPrivate: "Submit privately",
     openDataBefore:
       'Content you allow to be published may be provided to third parties as open data under the "',
-    openDataTerms: "Mirai Gikai AI Interview Data Terms of Use",
+    openDataTerms: "AI Interview Data Terms of Use",
     openDataAfter:
       '" (Japanese). If you later stop publication, further provision will stop, but we cannot guarantee that data already obtained by others will no longer be used.',
   },
@@ -157,7 +157,8 @@ export const en: Dictionary = {
     imageAlt: "Done",
     title: "Your submission is complete!",
     thanks: "Thank you for your cooperation",
-    usage: "We will make the most of your voice in our policy research",
+    usage:
+      "We will use your voice to bring Japanese culture and products overseas",
     reportTitle: "Interview report",
   },
   publicStatus: {
@@ -174,7 +175,7 @@ export const en: Dictionary = {
     makePrivateBody1:
       "If you make it private, your opinion will not be published.",
     makePrivateBody2:
-      "It will still be used to the fullest in Team Mirai's internal policy research.",
+      "Your answers will still be used in our research analysis.",
     makePrivate: "Make private",
     keepPublic: "Keep public and go back",
   },
@@ -190,11 +191,11 @@ export const en: Dictionary = {
     minutes: (n: number) => `${n} min / `,
     characters: (n: number) => `${n} characters`,
     shareArticle: "Share the article",
-    backToBill: "Back to the article",
+    backToBill: "Back to the introduction",
     opinionN: (n: number) => `Opinion ${n}`,
     viewOriginal: "See the original answer",
     interviewee: "👫About the interviewee",
-    crumbBill: "Topic details",
+    crumbBill: "Topic",
     crumbReports: "Reports",
     crumbReport: "Report",
     reportProblem: "Report a problem",
@@ -209,15 +210,15 @@ export const en: Dictionary = {
     neutral: "Hopeful & concerned",
   } as Record<string, string>,
   roles: {
-    subject_expert: "Subject-matter expert",
-    work_related: "Related to my work",
-    daily_life_affected: "Affects my daily life",
+    subject_expert: "Expert / industry professional",
+    work_related: "Involved through work",
+    daily_life_affected: "Use or experience it in daily life",
     general_citizen: "General interest",
   } as Record<string, string>,
   expert: {
-    heading: "Are you an expert on this topic?",
+    heading: "Do you know this field well?",
     title: "Please join our expert list",
-    body: "To reflect on-the-ground knowledge in policy, Team Mirai may ask registered people for additional interviews.",
+    body: "We may ask registered people for additional interviews in the future.",
     register: "Join the expert list",
   },
 };

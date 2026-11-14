@@ -11,20 +11,20 @@ export const ko: Dictionary = {
     languageLabel: "언어",
   },
   lp: {
-    badge: "당사자 및 전문가 여러분께",
-    title: "이 주제에 관한 AI 인터뷰",
+    badge: "해외의 여러분께",
+    title: "일본 문화에 관한 AI 인터뷰",
     features: [
-      "AI가 채팅으로 여러분의 경험과 생각을 깊이 있게 여쭙니다",
-      "보내주신 답변은 팀 미라이(Team Mirai)의 정책 검토에 활용됩니다",
-      "여러분의 의견이 팀 미라이를 통해 국회에 전달될 수 있습니다",
+      "AI가 채팅으로 여러분의 감상과 생각을 여쭙니다",
+      "답변은 일본의 문화와 상품을 해외에 알리기 위한 조사에 활용됩니다",
+      "여러분의 목소리가 앞으로의 상품과 서비스에 반영될 수 있습니다",
     ],
     overviewTitle: "인터뷰 개요",
-    overviewBefore: "",
+    overviewBefore: "'",
     overviewAfter:
-      "에 대해 AI가 여러분의 생각을 깊이 있게 여쭙는 채팅형 인터뷰입니다.",
+      "'에 대해 AI가 여러분의 솔직한 감상을 여쭙는 채팅형 인터뷰입니다.",
     overviewUsage:
-      "보내주신 의견은 정책 연구와 국회 심의에 활용되며, '미라이 의회'에 공개될 수 있습니다.",
-    billDetailLink: "주제 자세히 보기",
+      "답변은 익명으로 집계되어, 일본의 문화와 상품을 해외에 알리기 위한 조사에 활용됩니다.",
+    billDetailLink: "소개 자세히 읽기",
     durationTitle: "예상 소요 시간",
     themesTitle: "질문 테마",
     noticeTitle: "유의 사항",
@@ -33,14 +33,14 @@ export const ko: Dictionary = {
     notice2:
       "인터뷰 기록이 공개될 수 있으므로 개인정보나 기밀정보 등 민감한 내용은 적지 마세요.",
     disclosureLink: "AI 인터뷰에 관한 정보 공개(일본어)",
-    backToBill: "주제 상세로 돌아가기",
+    backToBill: "소개로 돌아가기",
     start: "AI 인터뷰 시작하기",
     resume: "AI 인터뷰 이어하기",
     newAnswer: "새로 다시 답변하기",
     restartFromBeginning: "처음부터 다시 답변하기",
     pastReports: "지난 리포트",
     contentLanguageNote:
-      "주제 기사와 테마는 일본어로 작성되어 있습니다. 인터뷰는 선택하신 언어로 진행됩니다.",
+      "소개와 테마는 AI로 번역되었습니다. 인터뷰는 선택하신 언어로 진행됩니다.",
   },
   status: {
     active: "일시 중단",
@@ -51,10 +51,10 @@ export const ko: Dictionary = {
   },
   consent: {
     title: "AI 인터뷰 동의 사항",
-    item1: "답변 데이터는 당 내부의 정책 검토에 이용됩니다.",
+    item1: "답변 데이터는 시장 조사로서 익명으로 집계·분석됩니다.",
     item2: "개인정보나 기밀정보는 적지 마세요.",
     item3:
-      "인터뷰 후 공개 허용 여부를 선택할 수 있습니다. 공개를 허용하면 나중에 '미라이 의회'에 전문이 게재될 수 있습니다.",
+      "인터뷰 후 공개 허용 여부를 선택할 수 있습니다. 허용하면 요약과 답변이 익명으로 공개될 수 있습니다.",
     termsBefore: "",
     terms: "이용약관",
     and: " 및 ",
@@ -65,7 +65,7 @@ export const ko: Dictionary = {
   },
   chat: {
     introTitle: "AI 인터뷰를 시작합니다.",
-    introBody: "여러분의 의견과 경험을 들려주세요.",
+    introBody: "여러분의 솔직한 감상을 들려주세요.",
     thinking: "생각 중...",
     placeholder: "AI의 질문에 답하기",
     sendAlt: "보내기",
@@ -137,14 +137,13 @@ export const ko: Dictionary = {
     questionLine1: "인터뷰 내용의 공개를",
     questionLine2: "허용하시겠어요?",
     body1:
-      "공개를 허용하면 앞으로 '미라이 의회'에 여러분 의견의 요약과 인터뷰 원문이 익명으로 게재될 수 있습니다.",
-    body2: "다양한 의견이 공개되면 더 깊이 있는 정책 논의가 가능해집니다.",
-    privateNote:
-      "비공개로 제출하더라도 의견은 당 내부의 정책 검토에 활용됩니다.",
+      "공개를 허용하면 여러분 의견의 요약과 인터뷰 원문이 익명으로 공개될 수 있습니다.",
+    body2: "다양한 감상이 공개되면 다른 사람에게도 참고가 됩니다.",
+    privateNote: "비공개로 제출하더라도 답변은 조사 분석에 활용됩니다.",
     submitPublic: "공개를 허용하고 제출",
     submitPrivate: "비공개로 제출",
     openDataBefore: "공개를 허용한 내용은 '",
-    openDataTerms: "미라이 의회 AI 인터뷰 데이터 이용약관",
+    openDataTerms: "AI 인터뷰 데이터 이용약관",
     openDataAfter:
       "'(일본어)에 따라 제3자에게 오픈 데이터로 제공될 수 있습니다. 공개를 중지하면 이후 제공은 중단되지만, 이미 취득된 데이터의 이용 중지까지는 보장할 수 없습니다.",
   },
@@ -152,7 +151,8 @@ export const ko: Dictionary = {
     imageAlt: "완료",
     title: "제출이 완료되었습니다!",
     thanks: "협조해 주셔서 감사합니다",
-    usage: "보내주신 목소리를 정책 검토에 최대한 활용하겠습니다",
+    usage:
+      "보내주신 목소리를 일본의 문화와 상품을 해외에 알리는 데 활용하겠습니다",
     reportTitle: "인터뷰 리포트",
   },
   publicStatus: {
@@ -167,8 +167,7 @@ export const ko: Dictionary = {
     makePrivateLine1: "인터뷰 내용을",
     makePrivateLine2: "비공개로 전환하시겠어요?",
     makePrivateBody1: "비공개로 하면 여러분의 의견이 외부에 공개되지 않습니다.",
-    makePrivateBody2:
-      "팀 미라이 당 내부의 정책 검토에는 최대한 활용하겠습니다.",
+    makePrivateBody2: "답변은 조사 분석에 활용하겠습니다.",
     makePrivate: "비공개로 하기",
     keepPublic: "공개로 두고 돌아가기",
   },
@@ -184,11 +183,11 @@ export const ko: Dictionary = {
     minutes: (n: number) => `${n}분 / `,
     characters: (n: number) => `${n}자`,
     shareArticle: "기사 공유하기",
-    backToBill: "기사로 돌아가기",
+    backToBill: "소개로 돌아가기",
     opinionN: (n: number) => `의견 ${n}`,
     viewOriginal: "원래 답변 보기",
     interviewee: "👫인터뷰 응답자",
-    crumbBill: "주제 상세",
+    crumbBill: "주제",
     crumbReports: "리포트 목록",
     crumbReport: "리포트",
     reportProblem: "문제 신고하기",
@@ -203,15 +202,15 @@ export const ko: Dictionary = {
     neutral: "기대와 우려",
   } as Record<string, string>,
   roles: {
-    subject_expert: "전문가",
-    work_related: "업무와 관련",
-    daily_life_affected: "생활에 영향",
+    subject_expert: "전문가·업계 관계자",
+    work_related: "업무로 관련",
+    daily_life_affected: "일상에서 사용·체험",
     general_citizen: "일반적인 관심",
   } as Record<string, string>,
   expert: {
-    heading: "이 주제의 전문가 여러분께",
+    heading: "이 분야를 잘 아시는 분께",
     title: "전문가 목록에 등록해 주세요",
-    body: "현장의 지식을 정책에 반영하기 위해, 등록해 주신 분께는 앞으로 팀 미라이가 추가 인터뷰를 부탁드릴 수 있습니다.",
+    body: "등록해 주신 분께는 앞으로 추가 인터뷰를 부탁드릴 수 있습니다.",
     register: "전문가 목록에 등록하기",
   },
 };

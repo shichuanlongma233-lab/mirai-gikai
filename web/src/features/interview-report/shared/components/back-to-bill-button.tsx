@@ -1,9 +1,12 @@
 import { Undo2 } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
-import { getBillDetailLink } from "@/features/interview-config/shared/utils/interview-links";
-import { routes } from "@/lib/routes";
+import {
+  getBillDetailLink,
+  getInterviewLPLink,
+} from "@/features/interview-config/shared/utils/interview-links";
 import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
+import { routes } from "@/lib/routes";
 
 interface BackToBillButtonProps {
   billId: string;
@@ -21,7 +24,9 @@ export function BackToBillButton({
   const href =
     from === "opinions"
       ? routes.billOpinions(billId)
-      : getBillDetailLink(billId);
+      : from === "complete"
+        ? getInterviewLPLink(billId)
+        : getBillDetailLink(billId);
   const label =
     from === "opinions" ? t.report.backToReports : t.report.backToBill;
 

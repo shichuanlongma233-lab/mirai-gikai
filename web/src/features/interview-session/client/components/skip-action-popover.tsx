@@ -13,22 +13,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 const SKIP_ACTIONS = [
-  {
-    label: "次の質問に進む",
-    icon: CircleArrowRight,
-  },
-  {
-    label: "他に言いたいことがある",
-    icon: MessageCircleMore,
-  },
+  { key: "next", icon: CircleArrowRight },
+  { key: "other", icon: MessageCircleMore },
 ] as const;
 
-const END_ACTION = {
-  label: "インタビューを終了する",
-  icon: LogOut,
-} as const;
+const END_ACTION = { key: "end", icon: LogOut } as const;
 
 interface SkipActionPopoverProps {
   onSelect: (text: string) => void;
@@ -39,6 +31,7 @@ export function SkipActionPopover({
   onSelect,
   disabled = false,
 }: SkipActionPopoverProps) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
   const handleSelect = (text: string) => {
@@ -54,7 +47,7 @@ export function SkipActionPopover({
           disabled={disabled}
           className="h-auto gap-1 p-0 text-xs font-medium leading-[1.8] text-gray-400 hover:text-gray-600 hover:bg-transparent"
         >
-          スキップする
+          {t.skip.trigger}
           <ChevronRight className="size-[18px]" />
         </Button>
       </PopoverTrigger>
@@ -68,13 +61,13 @@ export function SkipActionPopover({
           <div className="flex flex-col gap-4 px-4">
             {SKIP_ACTIONS.map((action) => (
               <Button
-                key={action.label}
+                key={action.key}
                 variant="ghost"
-                onClick={() => handleSelect(action.label)}
+                onClick={() => handleSelect(t.skip[action.key])}
                 className="h-auto justify-start gap-2 p-0 text-xs font-medium leading-[1.8] text-mirai-text hover:bg-transparent hover:opacity-70"
               >
                 <action.icon className="size-5 shrink-0" />
-                {action.label}
+                {t.skip[action.key]}
               </Button>
             ))}
           </div>
@@ -82,11 +75,11 @@ export function SkipActionPopover({
           <div className="px-4">
             <Button
               variant="ghost"
-              onClick={() => handleSelect(END_ACTION.label)}
+              onClick={() => handleSelect(t.skip[END_ACTION.key])}
               className="h-auto justify-start gap-2 p-0 text-xs font-medium leading-[1.8] text-mirai-text hover:bg-transparent hover:opacity-70"
             >
               <END_ACTION.icon className="size-5 shrink-0" />
-              {END_ACTION.label}
+              {t.skip[END_ACTION.key]}
             </Button>
           </div>
         </div>

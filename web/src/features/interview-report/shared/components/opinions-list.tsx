@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { getInterviewMessageLink } from "@/features/interview-config/shared/utils/interview-links";
 import type { ParsedOpinion as Opinion } from "../utils/format-utils";
+import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
 
 export type { Opinion };
 
@@ -12,6 +13,8 @@ interface OpinionsListProps {
   footer?: ReactNode;
   reportId?: string;
   chatLogFrom?: "complete" | "opinions";
+  /** 表示する言語の文言（省略時は日本語） */
+  t?: Dictionary;
 }
 
 export function OpinionsList({
@@ -20,6 +23,7 @@ export function OpinionsList({
   footer,
   reportId,
   chatLogFrom,
+  t = getDictionary("ja"),
 }: OpinionsListProps) {
   if (opinions.length === 0) {
     return null;
@@ -37,7 +41,7 @@ export function OpinionsList({
             <div className="flex flex-col gap-1">
               <div className="inline-flex">
                 <span className="bg-primary text-white text-xs font-bold px-1.5 py-0.5 rounded">
-                  意見{index + 1}
+                  {t.report.opinionN(index + 1)}
                 </span>
               </div>
               <p className="text-base font-bold text-gray-800">
@@ -56,7 +60,7 @@ export function OpinionsList({
                 }
                 className="text-[15px] leading-6 text-mirai-text-muted underline"
               >
-                元の回答を見る
+                {t.report.viewOriginal}
               </Link>
             )}
           </div>

@@ -157,7 +157,7 @@ export async function loadPhaseData(versionId: string): Promise<PhaseData> {
 }
 
 /**
- * 議案のバージョン一覧を取得する
+ * トピックのバージョン一覧を取得する
  */
 export async function findVersionsByBillId(billId: string) {
   const supabase = createAdminClient();
@@ -335,7 +335,7 @@ export async function findClassificationsByVersionId(versionId: string) {
 }
 
 /**
- * 議案とコンテンツを取得する
+ * トピックとコンテンツを取得する
  */
 export async function fetchBillWithContents(billId: string) {
   const supabase = createAdminClient();

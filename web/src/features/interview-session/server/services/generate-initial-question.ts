@@ -1,6 +1,6 @@
 import "server-only";
 
-import { Output, generateText, type LanguageModel } from "ai";
+import { generateText, type LanguageModel, Output } from "ai";
 import { getBillByIdAdmin } from "@/features/bills/server/loaders/get-bill-by-id-admin";
 import {
   isWithinDailyCostLimit,
@@ -10,6 +10,9 @@ import { getInterviewConfigAdmin } from "@/features/interview-config/server/load
 import { getInterviewQuestions } from "@/features/interview-config/server/loaders/get-interview-questions";
 import { DEFAULT_INTERVIEW_CHAT_MODEL } from "@/lib/ai/models";
 import { env } from "@/lib/env";
+import { buildAiLanguageInstruction } from "@/lib/i18n/ai-language-instruction";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import { interviewChatTextSchema } from "../../shared/schemas";
 import type { InterviewMessage } from "../../shared/types";
 import { overrideInitialTopicTitle } from "../../shared/utils/override-initial-topic-title";
@@ -21,6 +24,8 @@ type GenerateInitialQuestionParams = {
   billId: string;
   interviewConfigId: string;
   userId: string;
+  /** 回答者が選んだ言語。日本語以外ならその言語で質問する */
+  locale?: Locale;
   deps?: GenerateQuestionDeps;
 };
 
@@ -37,10 +42,11 @@ export async function generateInitialQuestion({
   billId,
   interviewConfigId,
   userId,
+  locale = DEFAULT_LOCALE,
   deps,
 }: GenerateInitialQuestionParams): Promise<InterviewMessage | null> {
   try {
-    // インタビュー設定と法案情報を取得
+    // インタビュー設定とトピック情報を取得
     // どちらもサーバーサイドでの生成処理のため、常にAdmin用（非公開制限なし）を使用する
     const [interviewConfig, bill, questions] = await Promise.all([
       getInterviewConfigAdmin(billId),
@@ -63,8 +69,8 @@ export async function generateInitialQuestion({
 
     // インタビュー開始の指示を追加（最初の質問にはクイックリプライとquestion_idを含める）
     const firstQuestionId = questions[0]?.id;
-    const billTitle = bill?.bill_content?.title ?? bill?.name ?? "この法案";
-    const enhancedSystemPrompt = `${systemPrompt}\n\n## 重要: これはインタビューの開始です。ユーザーからのメッセージはありません。事前定義質問の最初の質問から始めてください。挨拶は温かく丁寧に（2文程度）、「${billTitle}」についてのインタビューであることを明確に伝えた上で、すぐに最初の質問をしてください。最初の質問にクイックリプライが設定されている場合は、必ず quick_replies フィールドに含めてください。${firstQuestionId ? `最初の質問は ID: ${firstQuestionId} であり、レスポンスの question_id にこの値を含めてください。` : ""}`;
+    const billTitle = bill?.bill_content?.title ?? bill?.name ?? "このトピック";
+    const enhancedSystemPrompt = `${systemPrompt}\n\n## 重要: これはインタビューの開始です。ユーザーからのメッセージはありません。事前定義質問の最初の質問から始めてください。挨拶は温かく丁寧に（2文程度）、「${billTitle}」についてのインタビューであることを明確に伝えた上で、すぐに最初の質問をしてください。最初の質問にクイックリプライが設定されている場合は、必ず quick_replies フィールドに含めてください。${firstQuestionId ? `最初の質問は ID: ${firstQuestionId} であり、レスポンスの question_id にこの値を含めてください。` : ""}${buildAiLanguageInstruction(locale)}`;
 
     // 日次コスト制限チェック（fail-closed: エラー時も生成をブロック）
     try {
@@ -129,7 +135,10 @@ export async function generateInitialQuestion({
     }
 
     // 初回メッセージのtopic_titleを「はじめに」に強制上書き
-    const content = overrideInitialTopicTitle(generatedText);
+    const content = overrideInitialTopicTitle(
+      generatedText,
+      getDictionary(locale).chat.introTopic
+    );
 
     // 生成した質問を保存
     return await createInterviewMessage({

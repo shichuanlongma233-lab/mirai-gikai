@@ -29,7 +29,7 @@ export function registerSupplementaryResolutionTools(server: McpServer): void {
     {
       title: "附帯決議を取得",
       description:
-        "指定議案に付された附帯決議と、それに対するチームみらいの賛否を返す。未設定なら resolution=null。referenceUrl は附帯決議の内容を確認できる参考リンク、stance は for（賛成）/ against（反対）、focusPoints は附帯決議で重視した事項、reason は理由（いずれも未設定なら null）。",
+        "指定トピックに付された附帯決議と、それに対するチームみらいの賛否を返す。未設定なら resolution=null。referenceUrl は附帯決議の内容を確認できる参考リンク、stance は for（賛成）/ against（反対）、focusPoints は附帯決議で重視した事項、reason は理由（いずれも未設定なら null）。",
       inputSchema: {
         billId: z.string().uuid(),
       },
@@ -48,7 +48,7 @@ export function registerSupplementaryResolutionTools(server: McpServer): void {
     {
       title: "附帯決議を登録・更新",
       description:
-        "指定議案の附帯決議を登録する（1議案1件。既にあれば上書き）。referenceUrl（http(s) の参考リンク）と stance（for=賛成 / against=反対）は必須。focusPoints（重視した事項）と reason（理由）は任意で、省略・空文字は未設定（null）として保存する。上書き時も省略した項目は null になる。",
+        "指定トピックの附帯決議を登録する（1トピック1件。既にあれば上書き）。referenceUrl（http(s) の参考リンク）と stance（for=賛成 / against=反対）は必須。focusPoints（重視した事項）と reason（理由）は任意で、省略・空文字は未設定（null）として保存する。上書き時も省略した項目は null になる。",
       inputSchema: {
         billId: z.string().uuid(),
         ...supplementaryResolutionInputSchema.shape,
@@ -69,7 +69,7 @@ export function registerSupplementaryResolutionTools(server: McpServer): void {
     {
       title: "附帯決議を削除",
       description:
-        "指定議案の附帯決議を削除する。未設定なら ok=false, reason=not_found を返す。",
+        "指定トピックの附帯決議を削除する。未設定なら ok=false, reason=not_found を返す。",
       inputSchema: {
         billId: z.string().uuid(),
       },

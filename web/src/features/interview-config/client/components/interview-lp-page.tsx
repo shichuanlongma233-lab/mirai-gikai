@@ -1,19 +1,19 @@
-import { ArrowRight, Undo2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import ReactMarkdown from "react-markdown";
 import type { BillWithContent } from "@/features/bills/shared/types";
-import { formatEstimatedDuration } from "@/features/interview-config/shared/utils/format-estimated-duration";
-import {
-  getBillDetailLink,
-  getInterviewDisclosureLink,
-} from "@/features/interview-config/shared/utils/interview-links";
+import type { TopicIntro } from "@/features/interview-config/server/services/translate-topic-intro";
+import { getInterviewDisclosureLink } from "@/features/interview-config/shared/utils/interview-links";
 import { PastReportsSection } from "@/features/interview-report/client/components/past-reports-section";
 import type { UserReportsResult } from "@/features/interview-report/server/loaders/get-user-reports-by-interview-config";
 import { InterviewStatusBadge } from "@/features/interview-session/client/components/interview-status-badge";
 import { NewInterviewButton } from "@/features/interview-session/client/components/new-interview-button";
 import type { LatestInterviewSession } from "@/features/interview-session/server/loaders/get-latest-interview-session";
+import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
+import { LanguageSwitcher } from "@/lib/i18n/language-switcher";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import type { InterviewConfig } from "../../server/loaders/get-interview-config";
 import { InterviewActionButtons } from "./interview-action-buttons";
 
@@ -23,29 +23,19 @@ interface InterviewLPPageProps {
   sessionInfo: LatestInterviewSession | null;
   previewToken?: string;
   userReports?: UserReportsResult | null;
+  /** 回答者が選んだ言語 */
+  locale?: Locale;
+  /** 回答者の言語に翻訳したトピックの紹介 */
+  intro?: TopicIntro;
 }
 
-const FEATURES: {
-  iconSrc: string;
-  iconSize: { w: number; h: number };
-  text: string;
-}[] = [
-  {
-    iconSrc: "/icons/interview-ear.svg",
-    iconSize: { w: 21, h: 29 },
-    text: "あなたの経験や考えをAIがチャットで深掘りします",
-  },
-  {
-    iconSrc: "/icons/interview-messages.svg",
-    iconSize: { w: 33, h: 26 },
-    text: "寄せられた回答はチームみらいの政策検討に活用します",
-  },
-  {
-    iconSrc: "/icons/interview-landmark.svg",
-    iconSize: { w: 30, h: 29 },
-    text: "ご意見はチームみらいを通じて国会に届けられる可能性があります",
-  },
-];
+/** 特徴のアイコン。文言は辞書の lp.features と同じ順に対応する */
+const FEATURE_ICONS: { iconSrc: string; iconSize: { w: number; h: number } }[] =
+  [
+    { iconSrc: "/icons/interview-ear.svg", iconSize: { w: 21, h: 29 } },
+    { iconSrc: "/icons/interview-messages.svg", iconSize: { w: 33, h: 26 } },
+    { iconSrc: "/icons/interview-landmark.svg", iconSize: { w: 30, h: 29 } },
+  ];
 
 function _InterviewLPHeader({ bill }: { bill: BillWithContent }) {
   return (
@@ -67,42 +57,41 @@ function _InterviewLPHeader({ bill }: { bill: BillWithContent }) {
 }
 
 function _InterviewLPHero({
-  bill,
+  topicTitle,
   billId,
   sessionInfo,
   previewToken,
+  t,
 }: {
-  bill: BillWithContent;
+  topicTitle: string;
   billId: string;
   sessionInfo: LatestInterviewSession | null;
   previewToken?: string;
+  t: Dictionary;
 }) {
-  const billLink = getBillDetailLink(billId, previewToken);
-
   return (
     <div className="flex flex-col items-center gap-6 px-4">
+      <LanguageSwitcher className="self-end" />
       <div className="flex flex-col items-center gap-3">
         <div className="inline-flex items-center justify-center gap-2 px-6 py-1 mb-3 bg-primary rounded-2xl">
           <span className="text-[13px] font-medium text-white leading-tight">
-            当事者・有識者の方へ
+            {t.lp.badge}
           </span>
         </div>
         <h1 className="text-2xl font-bold text-center leading-[1.5]">
-          法案についてのAIインタビュー
+          {t.lp.title}
         </h1>
-        <Link href={billLink as Route}>
-          <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-white rounded-xl hover:bg-gray-50 transition-opacity cursor-pointer">
-            <span className="text-[13px] font-medium text-black leading-[1.87]">
-              {bill.bill_content?.title ?? bill.name}
-            </span>
-          </div>
-        </Link>
+        <div className="inline-flex items-center justify-center gap-2.5 px-4 py-2 bg-white rounded-xl">
+          <span className="text-[13px] font-medium text-black leading-[1.87]">
+            {topicTitle}
+          </span>
+        </div>
         {sessionInfo && <InterviewStatusBadge status={sessionInfo.status} />}
       </div>
 
       <div className="flex flex-col gap-4 w-full max-w-[334px] pl-4">
-        {FEATURES.map((feature) => (
-          <div key={feature.text} className="flex items-center gap-4">
+        {FEATURE_ICONS.map((feature, index) => (
+          <div key={feature.iconSrc} className="flex items-center gap-4">
             <div className="flex-shrink-0 w-[54px] h-[54px] bg-white rounded-[30px] flex items-center justify-center">
               <Image
                 src={feature.iconSrc}
@@ -112,7 +101,7 @@ function _InterviewLPHero({
               />
             </div>
             <span className="text-[15px] font-medium text-black leading-[1.73] whitespace-pre-line">
-              {feature.text}
+              {t.lp.features[index]}
             </span>
           </div>
         ))}
@@ -132,57 +121,50 @@ function _InterviewLPHero({
 }
 
 function _InterviewOverviewSection({
-  billId,
-  billName,
-  previewToken,
+  intro,
+  t,
 }: {
-  billId: string;
-  billName: string;
-  previewToken?: string;
+  intro: TopicIntro;
+  t: Dictionary;
 }) {
-  const billLink = getBillDetailLink(billId, previewToken);
-
   return (
     <div className="w-full max-w-[560px] mx-auto bg-white rounded-2xl p-6 space-y-4">
       <h2 className="text-[22px] font-bold text-black leading-[1.64]">
-        インタビュー概要
+        {t.lp.overviewTitle}
       </h2>
       <div className="space-y-4 text-[15px] font-normal text-black leading-[1.87]">
         <p>
-          国会で検討されている
-          <Link
-            href={billLink as Route}
-            className="text-primary underline underline-offset-2 hover:opacity-70 transition-opacity"
-          >
-            {billName}
-          </Link>
-          について、AIがあなたの考えを深掘りするチャット型インタビューです
+          {t.lp.overviewBefore}
+          <span className="font-bold">{intro.title}</span>
+          {t.lp.overviewAfter}
         </p>
-        <p>
-          いただいたご意見は、政策研究や国会での審議に活用し、みらい議会上に公開される可能性があります。
-        </p>
+        {intro.summary && <p>{intro.summary}</p>}
+        <p>{t.lp.overviewUsage}</p>
       </div>
-      <div>
-        <Link href={billLink as Route}>
-          <Button
-            variant="outline"
-            className="w-full border border-black rounded-[100px] h-[48px] px-6 font-bold text-[15px] hover:opacity-90 transition-opacity flex items-center justify-center gap-4"
-          >
-            <span>法案詳細はこちら</span>
-            <ArrowRight className="size-4" />
-          </Button>
-        </Link>
-      </div>
+      {intro.content && (
+        <details className="group rounded-xl border border-black px-6 py-3">
+          <summary className="cursor-pointer list-none font-bold text-[15px] flex items-center justify-center gap-4">
+            <span>{t.lp.billDetailLink}</span>
+            <ArrowRight className="size-4 transition-transform group-open:rotate-90" />
+          </summary>
+          <div className="prose prose-sm max-w-none mt-4">
+            <ReactMarkdown>{intro.content}</ReactMarkdown>
+          </div>
+        </details>
+      )}
     </div>
   );
 }
 
 function _InterviewDurationSection({
   estimatedDuration,
+  t,
 }: {
   estimatedDuration: number | null;
+  t: Dictionary;
 }) {
-  const durationText = formatEstimatedDuration(estimatedDuration);
+  const durationText =
+    estimatedDuration === null ? null : t.duration.minutes(estimatedDuration);
 
   if (!durationText) {
     return null;
@@ -191,7 +173,7 @@ function _InterviewDurationSection({
   return (
     <div className="w-full max-w-[560px] mx-auto bg-white rounded-2xl p-6 space-y-2">
       <h2 className="text-[22px] font-bold text-black leading-[1.64]">
-        予定時間
+        {t.lp.durationTitle}
       </h2>
       <p className="text-[22px] font-bold text-primary-accent leading-[1.64]">
         {durationText}
@@ -202,8 +184,10 @@ function _InterviewDurationSection({
 
 function _InterviewThemesSection({
   themes,
+  t,
 }: {
   themes: string[] | null | undefined;
+  t: Dictionary;
 }) {
   if (!themes || themes.length === 0) {
     return null;
@@ -212,7 +196,7 @@ function _InterviewThemesSection({
   return (
     <div className="w-full max-w-[560px] mx-auto bg-white rounded-2xl p-6 space-y-4">
       <h2 className="text-[22px] font-bold text-black leading-[1.64]">
-        質問テーマ
+        {t.lp.themesTitle}
       </h2>
       <div className="flex flex-col gap-3">
         {themes.map((theme) => (
@@ -236,20 +220,22 @@ function _InterviewThemesSection({
   );
 }
 
-function _InterviewNoticeSection() {
+function _InterviewNoticeSection({
+  t,
+  showContentLanguageNote,
+}: {
+  t: Dictionary;
+  showContentLanguageNote: boolean;
+}) {
   return (
     <div className="w-full max-w-[560px] mx-auto bg-white rounded-2xl p-6 space-y-4">
       <h2 className="text-[22px] font-bold text-black leading-[1.64]">
-        注意事項
+        {t.lp.noticeTitle}
       </h2>
       <div className="space-y-3 text-[13px] font-normal text-black leading-[1.69]">
-        <p>
-          このインタビューはAIが対話形式で実施します。
-          リラックスして、ご自身の考えや経験をお聞かせください。
-        </p>
-        <p>
-          インタビューログは公開される可能性があるため、個人情報や機密情報などセンシティブな内容については記載しないようにしてください。
-        </p>
+        <p>{t.lp.notice1}</p>
+        <p>{t.lp.notice2}</p>
+        {showContentLanguageNote && <p>{t.lp.contentLanguageNote}</p>}
       </div>
     </div>
   );
@@ -258,9 +244,11 @@ function _InterviewNoticeSection() {
 function _InterviewDisclosureLink({
   billId,
   previewToken,
+  t,
 }: {
   billId: string;
   previewToken?: string;
+  t: Dictionary;
 }) {
   const disclosureLink = getInterviewDisclosureLink(billId, previewToken);
 
@@ -270,7 +258,7 @@ function _InterviewDisclosureLink({
         href={disclosureLink as Route}
         className="text-xs text-black leading-[1.83] underline underline-offset-2 hover:opacity-70 transition-opacity"
       >
-        AIインタビューに関する情報開示
+        {t.lp.disclosureLink}
       </Link>
     </div>
   );
@@ -280,13 +268,13 @@ function _InterviewFooterActions({
   billId,
   sessionInfo,
   previewToken,
+  t,
 }: {
   billId: string;
   sessionInfo: LatestInterviewSession | null;
   previewToken?: string;
+  t: Dictionary;
 }) {
-  const billLink = getBillDetailLink(billId, previewToken);
-
   return (
     <div className="flex flex-col w-full max-w-[370px] mx-auto space-y-4">
       <InterviewActionButtons
@@ -294,12 +282,6 @@ function _InterviewFooterActions({
         sessionInfo={sessionInfo}
         previewToken={previewToken}
       />
-      <Link href={billLink as Route}>
-        <Button variant="outline" className="w-full">
-          <Undo2 className="size-5" />
-          <span>法案詳細に戻る</span>
-        </Button>
-      </Link>
     </div>
   );
 }
@@ -310,16 +292,27 @@ export function InterviewLPPage({
   sessionInfo,
   previewToken,
   userReports,
+  locale = DEFAULT_LOCALE,
+  intro,
 }: InterviewLPPageProps) {
+  const t = getDictionary(locale);
+  // 翻訳済みの紹介が渡されなければ、登録された日本語の内容を使う
+  const topicIntro: TopicIntro = intro ?? {
+    title: bill.bill_content?.title ?? bill.name,
+    summary: bill.bill_content?.summary ?? "",
+    content: bill.bill_content?.content ?? "",
+    themes: interviewConfig.themes ?? [],
+  };
   return (
     <div className="flex flex-col gap-8 pb-8 bg-mirai-light-gradient">
       <_InterviewLPHeader bill={bill} />
       <div className="flex flex-col items-center gap-8 px-4">
         <_InterviewLPHero
-          bill={bill}
+          topicTitle={topicIntro.title}
           billId={bill.id}
           sessionInfo={sessionInfo}
           previewToken={previewToken}
+          t={t}
         />
         {userReports && userReports.reports.length > 0 && (
           <PastReportsSection reports={userReports.reports} />
@@ -329,24 +322,26 @@ export function InterviewLPPage({
             <NewInterviewButton billId={bill.id} previewToken={previewToken} />
           </div>
         )}
-        <_InterviewOverviewSection
-          billId={bill.id}
-          billName={bill.bill_content?.title ?? bill.name}
-          previewToken={previewToken}
-        />
+        <_InterviewOverviewSection intro={topicIntro} t={t} />
         <_InterviewDurationSection
           estimatedDuration={interviewConfig.estimated_duration}
+          t={t}
         />
-        <_InterviewThemesSection themes={interviewConfig.themes} />
-        <_InterviewNoticeSection />
+        <_InterviewThemesSection themes={topicIntro.themes} t={t} />
+        <_InterviewNoticeSection
+          t={t}
+          showContentLanguageNote={locale !== DEFAULT_LOCALE}
+        />
         <_InterviewDisclosureLink
           billId={bill.id}
           previewToken={previewToken}
+          t={t}
         />
         <_InterviewFooterActions
           billId={bill.id}
           sessionInfo={sessionInfo}
           previewToken={previewToken}
+          t={t}
         />
       </div>
     </div>

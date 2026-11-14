@@ -30,9 +30,9 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "list_bills",
     {
-      title: "議案一覧を取得",
+      title: "トピック一覧を取得",
       description:
-        "mirai議会adminに登録されている議案を返す。各議案にdiet_session名も含む。publish_status / status でフィルタ可能。",
+        "mirai議会adminに登録されているトピックを返す。各トピックにdiet_session名も含む。publish_status / status でフィルタ可能。",
       inputSchema: {
         publish_status: z
           .enum(["draft", "published", "coming_soon"])
@@ -58,9 +58,9 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "get_bill",
     {
-      title: "議案詳細を取得",
+      title: "トピック詳細を取得",
       description:
-        "指定IDの議案本体、bill_contents（ふつう/難しい）、紐づくtag_idを返す。",
+        "指定IDのトピック本体、bill_contents（ふつう/難しい）、紐づくtag_idを返す。",
       inputSchema: {
         billId: z.string().uuid(),
       },
@@ -78,11 +78,11 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "get_bill_by_slug",
     {
-      title: "slugで議案を検索",
+      title: "slugでトピックを検索",
       description:
-        "指定slugの議案本体、bill_contents（ふつう/難しい）、紐づくtag_idを返す。slugが一致する議案がない場合はエラーになる。",
+        "指定slugのトピック本体、bill_contents（ふつう/難しい）、紐づくtag_idを返す。slugが一致するトピックがない場合はエラーになる。",
       inputSchema: {
-        slug: z.string().max(200).describe("議案のslug"),
+        slug: z.string().max(200).describe("トピックのslug"),
       },
     },
     async ({ slug }) => {
@@ -98,9 +98,9 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "create_bill",
     {
-      title: "議案を作成",
+      title: "トピックを作成",
       description:
-        "billsテーブルに新しい議案を作成する。コンテンツやタグは別ツール（update_bill_contents / update_bill_tags）で後から設定する。",
+        "billsテーブルに新しいトピックを作成する。コンテンツやタグは別ツール（update_bill_contents / update_bill_tags）で後から設定する。",
       inputSchema: billCreateSchema.shape,
     },
     async (input) => {
@@ -118,9 +118,9 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "update_bill",
     {
-      title: "議案を更新",
+      title: "トピックを更新",
       description:
-        "指定IDの議案のメタ情報（name, status, originating_house 等）を部分更新する。指定したフィールドのみが更新され、省略したフィールドは変更されない。",
+        "指定IDのトピックのメタ情報（name, status, originating_house 等）を部分更新する。指定したフィールドのみが更新され、省略したフィールドは変更されない。",
       inputSchema: {
         billId: z.string().uuid(),
         ...billUpdateSchema.partial().shape,
@@ -135,9 +135,9 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "update_bill_publish_status",
     {
-      title: "議案の公開ステータスを変更",
+      title: "トピックの公開ステータスを変更",
       description:
-        "議案の publish_status を draft / published / coming_soon に変更する。",
+        "トピックの publish_status を draft / published / coming_soon に変更する。",
       inputSchema: {
         billId: z.string().uuid(),
         publishStatus: z.enum(["draft", "published", "coming_soon"]),
@@ -153,9 +153,9 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "update_bill_contents",
     {
-      title: "議案のコンテンツを更新",
+      title: "トピックのコンテンツを更新",
       description:
-        "議案のコンテンツ（title/summary/content）を difficulty=normal / hard ごとにupsertする。空文字のみの難易度はスキップ。",
+        "トピックのコンテンツ（title/summary/content）を difficulty=normal / hard ごとにupsertする。空文字のみの難易度はスキップ。",
       inputSchema: {
         billId: z.string().uuid(),
         ...billContentsUpdateSchema.shape,
@@ -184,9 +184,9 @@ export function registerBillsTools(server: McpServer): void {
   server.registerTool(
     "update_bill_tags",
     {
-      title: "議案のタグを更新",
+      title: "トピックのタグを更新",
       description:
-        "議案に紐づくタグIDの集合を指定の集合に差し替える（差分のみinsert/delete）。",
+        "トピックに紐づくタグIDの集合を指定の集合に差し替える（差分のみinsert/delete）。",
       inputSchema: {
         billId: z.string().uuid(),
         tagIds: z.array(z.string().uuid()),

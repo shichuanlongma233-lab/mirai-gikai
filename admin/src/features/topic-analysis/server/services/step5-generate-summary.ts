@@ -33,7 +33,7 @@ export async function generateOverallSummary(
     schema: overallSummarySchema,
     prompt: `あなたは市民意見の分析レポートの全体サマリを作成します。
 
-## 法案
+## トピック
 ${billTitle}
 
 ## 分析概要

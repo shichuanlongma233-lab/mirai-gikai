@@ -35,6 +35,8 @@ import type {
 } from "@/features/interview-session/shared/types";
 import { DEFAULT_INTERVIEW_CHAT_MODEL } from "@/lib/ai/models";
 import { env } from "@/lib/env";
+import { buildAiLanguageInstruction } from "@/lib/i18n/ai-language-instruction";
+import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
 import { logger } from "@/lib/logger";
 import { buildSummaryModelMessages } from "../../shared/utils/build-summary-model-messages";
 import { ensureTrailingUserMessage } from "../../shared/utils/ensure-trailing-user-message";
@@ -82,6 +84,7 @@ export async function handleInterviewChatRequest({
   currentStage,
   isRetry = false,
   previewToken,
+  locale = DEFAULT_LOCALE,
   userId,
   deps,
 }: InterviewChatRequestParams & {
@@ -189,7 +192,7 @@ export async function handleInterviewChatRequest({
     : messages;
 
   // システムプロンプトを構築（ステージ遷移ガイダンスを含む）
-  const systemPrompt = isSummaryPhase
+  const basePrompt = isSummaryPhase
     ? buildSummarySystemPrompt({
         bill,
         interviewConfig,
@@ -204,6 +207,7 @@ export async function handleInterviewChatRequest({
         askedQuestionIds,
         remainingMinutes,
       });
+  const systemPrompt = basePrompt + buildAiLanguageInstruction(locale);
 
   logger.debug("System Prompt:", systemPrompt);
 

@@ -12,6 +12,7 @@ import {
   ConsentCheckListItem,
   OpenDataNoticeItem,
 } from "./consent-check-list-item";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface MakePublicModalProps {
   open: boolean;
@@ -26,28 +27,23 @@ export function MakePublicModal({
   onConfirm,
   isSubmitting,
 }: MakePublicModalProps) {
+  const { t } = useI18n();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="py-9">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold text-primary-accent text-center leading-relaxed">
-            インタビュー内容を
+            {t.publicStatus.makePublicLine1}
             <br />
-            公開に切り替えますか？
+            {t.publicStatus.makePublicLine2}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 mt-6">
-          <ConsentCheckListItem>
-            公開を許可した場合、今後みらい議会にあなたのご意見の要約とインタビュー原文が匿名で掲載されることがあります。
-          </ConsentCheckListItem>
+          <ConsentCheckListItem>{t.publicConsent.body1}</ConsentCheckListItem>
           <OpenDataNoticeItem />
-          <ConsentCheckListItem>
-            さまざまな意見が公開されることで、より深い法案議論が実現できます。
-          </ConsentCheckListItem>
-          <p className="text-sm text-black">
-            非公開で提出した場合でも、ご意見は党内での政策検討に活用させていただきます。
-          </p>
+          <ConsentCheckListItem>{t.publicConsent.body2}</ConsentCheckListItem>
+          <p className="text-sm text-black">{t.publicConsent.privateNote}</p>
         </div>
 
         <div className="space-y-3 mt-6">
@@ -57,7 +53,7 @@ export function MakePublicModal({
             className="w-full"
           >
             <LockOpen className="mr-2 size-5" />
-            {isSubmitting ? "変更中..." : "公開にする"}
+            {isSubmitting ? t.common.changing : t.publicStatus.makePublic}
             {!isSubmitting && <ArrowRight className="ml-2 size-5" />}
           </Button>
           <Button
@@ -66,7 +62,7 @@ export function MakePublicModal({
             disabled={isSubmitting}
             className="w-full text-gray-500"
           >
-            非公開のまま戻る
+            {t.publicStatus.keepPrivate}
           </Button>
         </div>
       </DialogContent>

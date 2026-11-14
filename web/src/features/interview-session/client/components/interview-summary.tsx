@@ -2,16 +2,14 @@
 
 import { useMemo } from "react";
 import type { InterviewReportViewData } from "@/features/interview-session/shared/schemas";
-import {
-  formatRoleLabel,
-  stanceLabels,
-} from "../../../interview-report/shared/constants";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 type Props = {
   report: InterviewReportViewData;
 };
 
 export function InterviewSummary({ report }: Props) {
+  const { t } = useI18n();
   const opinions = useMemo(() => {
     if (!report.opinions || !Array.isArray(report.opinions)) return [];
     return report.opinions as Array<{ title: string; content: string }>;
@@ -22,27 +20,34 @@ export function InterviewSummary({ report }: Props) {
       <div className="mt-2 space-y-4 text-sm">
         {report.summary && (
           <div className="font-bold space-y-1">
-            <p className="text-primary-accent">💡意見の要約</p>
+            <p className="text-primary-accent">{t.summary.opinionSummary}</p>
             <p className="whitespace-pre-wrap">{report.summary}</p>
           </div>
         )}
         {report.stance && (
           <div className="font-bold space-y-1">
-            <p className="text-primary-accent">🙋基本スタンス</p>
-            <p>{stanceLabels[report.stance] || report.stance}</p>
+            <p className="text-primary-accent">{t.summary.stance}</p>
+            <p>{t.stances[report.stance] || report.stance}</p>
           </div>
         )}
         {(report.role || report.role_description || report.role_title) && (
           <div className="space-y-4 font-bold">
             {(report.role || report.role_title) && (
               <div className="space-y-1">
-                <p className="text-primary-accent">立場</p>
-                <p>{formatRoleLabel(report.role, report.role_title)}</p>
+                <p className="text-primary-accent">{t.summary.role}</p>
+                <p>
+                  {[
+                    report.role ? t.roles[report.role] || report.role : null,
+                    report.role_title,
+                  ]
+                    .filter(Boolean)
+                    .join("・")}
+                </p>
               </div>
             )}
             {report.role_description && (
               <div className="whitespace-pre-wrap space-y-1">
-                <p className="text-primary-accent">立場の詳細</p>
+                <p className="text-primary-accent">{t.summary.roleDetail}</p>
                 <p>{report.role_description}</p>
               </div>
             )}
@@ -50,7 +55,9 @@ export function InterviewSummary({ report }: Props) {
         )}
         {opinions.length > 0 && (
           <div className="space-y-1">
-            <p className="font-bold text-primary-accent">💬主な意見</p>
+            <p className="font-bold text-primary-accent">
+              {t.summary.mainOpinions}
+            </p>
             <ul className="space-y-4">
               {opinions.map((op, index) => (
                 <li

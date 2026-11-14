@@ -5,6 +5,7 @@ import type { Route } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewSessionErrorViewProps {
   billId: string;
@@ -18,8 +19,9 @@ interface InterviewSessionErrorViewProps {
 export function InterviewSessionErrorView({
   billId,
   previewToken,
-  message = "インタビューの開始または再開中に問題が発生しました。一度インタビューのトップ画面に戻ってから、再度お試しください。",
+  message,
 }: InterviewSessionErrorViewProps) {
+  const { t } = useI18n();
   const lpLink = getInterviewLPLink(billId, previewToken);
 
   return (
@@ -30,9 +32,11 @@ export function InterviewSessionErrorView({
         </div>
         <div className="flex flex-col items-center gap-2">
           <h2 className="text-xl font-bold text-gray-800">
-            セッションを読み込めませんでした
+            {t.sessionError.title}
           </h2>
-          <p className="text-gray-600 text-center max-w-sm">{message}</p>
+          <p className="text-gray-600 text-center max-w-sm">
+            {message ?? t.sessionError.message}
+          </p>
         </div>
       </div>
 
@@ -42,7 +46,7 @@ export function InterviewSessionErrorView({
           className="flex items-center gap-2 border-black rounded-[100px] font-bold"
         >
           <ArrowLeft className="w-4 h-4" />
-          インタビュートップに戻る
+          {t.sessionError.back}
         </Button>
       </Link>
     </div>

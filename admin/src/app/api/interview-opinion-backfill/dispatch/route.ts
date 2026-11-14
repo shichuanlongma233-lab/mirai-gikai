@@ -16,7 +16,7 @@ const json = (body: unknown, status = 200) =>
 
 /**
  * 意見再抽出バックフィルの入口（Admin 手動トリガ）。
- * リクエストボディで議案スコープ（billId）・対象範囲（scope）・使用モデル（model）を指定できる。
+ * リクエストボディでトピックスコープ（billId）・対象範囲（scope）・使用モデル（model）を指定できる。
  * 対象レポートがあれば Cloud Run Job（backfill モード）を起動する。
  */
 export async function POST(request: Request) {
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     return json({ error: "Unauthorized" }, 401);
   }
 
-  // 空ボディ（旧クライアント互換）は既定値（全議案・未再抽出）として扱うが、
+  // 空ボディ（旧クライアント互換）は既定値（全トピック・未再抽出）として扱うが、
   // 壊れた JSON や非オブジェクト（null / 配列 / プリミティブ）は黙って既定実行に
   // せず 400 で弾く（意図しない起動・プロパティアクセスでの 500 を防ぐ）。
   let body: { billId?: unknown; scope?: unknown; model?: unknown } = {};
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
   try {
     // scope="all" は起動前に同期的にウォーターマークをリセットする。
     // これで pending=全件 となり、UI が即座に進捗を分母込みで把握できるため、
-    // 「既に再抽出済みの議案で pending=0 を見て早期完了表示→重複起動」を防ぐ。
+    // 「既に再抽出済みのトピックで pending=0 を見て早期完了表示→重複起動」を防ぐ。
     // worker 側も冪等に再リセットするが、ここでの同期リセットが起動直後の競合を消す。
     if (scope === "all" && billId) {
       await resetReextractionForBill(billId);

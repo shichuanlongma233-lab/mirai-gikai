@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
 import { extractBillIdFromPath } from "@/lib/page-layout-utils";
 import { routes } from "@/lib/routes";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 export function InterviewHeaderActions() {
+  const { t } = useI18n();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -28,7 +30,7 @@ export function InterviewHeaderActions() {
 
   return (
     <Button variant="outline" size="sm" onClick={handleSaveAndExit}>
-      保存して中断
+      {t.chat.saveAndPause}
     </Button>
   );
 }

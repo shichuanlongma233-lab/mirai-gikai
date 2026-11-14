@@ -16,7 +16,7 @@ describe("buildReportsByUserId", () => {
         interview_configs: {
           id: "config-1",
           bill_id: "bill-1",
-          bills: { id: "bill-1", name: "議案A" },
+          bills: { id: "bill-1", name: "トピックA" },
         },
       },
     ]);
@@ -44,7 +44,7 @@ describe("buildReportsByUserId", () => {
         interview_configs: {
           id: "config-1",
           bill_id: "bill-1",
-          bills: { id: "bill-1", name: "議案A" },
+          bills: { id: "bill-1", name: "トピックA" },
         },
       },
     ]);
@@ -56,7 +56,7 @@ describe("buildReportsByUserId", () => {
         sessionId: "session-1",
         billId: "bill-1",
         configId: "config-1",
-        billName: "議案A",
+        billName: "トピックA",
         stance: "for",
       },
     ]);
@@ -71,7 +71,7 @@ describe("buildReportsByUserId", () => {
         interview_configs: {
           id: "config-1",
           bill_id: "bill-1",
-          bills: { id: "bill-1", name: "議案A" },
+          bills: { id: "bill-1", name: "トピックA" },
         },
       },
       {
@@ -81,7 +81,7 @@ describe("buildReportsByUserId", () => {
         interview_configs: {
           id: "config-2",
           bill_id: "bill-2",
-          bills: { id: "bill-2", name: "議案B" },
+          bills: { id: "bill-2", name: "トピックB" },
         },
       },
     ]);
@@ -89,8 +89,8 @@ describe("buildReportsByUserId", () => {
     expect(result.size).toBe(1);
     const reports = result.get("user-1");
     expect(reports).toHaveLength(2);
-    expect(reports?.[0].billName).toBe("議案A");
-    expect(reports?.[1].billName).toBe("議案B");
+    expect(reports?.[0].billName).toBe("トピックA");
+    expect(reports?.[1].billName).toBe("トピックB");
   });
 
   it("異なるユーザーのレポートを分離する", () => {
@@ -102,7 +102,7 @@ describe("buildReportsByUserId", () => {
         interview_configs: {
           id: "config-1",
           bill_id: "bill-1",
-          bills: { id: "bill-1", name: "議案A" },
+          bills: { id: "bill-1", name: "トピックA" },
         },
       },
       {
@@ -112,7 +112,7 @@ describe("buildReportsByUserId", () => {
         interview_configs: {
           id: "config-1",
           bill_id: "bill-1",
-          bills: { id: "bill-1", name: "議案A" },
+          bills: { id: "bill-1", name: "トピックA" },
         },
       },
     ]);
@@ -131,7 +131,7 @@ describe("buildReportsByUserId", () => {
         interview_configs: {
           id: "config-1",
           bill_id: "bill-1",
-          bills: { id: "bill-1", name: "議案A" },
+          bills: { id: "bill-1", name: "トピックA" },
         },
       },
     ]);

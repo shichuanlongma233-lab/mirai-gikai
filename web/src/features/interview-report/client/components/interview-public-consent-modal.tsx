@@ -12,6 +12,7 @@ import {
   ConsentCheckListItem,
   OpenDataNoticeItem,
 } from "./consent-check-list-item";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewPublicConsentModalProps {
   open: boolean;
@@ -26,39 +27,34 @@ export function InterviewPublicConsentModal({
   onSubmit,
   isSubmitting,
 }: InterviewPublicConsentModalProps) {
+  const { t } = useI18n();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="py-9">
         <DialogHeader>
           <p className="text-center text-primary-accent font-bold">
-            あと少しです！
+            {t.publicConsent.almostDone}
           </p>
           <DialogTitle className="text-[22px] font-bold text-center">
-            公開設定
+            {t.publicConsent.heading}
           </DialogTitle>
           <div className="h-[1px] bg-mirai-gradient mt-4" />
         </DialogHeader>
 
         <div className="space-y-6 mt-6">
           <h3 className="text-lg font-bold text-primary-accent text-center leading-relaxed">
-            インタビュー内容の公開を
+            {t.publicConsent.questionLine1}
             <br />
-            許可しますか？
+            {t.publicConsent.questionLine2}
           </h3>
 
           <div className="space-y-4">
-            <ConsentCheckListItem>
-              公開を許可した場合、今後みらい議会にあなたのご意見の要約とインタビュー原文が匿名で掲載されることがあります。
-            </ConsentCheckListItem>
+            <ConsentCheckListItem>{t.publicConsent.body1}</ConsentCheckListItem>
             <OpenDataNoticeItem />
-            <ConsentCheckListItem>
-              さまざまな意見が公開されることで、より深い法案議論が実現できます。
-            </ConsentCheckListItem>
+            <ConsentCheckListItem>{t.publicConsent.body2}</ConsentCheckListItem>
           </div>
 
-          <p className="text-sm text-black">
-            非公開で提出した場合でも、ご意見は党内での政策検討に活用させていただきます。
-          </p>
+          <p className="text-sm text-black">{t.publicConsent.privateNote}</p>
         </div>
 
         <div className="space-y-3 mt-6">
@@ -67,7 +63,7 @@ export function InterviewPublicConsentModal({
             disabled={isSubmitting}
             className="w-full"
           >
-            {isSubmitting ? "送信中..." : "公開を許可して提出する"}
+            {isSubmitting ? t.common.sending : t.publicConsent.submitPublic}
             {!isSubmitting && <ArrowRight className="ml-2 size-5" />}
           </Button>
           <Button
@@ -76,7 +72,7 @@ export function InterviewPublicConsentModal({
             disabled={isSubmitting}
             className="w-full text-gray-500"
           >
-            非公開で提出する
+            {t.publicConsent.submitPrivate}
           </Button>
         </div>
       </DialogContent>

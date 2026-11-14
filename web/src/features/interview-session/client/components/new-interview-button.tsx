@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { getInterviewChatLink } from "@/features/interview-config/shared/utils/interview-links";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface NewInterviewButtonProps {
   billId: string;
@@ -17,6 +18,7 @@ export function NewInterviewButton({
   billId,
   previewToken,
 }: NewInterviewButtonProps) {
+  const { t } = useI18n();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,7 +46,7 @@ export function NewInterviewButton({
           className="object-contain"
         />
       )}
-      <span>{isLoading ? "処理中..." : "もう一度新たに回答する"}</span>
+      <span>{isLoading ? t.common.processing : t.lp.newAnswer}</span>
       {!isLoading && <ArrowRight className="size-4" />}
     </Button>
   );

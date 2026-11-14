@@ -10,7 +10,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
  */
 
 /** Gemini 以外のモデルが指定されたときに使う既定のモデル */
-export const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
+export const DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
 
 type ProviderEnv = {
   GOOGLE_GENERATIVE_AI_API_KEY?: string;
@@ -20,12 +20,10 @@ type ProviderEnv = {
 
 /**
  * Gateway 形式のモデル ID を Gemini のモデル ID にする。
- * "google/gemini-3-flash" → "gemini-3-flash"、それ以外（OpenAI・Anthropic 等）→ 既定モデル。
+ * コストと提供終了リスクを抑えるため、Gateway 形式の指定（"google/..." を含む）は
+ * すべて既定モデルに寄せる。"gemini-" で始まる素の ID だけはそのまま使う。
  */
 export function toGeminiModelId(modelId: string, fallbackModel: string): string {
-  if (modelId.startsWith("google/")) {
-    return modelId.slice("google/".length);
-  }
   if (modelId.startsWith("gemini-")) {
     return modelId;
   }

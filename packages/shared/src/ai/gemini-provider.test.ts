@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { shouldUseGemini, toGeminiModelId } from "./gemini-provider";
+import {
+  shouldUseGemini,
+  toGeminiModelId,
+  toThinkingLevel,
+  withDefaultThinking,
+} from "./gemini-provider";
 
 describe("toGeminiModelId", () => {
   it("Gateway 形式の Gemini 指定も既定モデルに寄せる", () => {
@@ -36,5 +41,34 @@ describe("shouldUseGemini", () => {
         AI_PROVIDER: "gateway",
       })
     ).toBe(false);
+  });
+});
+
+describe("withDefaultThinking", () => {
+  it("思考設定が無ければ既定レベルを足す", () => {
+    const result = withDefaultThinking(
+      { prompt: "x", providerOptions: { google: { foo: 1 } } },
+      "low"
+    );
+    expect(result.providerOptions?.google).toEqual({
+      foo: 1,
+      thinkingConfig: { thinkingLevel: "low" },
+    });
+    expect(result.prompt).toBe("x");
+  });
+
+  it("呼び出し側の思考設定は上書きしない", () => {
+    const options = {
+      providerOptions: { google: { thinkingConfig: { thinkingBudget: 0 } } },
+    };
+    expect(withDefaultThinking(options, "low")).toBe(options);
+  });
+});
+
+describe("toThinkingLevel", () => {
+  it("不正値・未設定なら low", () => {
+    expect(toThinkingLevel(undefined)).toBe("low");
+    expect(toThinkingLevel("max")).toBe("low");
+    expect(toThinkingLevel(" minimal ")).toBe("minimal");
   });
 });

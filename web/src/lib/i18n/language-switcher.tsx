@@ -24,7 +24,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         onChange={(e) => {
           const next = e.target.value;
           if (!isLocale(next)) return;
-          writeLocaleCookie(next);
+          writeLocaleCookie(next, { chosen: true });
           startTransition(() => router.refresh());
         }}
         className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm"

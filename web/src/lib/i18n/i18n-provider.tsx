@@ -10,6 +10,7 @@ import {
 import { type Dictionary, getDictionary } from "./get-dictionary";
 import {
   DEFAULT_LOCALE,
+  LOCALE_CHOSEN_COOKIE,
   LOCALE_COOKIE,
   type Locale,
   resolveLocale,
@@ -45,10 +46,20 @@ export function I18nProvider({
 /** 1年保存 */
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-/** 選んだ言語を Cookie に保存する */
-export function writeLocaleCookie(locale: Locale) {
+/**
+ * 言語を Cookie に保存する。
+ * chosen: 回答者が自分で選んだときは true（以降、最初の言語選択画面を出さない）
+ */
+export function writeLocaleCookie(
+  locale: Locale,
+  { chosen = false }: { chosen?: boolean } = {}
+) {
   // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API は Safari の対応が限られるため
   document.cookie = `${LOCALE_COOKIE}=${locale}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
+  if (chosen) {
+    // biome-ignore lint/suspicious/noDocumentCookie: 同上
+    document.cookie = `${LOCALE_CHOSEN_COOKIE}=1; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
+  }
 }
 
 function readCookieLocale(): Locale {

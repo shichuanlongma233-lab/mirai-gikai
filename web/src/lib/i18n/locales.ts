@@ -11,6 +11,9 @@ export const DEFAULT_LOCALE: Locale = "ja";
 /** 選んだ言語を保存する Cookie 名 */
 export const LOCALE_COOKIE = "mirai_locale";
 
+/** 回答者が自分で言語を選んだことを覚えておく Cookie 名（最初の言語選択画面を出すかどうかに使う） */
+export const LOCALE_CHOSEN_COOKIE = "mirai_locale_chosen";
+
 /** 言語切り替えメニューに出す名前（各言語の自称） */
 export const LOCALE_LABELS: Record<Locale, string> = {
   ja: "日本語",

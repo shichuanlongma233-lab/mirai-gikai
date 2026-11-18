@@ -7,7 +7,8 @@ import { translateTopicIntro } from "@/features/interview-config/server/services
 import { getUserReportsByInterviewConfig } from "@/features/interview-report/server/loaders/get-user-reports-by-interview-config";
 import { getLatestInterviewSession } from "@/features/interview-session/server/loaders/get-latest-interview-session";
 import { env } from "@/lib/env";
-import { getRequestLocale } from "@/lib/i18n/server";
+import { LanguageChooser } from "@/lib/i18n/language-chooser";
+import { getRequestLocale, hasChosenLocale } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -82,7 +83,27 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
     getUserReportsByInterviewConfig(interviewConfig.id),
   ]);
 
-  const locale = await getRequestLocale();
+  const [locale, chosen] = await Promise.all([
+    getRequestLocale(),
+    hasChosenLocale(),
+  ]);
+
+  // 最初に開いたときは言語選択だけを出す（選ぶ前に翻訳しない）
+  if (!chosen) {
+    return (
+      <>
+        <LanguageChooser suggested={locale} />
+        <InterviewLPPage
+          locale={locale}
+          bill={bill}
+          interviewConfig={interviewConfig}
+          sessionInfo={latestSession}
+          userReports={userReports}
+        />
+      </>
+    );
+  }
+
   const { intro } = await translateTopicIntro(
     {
       title: bill.bill_content?.title ?? bill.name,

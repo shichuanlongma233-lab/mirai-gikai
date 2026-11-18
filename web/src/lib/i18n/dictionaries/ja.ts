@@ -6,6 +6,8 @@ export const ja = {
   common: {
     aiInterview: "AIインタビュー",
     openMenu: "メニューを開く",
+    forkDisclaimer: "これは政党チームみらいが運営しているものではありません",
+    sourceCode: "ソースコード（GitHub）",
     processing: "処理中...",
     sending: "送信中...",
     changing: "変更中...",

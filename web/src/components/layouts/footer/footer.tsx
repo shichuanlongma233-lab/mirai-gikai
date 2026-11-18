@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n/i18n-provider";
+import { ForkNotice } from "../fork-notice";
 import { isInterviewPage } from "@/lib/page-layout-utils";
 import { routes } from "@/lib/routes";
 import { policyLinks, primaryLinks } from "./footer.config";
@@ -95,9 +96,13 @@ function FooterPolicies() {
 }
 
 function FooterCopyright() {
+  const { t } = useI18n();
   return (
-    <div className="text-center text-sm font-medium text-slate-800">
-      © TENJO KANAZAWA
+    <div className="flex flex-col items-center gap-4">
+      <ForkNotice t={t} className="text-slate-800" />
+      <div className="text-center text-sm font-medium text-slate-800">
+        © TENJO KANAZAWA
+      </div>
     </div>
   );
 }

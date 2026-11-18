@@ -8,10 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  ConsentCheckListItem,
-  OpenDataNoticeItem,
-} from "./consent-check-list-item";
+import { ConsentCheckListItem } from "./consent-check-list-item";
 import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewPublicConsentModalProps {
@@ -50,7 +47,6 @@ export function InterviewPublicConsentModal({
 
           <div className="space-y-4">
             <ConsentCheckListItem>{t.publicConsent.body1}</ConsentCheckListItem>
-            <OpenDataNoticeItem />
             <ConsentCheckListItem>{t.publicConsent.body2}</ConsentCheckListItem>
           </div>
 

@@ -3,6 +3,7 @@ import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { ForkNotice } from "@/components/layouts/fork-notice";
 import type { BillWithContent } from "@/features/bills/shared/types";
 import type { TopicIntro } from "@/features/interview-config/server/services/translate-topic-intro";
 import { getInterviewDisclosureLink } from "@/features/interview-config/shared/utils/interview-links";
@@ -343,6 +344,7 @@ export function InterviewLPPage({
           previewToken={previewToken}
           t={t}
         />
+        <ForkNotice t={t} className="pt-4" />
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 import { MakePublicModal } from "./make-public-modal";
 
 describe("MakePublicModal", () => {
-  it("オープンデータ提供の告知を表示し、確定で onConfirm を呼ぶ", async () => {
+  it("オープンデータ提供の告知を出さず、確定で onConfirm を呼ぶ", async () => {
     const user = userEvent.setup();
     const onConfirm = vi.fn();
     render(
@@ -18,9 +18,7 @@ describe("MakePublicModal", () => {
       />
     );
 
-    expect(
-      screen.getByText(/第三者にオープンデータとして提供されることがあります/)
-    ).toBeInTheDocument();
+    expect(screen.queryByText(/オープンデータ/)).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /公開にする/ }));
     expect(onConfirm).toHaveBeenCalled();

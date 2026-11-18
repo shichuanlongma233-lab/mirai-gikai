@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   isDevRoute,
+  isOpenDataRoute,
   isHtmlAcceptHeader,
   isValidDifficultyLevel,
   shouldApplyDifficultyCookie,
@@ -80,5 +81,20 @@ describe("isDevRoute", () => {
   it("その他のパスは対象外", () => {
     expect(isDevRoute("/")).toBe(false);
     expect(isDevRoute("/terms")).toBe(false);
+  });
+});
+
+describe("isOpenDataRoute", () => {
+  it("オープンデータAPIと関連ページを対象にする", () => {
+    expect(isOpenDataRoute("/api/open-data/bills")).toBe(true);
+    expect(isOpenDataRoute("/api/open-data/interviews/open")).toBe(true);
+    expect(isOpenDataRoute("/developers/open-data-api")).toBe(true);
+    expect(isOpenDataRoute("/developers/interview-data-terms")).toBe(true);
+  });
+
+  it("開発者向けトップや他のページは対象外", () => {
+    expect(isOpenDataRoute("/developers")).toBe(false);
+    expect(isOpenDataRoute("/api/interview/complete")).toBe(false);
+    expect(isOpenDataRoute("/privacy")).toBe(false);
   });
 });

@@ -4,6 +4,9 @@ export const ko: Dictionary = {
   common: {
     aiInterview: "AI 인터뷰",
     openMenu: "메뉴 열기",
+    forkDisclaimer:
+      "이 서비스는 정당 팀 미라이(Team Mirai)가 운영하는 것이 아닙니다.",
+    sourceCode: "소스 코드 (GitHub)",
     processing: "처리 중...",
     sending: "전송 중...",
     changing: "변경 중...",

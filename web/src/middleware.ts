@@ -21,7 +21,31 @@ export function isDevRoute(pathname: string): boolean {
   return pathname === "/dev" || pathname.startsWith("/dev/");
 }
 
+/**
+ * オープンデータ（回答の第三者提供）関連のルートか判定する。
+ * TENJOでは市場調査の回答を誰でも取得できる形では出さないため、
+ * OPEN_DATA_ENABLED=true のときだけ開く。
+ */
+export function isOpenDataRoute(pathname: string): boolean {
+  return (
+    pathname === "/api/open-data" ||
+    pathname.startsWith("/api/open-data/") ||
+    pathname.startsWith("/developers/open-data-api") ||
+    pathname.startsWith("/developers/interview-data-terms")
+  );
+}
+
 export async function middleware(request: NextRequest) {
+  if (
+    isOpenDataRoute(request.nextUrl.pathname) &&
+    process.env.OPEN_DATA_ENABLED !== "true"
+  ) {
+    if (request.nextUrl.pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Not Found" }, { status: 404 });
+    }
+    return NextResponse.rewrite(new URL("/not-found", request.url));
+  }
+
   // /dev routes: 本番では404、開発ではauthスキップ
   if (isDevRoute(request.nextUrl.pathname)) {
     if (process.env.NODE_ENV !== "development") {

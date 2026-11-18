@@ -4,6 +4,9 @@ export const en: Dictionary = {
   common: {
     aiInterview: "AI interview",
     openMenu: "Open menu",
+    forkDisclaimer:
+      "This service is not operated by the political party Team Mirai.",
+    sourceCode: "Source code (GitHub)",
     processing: "Processing...",
     sending: "Sending...",
     changing: "Updating...",

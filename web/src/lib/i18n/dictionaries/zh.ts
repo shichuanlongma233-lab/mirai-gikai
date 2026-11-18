@@ -4,6 +4,8 @@ export const zh: Dictionary = {
   common: {
     aiInterview: "AI访谈",
     openMenu: "打开菜单",
+    forkDisclaimer: "本服务并非由政党“未来团队”（Team Mirai）运营。",
+    sourceCode: "源代码（GitHub）",
     processing: "处理中...",
     sending: "发送中...",
     changing: "更改中...",

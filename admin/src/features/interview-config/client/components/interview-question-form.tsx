@@ -109,7 +109,7 @@ export function InterviewQuestionForm({
           id={quickRepliesId}
           value={quickRepliesText}
           onChange={(e) => setQuickRepliesText(e.target.value)}
-          placeholder="クイックリプライを改行区切りで入力（例：&#10;賛成&#10;反対&#10;どちらとも言えない）"
+          placeholder="クイックリプライを改行区切りで入力（例：&#10;ぜひ買いたい&#10;少し興味がある&#10;あまり興味がない）"
           className="min-h-[80px] resize-y"
         />
         <p className="text-sm text-gray-500">

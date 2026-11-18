@@ -38,20 +38,20 @@ const FEATURE_ICONS: { iconSrc: string; iconSize: { w: number; h: number } }[] =
   ];
 
 function _InterviewLPHeader({ bill }: { bill: BillWithContent }) {
+  // 画像が無いときは灰色の箱を出さず、ヘッダーに隠れない分の余白だけ取る
+  if (!bill.thumbnail_url) {
+    return <div className="h-20 md:h-6" aria-hidden />;
+  }
   return (
     <div className="relative w-full h-50 md:h-80">
-      {bill.thumbnail_url ? (
-        <Image
-          src={bill.thumbnail_url}
-          alt={bill.bill_content?.title ?? bill.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          priority
-        />
-      ) : (
-        <div className="w-full h-full bg-gray-100" />
-      )}
+      <Image
+        src={bill.thumbnail_url}
+        alt={bill.bill_content?.title ?? bill.name}
+        fill
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        priority
+      />
     </div>
   );
 }

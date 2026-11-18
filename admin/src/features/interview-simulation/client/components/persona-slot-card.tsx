@@ -119,8 +119,8 @@ export function PersonaSlotCard({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="auto">自動判定</SelectItem>
-                <SelectItem value="for">賛成</SelectItem>
-                <SelectItem value="against">反対</SelectItem>
+                <SelectItem value="for">好意的</SelectItem>
+                <SelectItem value="against">否定的</SelectItem>
                 <SelectItem value="neutral">中立</SelectItem>
               </SelectContent>
             </Select>

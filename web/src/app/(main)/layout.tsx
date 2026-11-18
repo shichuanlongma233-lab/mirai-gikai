@@ -6,15 +6,19 @@ import { AuthGate } from "@/components/layouts/auth-gate";
 import { Footer } from "@/components/layouts/footer/footer";
 import { MainLayout } from "@/components/layouts/main-layout";
 import { env } from "@/lib/env";
+import { I18nProvider } from "@/lib/i18n/i18n-provider";
+import { getRequestLocale } from "@/lib/i18n/server";
 import { RubyfulInitializer } from "@/lib/rubyful";
 
-export default function MainGroupLayout({
+export default async function MainGroupLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
+  // ヘッダー・フッターも最初の描画から回答者の言語で出す（ちらつき防止）
+  const locale = await getRequestLocale();
   return (
-    <>
+    <I18nProvider locale={locale}>
       <SpeedInsights />
       <GoogleAnalytics gaId={env.analytics.gaTrackingId ?? ""} />
       <RubyfulInitializer />
@@ -27,6 +31,6 @@ export default function MainGroupLayout({
         </main>
         <Footer />
       </MainLayout>
-    </>
+    </I18nProvider>
   );
 }

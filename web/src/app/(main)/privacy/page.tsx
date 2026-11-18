@@ -103,7 +103,8 @@ export default function PrivacyPage() {
           <LegalSectionTitle>3. AI事業者への提供</LegalSectionTitle>
           <LegalParagraph>
             本サービスは、質問の作成、回答への応答、要約、翻訳のために、外部のAIサービス（Google
-            LLCのGeminiなど）を利用します。そのため、回答やチャットの内容がこれらの事業者に送信されます。運営者は、送信した内容がAIの学習に使われない条件の契約やプランで利用するよう努めます。
+            LLCのGeminiなど）を利用します。そのため、回答やチャットの内容がこれらの事業者に送信されます。本サービスはテスト版で、GoogleのGemini
+            APIを無料枠で利用しています。無料枠では、送信された内容がGoogleのサービス改善（AIの学習を含みます）に使われ、Googleの担当者が内容を確認することがあります。回答には、個人を特定できる情報や秘密にしたい情報を書かないでください。
           </LegalParagraph>
         </section>
 
@@ -148,9 +149,11 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <LegalSectionTitle>8. 開示・訂正・削除のご請求</LegalSectionTitle>
+          <LegalSectionTitle>
+            8. 開示・訂正・削除のご請求について
+          </LegalSectionTitle>
           <LegalParagraph>
-            ご自身の情報の開示、訂正、利用停止、削除を希望される場合は、下記の窓口までご連絡ください。匿名で回答された場合は、ご本人であることを確認できないため、対応できないことがあります。
+            本サービスはテスト版のため、個別のお問い合わせ窓口は設けていません。回答は匿名で受け付けており、ご本人であることを確認できないため、開示、訂正、削除のご請求には対応できないことがあります。
           </LegalParagraph>
         </section>
 
@@ -162,12 +165,12 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-4">
-          <LegalSectionTitle>10. お問い合わせ窓口</LegalSectionTitle>
+          <LegalSectionTitle>10. 運営者</LegalSectionTitle>
           <LegalParagraph>
             {OPERATOR.name}
             <br />
             {OPERATOR.contact ||
-              "連絡先は準備中です。決まり次第、このページに掲載します。"}
+              "テスト版のため、お問い合わせ窓口はありません。"}
           </LegalParagraph>
         </section>
       </Container>

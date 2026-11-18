@@ -4,7 +4,7 @@
  */
 export const OPERATOR = {
   name: "TENJO KANAZAWA",
-  /** 問い合わせ先。空なら「準備中」と表示する */
+  /** 問い合わせ先。テスト版のため空（空なら「窓口なし」と表示する） */
   contact: "",
   court: "金沢地方裁判所",
   retention: "2年",

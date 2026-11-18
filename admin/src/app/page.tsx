@@ -6,9 +6,9 @@ import { routes } from "@/lib/routes";
 export default async function HomePage() {
   const admin = await getCurrentAdmin();
 
-  // 管理者としてログイン済みの場合はダッシュボードへ
+  // 管理者としてログイン済みの場合は、まずレポート集計を見せる
   if (admin) {
-    redirect(routes.bills());
+    redirect(routes.insights());
   }
 
   // 未ログインまたは管理者でない場合はログイン画面へ

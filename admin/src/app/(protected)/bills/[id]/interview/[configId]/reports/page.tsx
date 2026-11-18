@@ -1,4 +1,4 @@
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, LayoutDashboard, Search } from "lucide-react";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -90,6 +90,12 @@ export default async function ReportsPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button asChild>
+            <Link href={routes.billInsights(id, configId) as Route}>
+              <LayoutDashboard className="h-4 w-4" />
+              集計ダッシュボード
+            </Link>
+          </Button>
           <Button asChild variant="outline">
             <Link href={routes.billReportsSearch(id, configId) as Route}>
               <Search className="h-4 w-4" />

@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { routes } from "@/lib/routes";
-import { BarChart3, Sparkles } from "lucide-react";
+import { BarChart3, LayoutDashboard, Sparkles } from "lucide-react";
 import type { InterviewConfigWithBill } from "@/features/interview-config/server/repositories/interview-config-repository";
 import { getModeLabel } from "@/features/interview-config/shared/utils/get-mode-label";
 
@@ -93,6 +93,24 @@ export function AllInterviewConfigList({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
+                      <Button
+                        asChild
+                        variant="ghost"
+                        size="sm"
+                        className="gap-1"
+                      >
+                        <Link
+                          href={
+                            routes.billInsights(
+                              config.bill_id,
+                              config.id
+                            ) as Route
+                          }
+                        >
+                          <LayoutDashboard className="h-4 w-4" />
+                          集計
+                        </Link>
+                      </Button>
                       <Button
                         asChild
                         variant="ghost"

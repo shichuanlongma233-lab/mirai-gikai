@@ -6,6 +6,7 @@ import {
   Download,
   FileUp,
   FolderInput,
+  LayoutDashboard,
   Pencil,
   Plus,
   Sparkles,
@@ -279,6 +280,14 @@ export function InterviewConfigList({
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">
+                        <Link
+                          href={routes.billInsights(billId, config.id) as Route}
+                        >
+                          <Button variant="ghost" size="sm" className="gap-1">
+                            <LayoutDashboard className="h-4 w-4" />
+                            集計
+                          </Button>
+                        </Link>
                         <Link
                           href={routes.billReports(billId, config.id) as Route}
                         >

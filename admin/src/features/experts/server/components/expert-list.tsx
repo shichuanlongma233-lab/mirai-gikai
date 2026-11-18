@@ -21,11 +21,11 @@ export function ExpertList({ experts }: ExpertListProps) {
   return (
     <div>
       <h2 className="text-lg font-semibold mb-4">
-        有識者一覧 ({experts.length}件)
+        回答者一覧 ({experts.length}件)
       </h2>
 
       {experts.length === 0 ? (
-        <p className="text-gray-500">登録された有識者がいません</p>
+        <p className="text-gray-500">連絡先を残した回答者はまだいません</p>
       ) : (
         <div className="rounded-md border bg-white">
           <Table>

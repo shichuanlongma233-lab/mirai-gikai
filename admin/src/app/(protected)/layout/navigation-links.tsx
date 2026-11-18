@@ -10,11 +10,10 @@ const navigationLinks = [
   // 市場調査の結果を最初に見せる（ログイン後もここが開く）
   { href: routes.insights(), label: "レポート集計" },
   { href: routes.bills(), label: "トピック管理" },
-  // 国会会期管理は市場調査では使わないためメニューに出さない（URL直アクセスのみ）。
-  { href: routes.tags(), label: "タグ管理" },
+  // 国会会期管理・タグ管理・全トピック横断の意見分析は市場調査では使わないため
+  // メニューに出さない（URL直アクセスのみ。データは残っている）。
   { href: routes.interviews(), label: "インタビュー" },
-  // 全トピック横断の意見分析(/user-topic-analysis)は隠し機能のためヘッダーに出さない（URL直アクセスのみ）。
-  { href: routes.experts(), label: "有識者" },
+  { href: routes.experts(), label: "連絡先を残した回答者" },
   { href: routes.admins(), label: "管理者" },
 ];
 

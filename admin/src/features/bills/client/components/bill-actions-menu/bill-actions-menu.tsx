@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  ChartNetwork,
   Edit,
   FileText,
-  Flag,
   type LucideIcon,
   MessageCircle,
   MoreVertical,
@@ -74,18 +72,7 @@ export function BillActionsMenu({ billId, billName }: BillActionsMenuProps) {
           >
             インタビュー設定
           </BillActionMenuLink>
-          <BillActionMenuLink
-            href={routes.billUserTopicAnalysis(billId) as Route}
-            icon={ChartNetwork}
-          >
-            トピック分析
-          </BillActionMenuLink>
-          <BillActionMenuLink
-            href={routes.billArticleReports(billId) as Route}
-            icon={Flag}
-          >
-            誤り報告
-          </BillActionMenuLink>
+          {/* トピック分析は「レポート集計」に、誤り報告は使わなくなったため出さない */}
           <div className="my-1 border-t" />
           <DuplicateBillButton billId={billId} billName={billName} />
           <DeleteBillButton billId={billId} billName={billName} />

@@ -29,7 +29,7 @@ export const ko: Dictionary = {
     themesTitle: "질문 테마",
     noticeTitle: "유의 사항",
     notice1:
-      "이 인터뷰는 AI가 대화 형식으로 진행합니다. 편안한 마음으로 여러분의 생각과 경험을 들려주세요.",
+      "이 인터뷰는 AI가 대화 형식으로 진행합니다. 편안한 마음으로 여러분의 생각과 경험을 들려주세요. 상품이나 내용에 대해 궁금한 점이 있으면 언제든지 AI에게 질문할 수 있습니다.",
     notice2:
       "인터뷰 기록이 공개될 수 있으므로 개인정보나 기밀정보 등 민감한 내용은 적지 마세요.",
     disclosureLink: "AI 인터뷰에 관한 정보 공개(일본어)",
@@ -67,7 +67,7 @@ export const ko: Dictionary = {
     introTitle: "AI 인터뷰를 시작합니다.",
     introBody: "여러분의 솔직한 감상을 들려주세요.",
     thinking: "생각 중...",
-    placeholder: "AI의 질문에 답하기",
+    placeholder: "AI 질문에 답하거나 상품에 대해 물어보세요",
     sendAlt: "보내기",
     privacyWarning: "개인정보나 기밀정보는 입력하지 마세요",
     timeUpMessage: "예상 시간이 되었습니다. 리포트 작성으로 넘어가고 싶습니다.",

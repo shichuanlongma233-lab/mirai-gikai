@@ -26,7 +26,8 @@ export const zh: Dictionary = {
     durationTitle: "预计时间",
     themesTitle: "访谈主题",
     noticeTitle: "注意事项",
-    notice1: "本访谈由AI以对话形式进行。请放松，分享您自己的想法和经历。",
+    notice1:
+      "本访谈由AI以对话形式进行。请放松，分享您自己的想法和经历。如果对商品或内容有任何疑问，可以随时向AI提问。",
     notice2: "访谈记录可能会被公开，请勿填写个人信息、机密信息等敏感内容。",
     disclosureLink: "关于AI访谈的信息公开（日语）",
     backToBill: "返回介绍",
@@ -62,7 +63,7 @@ export const zh: Dictionary = {
     introTitle: "AI访谈即将开始。",
     introBody: "请分享您的真实感受。",
     thinking: "思考中...",
-    placeholder: "回答AI的问题",
+    placeholder: "回答AI的问题，也可以随时提问",
     sendAlt: "发送",
     privacyWarning: "请勿填写个人信息或机密信息",
     timeUpMessage: "已到预计时间。我想进入报告生成环节。",

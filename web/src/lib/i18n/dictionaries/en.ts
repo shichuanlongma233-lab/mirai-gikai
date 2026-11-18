@@ -29,7 +29,7 @@ export const en: Dictionary = {
     themesTitle: "Interview themes",
     noticeTitle: "Please note",
     notice1:
-      "This interview is conducted by an AI in a conversational format. Relax and share your own thoughts and experiences.",
+      "This interview is conducted by an AI in a conversational format. Relax and share your own thoughts and experiences. If anything about the product is unclear, you can ask the AI at any time.",
     notice2:
       "Interview logs may be published, so please do not include personal, confidential or other sensitive information.",
     disclosureLink: "Disclosure about the AI interview (Japanese)",
@@ -68,7 +68,7 @@ export const en: Dictionary = {
     introTitle: "Starting the AI interview.",
     introBody: "Please share your honest impressions.",
     thinking: "Thinking...",
-    placeholder: "Answer the AI's question",
+    placeholder: "Answer the AI, or ask anything about the product",
     sendAlt: "Send",
     privacyWarning: "Please do not enter personal or confidential information",
     timeUpMessage:

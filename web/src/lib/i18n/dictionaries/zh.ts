@@ -24,9 +24,11 @@ export const zh: Dictionary = {
     title: "TENJO访谈",
     lead: "AI将请您谈谈对日本文化和商品的真实感受。请选择您感兴趣的话题。",
     empty: "目前没有正在接受回答的话题。",
+    listTitle: (n: number) => `正在进行的访谈（${n}个）`,
     start: "参加访谈",
   },
   lp: {
+    backToList: "← 返回访谈列表",
     badge: "致海外的朋友们",
     title: "关于日本文化的AI访谈",
     features: [

@@ -13,6 +13,7 @@ import { InterviewStatusBadge } from "@/features/interview-session/client/compon
 import { NewInterviewButton } from "@/features/interview-session/client/components/new-interview-button";
 import type { LatestInterviewSession } from "@/features/interview-session/server/loaders/get-latest-interview-session";
 import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
+import { routes } from "@/lib/routes";
 import { LanguageSwitcher } from "@/lib/i18n/language-switcher";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import type { InterviewConfig } from "../../server/loaders/get-interview-config";
@@ -308,6 +309,16 @@ export function InterviewLPPage({
     <div className="flex flex-col gap-8 pb-8 bg-mirai-light-gradient">
       <_InterviewLPHeader bill={bill} />
       <div className="flex flex-col items-center gap-8 px-4">
+        {!previewToken && (
+          <div className="w-full max-w-[560px]">
+            <Link
+              href={routes.home() as Route}
+              className="text-sm font-medium text-primary-accent hover:underline"
+            >
+              {t.lp.backToList}
+            </Link>
+          </div>
+        )}
         <_InterviewLPHero
           topicTitle={topicIntro.title}
           billId={bill.id}

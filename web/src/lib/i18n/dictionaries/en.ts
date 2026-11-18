@@ -25,9 +25,11 @@ export const en: Dictionary = {
     title: "TENJO Interview",
     lead: "An AI asks for your honest impressions of Japanese culture and products. Choose a topic you are interested in.",
     empty: "There are no topics open for answers right now.",
+    listTitle: (n: number) => `Open interviews (${n})`,
     start: "Answer the interview",
   },
   lp: {
+    backToList: "← All open interviews",
     badge: "For people around the world",
     title: "AI interview about Japanese culture",
     features: [

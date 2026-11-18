@@ -25,9 +25,11 @@ export const ko: Dictionary = {
     title: "TENJO 인터뷰",
     lead: "AI가 일본 문화와 상품에 대한 솔직한 감상을 여쭙니다. 관심 있는 주제를 선택해 주세요.",
     empty: "현재 응답을 받고 있는 주제가 없습니다.",
+    listTitle: (n: number) => `진행 중인 인터뷰 (${n}건)`,
     start: "인터뷰에 답하기",
   },
   lp: {
+    backToList: "← 인터뷰 목록으로",
     badge: "해외의 여러분께",
     title: "일본 문화에 관한 AI 인터뷰",
     features: [

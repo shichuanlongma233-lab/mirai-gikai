@@ -26,9 +26,11 @@ export const ja = {
     title: "TENJOインタビュー",
     lead: "日本の文化や商品について、AIがあなたの率直な感想を伺います。気になるトピックを選んでください。",
     empty: "いま回答を受け付けているトピックはありません。",
+    listTitle: (n: number) => `公開中のインタビュー（${n}件）`,
     start: "インタビューに答える",
   },
   lp: {
+    backToList: "← 公開中のインタビュー一覧へ",
     badge: "海外の皆さまへ",
     title: "日本の文化についてのAIインタビュー",
     features: [

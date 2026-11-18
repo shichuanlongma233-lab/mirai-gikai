@@ -13,7 +13,12 @@ import { findBillsWithPublicInterview } from "../repositories/bill-repository";
  * トップの「AIインタビュー受付中」セクションに使う。注目やタグ別と違って
  * 会期でも掲載タグでも絞らないので、受付中のものは漏れなくここに並ぶ。
  */
-export async function getInterviewOpenBills(): Promise<BillWithContent[]> {
+/** 受付中の議案。一覧カードに出す予定時間（分）も持つ */
+export type InterviewOpenBill = BillWithContent & {
+  estimatedDuration: number | null;
+};
+
+export async function getInterviewOpenBills(): Promise<InterviewOpenBill[]> {
   // キャッシュ外でcookiesにアクセス
   const difficultyLevel = await getDifficultyLevel();
 
@@ -29,14 +34,16 @@ export async function getInterviewOpenBills(): Promise<BillWithContent[]> {
 }
 
 const _getCachedInterviewOpenBills = unstable_cache(
-  async (difficultyLevel: DifficultyLevelEnum): Promise<BillWithContent[]> => {
+  async (
+    difficultyLevel: DifficultyLevelEnum
+  ): Promise<InterviewOpenBill[]> => {
     const data = await findBillsWithPublicInterview(difficultyLevel);
 
     return data.map((item) => {
       const {
         bill_contents,
         bills_tags,
-        interview_configs: _configs,
+        interview_configs: configs,
         ...bill
       } = item;
       return {
@@ -49,11 +56,14 @@ const _getCachedInterviewOpenBills = unstable_cache(
           .filter((tag): tag is NonNullable<typeof tag> => tag !== null),
         // クエリの絞り込み条件そのものなので、取得結果は全件が受付中。
         hasPublicInterview: true,
+        estimatedDuration: Array.isArray(configs)
+          ? (configs[0]?.estimated_duration ?? null)
+          : null,
       };
       // BillContent は bill_contents の全カラム型だが、クエリは解説本文
       // （content）を引いていない。カードが使うのはタイトルと要約だけなので、
       // ここで返す bill_content の content は参照しないこと。
-    }) as BillWithContent[];
+    }) as InterviewOpenBill[];
   },
   ["interview-open-bills-list"],
   {

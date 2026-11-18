@@ -212,5 +212,17 @@ export const ko: Dictionary = {
     title: "전문가 목록에 등록해 주세요",
     body: "등록해 주신 분께는 앞으로 추가 인터뷰를 부탁드릴 수 있습니다.",
     register: "전문가 목록에 등록하기",
+    failed: "등록에 실패했습니다",
+    thanks: "등록해 주셔서 감사합니다.",
+    notice:
+      "향후 조사를 위해 추가 인터뷰를 요청드리는 연락을 드릴 수 있습니다. 등록 정보는 공개되지 않습니다.",
+    close: "닫기",
+    name: "이름",
+    affiliation: "소속・직함",
+    email: "이메일 주소",
+    privacy: "개인정보처리방침",
+    agreeSuffix: "에 동의합니다",
+    submitting: "등록 중...",
+    cancel: "취소",
   },
 };

@@ -220,5 +220,17 @@ export const en: Dictionary = {
     title: "Please join our expert list",
     body: "We may ask registered people for additional interviews in the future.",
     register: "Join the expert list",
+    failed: "Registration failed",
+    thanks: "Thank you for registering.",
+    notice:
+      "We may contact you to ask for a follow-up interview for future research. Your registration details will not be made public.",
+    close: "Close",
+    name: "Name",
+    affiliation: "Affiliation / title",
+    email: "Email address",
+    privacy: "Privacy Policy",
+    agreeSuffix: " — I agree",
+    submitting: "Registering...",
+    cancel: "Cancel",
   },
 };

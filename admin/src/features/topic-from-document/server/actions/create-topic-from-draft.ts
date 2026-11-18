@@ -60,7 +60,9 @@ export async function createTopicFromDraft(
       {
         bill_id: bill.id,
         name: draft.config_name,
-        status: "closed",
+        // トピックは下書きで作るので、インタビューを公開にしても回答者には見えない。
+        // トピックを「公開中」にするだけで回答を受け付けられるようにする。
+        status: "public",
         mode: "loop",
         themes: draft.themes.length > 0 ? draft.themes : null,
         chat_model: null,

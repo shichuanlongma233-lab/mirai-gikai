@@ -35,7 +35,7 @@ export default async function Home() {
     <>
       {!chosen && <LanguageChooser suggested={locale} />}
       <Container>
-        <div className="pt-24 pb-10 md:py-16">
+        <div className="pt-24 pb-10 md:py-16 text-center">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
             {t.home.title}
           </h1>
@@ -48,7 +48,7 @@ export default async function Home() {
               <h2 className="mt-10 text-sm font-bold text-gray-500">
                 {t.home.listTitle(topics.length)}
               </h2>
-              <ul className="mt-3 grid gap-4 md:grid-cols-2">
+              <ul className="mt-3 grid gap-4 text-left md:grid-cols-2">
                 {topics.map((topic) => (
                   <li key={topic.id}>
                     <Link

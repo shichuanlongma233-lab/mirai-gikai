@@ -29,11 +29,11 @@ export default async function InsightsPage({ params }: InsightsPageProps) {
     <div>
       <div className="mb-6">
         <Link
-          href={routes.billInterview(id) as Route}
+          href={routes.insights() as Route}
           className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-4 w-4" />
-          インタビュー設定に戻る
+          レポート集計に戻る
         </Link>
       </div>
 

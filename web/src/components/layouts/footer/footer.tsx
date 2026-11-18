@@ -32,11 +32,11 @@ function FooterLogoSection() {
     <div className="flex flex-col items-center text-center mb-9">
       <Link href={routes.home()} aria-label="TENJOインタビュー トップページ">
         <Image
-          src="/img/logo.svg"
+          src="/icons/pwa/icon_android_512.png"
           alt="TENJOインタビュー"
-          width={150}
-          height={128}
-          className="h-auto"
+          width={96}
+          height={96}
+          className="h-auto rounded-2xl"
         />
       </Link>
     </div>

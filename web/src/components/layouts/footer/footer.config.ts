@@ -19,7 +19,7 @@ export const primaryLinks: FooterLink[] = [
     href: routes.home(),
   },
   {
-    label: "みらい議会とは",
+    label: "TENJOインタビューとは",
     href: EXTERNAL_LINKS.ABOUT_NOTE,
     external: true,
   },

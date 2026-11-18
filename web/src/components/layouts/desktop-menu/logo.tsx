@@ -14,10 +14,10 @@ export function DesktopMenuLogo() {
       {/* ロゴ */}
       <div className="relative w-[116px] h-[98.38px]">
         <Image
-          src="/img/logo.svg"
-          alt="みらい議会ロゴ"
+          src="/icons/pwa/icon_android_512.png"
+          alt="TENJOロゴ"
           fill
-          className="object-contain"
+          className="object-contain rounded-2xl"
           priority
         />
       </div>
@@ -32,7 +32,7 @@ export function DesktopMenuLogo() {
             letterSpacing: "0.1em",
           }}
         >
-          みらい議会
+          TENJOインタビュー
         </h1>
         <p
           className="font-bold text-black"
@@ -41,7 +41,7 @@ export function DesktopMenuLogo() {
             lineHeight: "2em",
           }}
         >
-          国会の議論をわかりやすく
+          日本の魅力を、世界の声で確かめる
         </p>
       </div>
     </Link>

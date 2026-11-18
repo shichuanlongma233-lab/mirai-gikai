@@ -11,6 +11,7 @@ import {
 } from "../../shared/utils/aggregate-insights";
 import {
   extractRespondentInsight,
+  extractRespondentInsightsBatch,
   summarizeInsights,
 } from "../services/market-insights-ai";
 
@@ -31,6 +32,8 @@ export interface MarketInsights {
 
 /** 無料枠の毎分上限に当たりにくいよう、同時に投げる数を絞る */
 const CONCURRENCY = 3;
+/** 1回のリクエストでまとめて読み取る人数 */
+const BATCH_SIZE = 8;
 
 async function mapWithConcurrency<T, R>(
   items: T[],
@@ -72,32 +75,59 @@ export async function getMarketInsights(
     bySession.set(m.interview_session_id, list);
   }
 
-  const extracted = await mapWithConcurrency(
-    withReport,
+  type Item = (typeof withReport)[number];
+  const toSource = ({ session, report }: Item) => ({
+    summary: report.summary,
+    messages: (bySession.get(session.id) ?? []).map((m) => ({
+      role: m.role,
+      content: m.content,
+    })),
+  });
+  const extractOne = async (item: Item) => {
+    try {
+      const insight = await extractRespondentInsight(
+        `${item.report.id}:${item.report.updated_at}`,
+        { topicTitle, ...toSource(item) }
+      );
+      return { sessionId: item.session.id, insight };
+    } catch (error) {
+      console.error(
+        `[MarketInsights] extract failed session=${item.session.id}`,
+        error
+      );
+      return null;
+    }
+  };
+
+  const batches: Item[][] = [];
+  for (let i = 0; i < withReport.length; i += BATCH_SIZE) {
+    batches.push(withReport.slice(i, i + BATCH_SIZE));
+  }
+  const batchResults = await mapWithConcurrency(
+    batches,
     CONCURRENCY,
-    async ({ session, report }) => {
+    async (batch) => {
       try {
-        const insight = await extractRespondentInsight(
-          `${report.id}:${report.updated_at}`,
-          {
-            topicTitle,
-            summary: report.summary,
-            messages: (bySession.get(session.id) ?? []).map((m) => ({
-              role: m.role,
-              content: m.content,
-            })),
-          }
+        const key = batch
+          .map((b) => `${b.report.id}:${b.report.updated_at}`)
+          .join(",");
+        const insights = await extractRespondentInsightsBatch(
+          key,
+          topicTitle,
+          batch.map(toSource)
         );
-        return { sessionId: session.id, insight };
+        return batch.map((b, i) => ({
+          sessionId: b.session.id,
+          insight: insights[i],
+        }));
       } catch (error) {
-        console.error(
-          `[MarketInsights] extract failed session=${session.id}`,
-          error
-        );
-        return null;
+        // まとめて読めなければ1人ずつ読む
+        console.error("[MarketInsights] batch failed, falling back", error);
+        return mapWithConcurrency(batch, CONCURRENCY, extractOne);
       }
     }
   );
+  const extracted = batchResults.flat();
   const respondents = extracted.filter(
     (r): r is RespondentInsightRow => r !== null
   );

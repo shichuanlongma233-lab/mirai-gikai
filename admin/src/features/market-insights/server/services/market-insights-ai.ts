@@ -10,7 +10,9 @@ import {
   type RespondentInsight,
   respondentInsightSchema,
 } from "../../shared/schemas";
+import { z } from "zod";
 import {
+  buildBatchRespondentInsightPrompt,
   buildInsightSummaryPrompt,
   buildRespondentInsightPrompt,
   type RespondentSource,
@@ -39,6 +41,40 @@ export function extractRespondentInsight(
       return object;
     },
     ["market-insight-respondent-v1", cacheKey],
+    { revalidate: CACHE_SECONDS }
+  )();
+}
+
+/**
+ * 複数の回答者を1回のリクエストでまとめて読み取る。cacheKey が同じなら使い回す。
+ * 返ってきた件数が合わなければ失敗扱い（呼び出し側で1人ずつに切り替える）。
+ */
+export function extractRespondentInsightsBatch(
+  cacheKey: string,
+  topicTitle: string,
+  sources: Array<Omit<RespondentSource, "topicTitle">>
+): Promise<RespondentInsight[]> {
+  return unstable_cache(
+    async () => {
+      const { system, user } = buildBatchRespondentInsightPrompt(
+        topicTitle,
+        sources
+      );
+      const { object } = await generateObject({
+        model: DEFAULT_MODERATION_MODEL,
+        schema: z.object({ respondents: z.array(respondentInsightSchema) }),
+        system,
+        messages: [{ role: "user", content: user }],
+        maxRetries: 2,
+      });
+      if (object.respondents.length !== sources.length) {
+        throw new Error(
+          `batch size mismatch: expected ${sources.length}, got ${object.respondents.length}`
+        );
+      }
+      return object.respondents;
+    },
+    ["market-insight-batch-v1", cacheKey],
     { revalidate: CACHE_SECONDS }
   )();
 }

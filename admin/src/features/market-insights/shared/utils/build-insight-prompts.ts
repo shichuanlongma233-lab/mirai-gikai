@@ -38,6 +38,37 @@ export function buildRespondentInsightPrompt(source: RespondentSource): {
   };
 }
 
+/** 複数の回答者をまとめて1回で読み取るためのプロンプト（リクエスト数を減らす） */
+export function buildBatchRespondentInsightPrompt(
+  topicTitle: string,
+  sources: Array<Omit<RespondentSource, "topicTitle">>
+): { system: string; user: string } {
+  const single = buildRespondentInsightPrompt({
+    topicTitle,
+    summary: null,
+    messages: [],
+  });
+  const blocks = sources.map((s, i) => {
+    const transcript = s.messages
+      .map(
+        (m) =>
+          `${m.role === "user" ? "回答者" : "インタビュアー"}: ${m.content.slice(0, MAX_MESSAGE_CHARS)}`
+      )
+      .join("\n");
+    return [
+      `=== 回答者 #${i + 1} ===`,
+      s.summary ? `要約: ${s.summary}` : "",
+      transcript,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  });
+  return {
+    system: `${single.system}\n回答者ごとに1件ずつ、番号の順に、ちょうど${sources.length}件を返してください。`,
+    user: [`トピック: ${topicTitle}`, "", ...blocks].join("\n\n"),
+  };
+}
+
 /** 全員分の読み取り結果から、論点をまとめるためのプロンプト */
 export function buildInsightSummaryPrompt(
   topicTitle: string,

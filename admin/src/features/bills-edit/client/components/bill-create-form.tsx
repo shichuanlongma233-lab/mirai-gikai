@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -59,7 +60,10 @@ export function BillCreateForm({ dietSessions }: BillCreateFormProps) {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit, notifyInvalidFields)}
+            className="space-y-6"
+          >
             <BillFormFields
               control={form.control}
               dietSessions={dietSessions}
@@ -89,4 +93,17 @@ export function BillCreateForm({ dietSessions }: BillCreateFormProps) {
       </CardContent>
     </Card>
   );
+}
+
+/**
+ * 入力エラーがあると保存されないが、非表示の項目のエラーは画面に出ないため、
+ * どの項目が原因かをトーストで知らせる。
+ */
+function notifyInvalidFields(
+  errors: Record<string, { message?: string } | undefined>
+) {
+  const messages = Object.entries(errors).map(
+    ([field, error]) => error?.message || field
+  );
+  toast.error(`保存できませんでした: ${messages.join(" / ")}`);
 }

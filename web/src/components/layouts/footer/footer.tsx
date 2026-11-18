@@ -4,6 +4,7 @@ import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import { isInterviewPage } from "@/lib/page-layout-utils";
 import { routes } from "@/lib/routes";
 import { policyLinks, primaryLinks } from "./footer.config";
@@ -44,6 +45,7 @@ function FooterLogoSection() {
 }
 
 function FooterPrimaryLinks() {
+  const { t } = useI18n();
   return (
     <nav aria-label="主要リンク" className="w-full mb-5">
       <ul
@@ -60,7 +62,7 @@ function FooterPrimaryLinks() {
               rel={link.external ? "noreferrer" : undefined}
               className="transition-colors hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
             >
-              {link.label}
+              {t.footer[link.key] ?? link.label}
             </Link>
           </li>
         ))}
@@ -70,6 +72,7 @@ function FooterPrimaryLinks() {
 }
 
 function FooterPolicies() {
+  const { t } = useI18n();
   return (
     <div className="flex flex-col items-center text-[12px] font-semibold text-slate-800 mb-5">
       <ul className="flex flex-wrap justify-center gap-x-2 gap-y-1">
@@ -81,7 +84,7 @@ function FooterPolicies() {
               rel={policy.external ? "noreferrer" : undefined}
               className="transition-colors hover:text-slate-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
             >
-              {policy.label}
+              {t.footer[policy.key] ?? policy.label}
             </Link>
             {index < policyLinks.length - 1 ? <span>｜</span> : null}
           </li>
@@ -94,7 +97,7 @@ function FooterPolicies() {
 function FooterCopyright() {
   return (
     <div className="text-center text-sm font-medium text-slate-800">
-      © 2025 Team Mirai All rights Reserved
+      © TENJO KANAZAWA
     </div>
   );
 }

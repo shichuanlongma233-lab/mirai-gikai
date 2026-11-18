@@ -102,6 +102,8 @@ export function InterviewConfigList({
       const result = await duplicateInterviewConfig(configId);
       if (result.success) {
         toast.success("インタビュー設定を複製しました");
+        // 戻ったときの一覧に複製が出るよう、キャッシュを更新してから移動する
+        router.refresh();
         router.push(routes.billInterviewEdit(billId, result.data.id) as Route);
       } else {
         toast.error(result.error || "複製に失敗しました");

@@ -1,3 +1,4 @@
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
@@ -30,20 +31,39 @@ export async function generateMetadata({
     };
   }
 
-  const billName = bill.bill_content?.title ?? bill.name;
-  const description = `AIインタビュー - ${billName}`;
+  // タブ名も回答者の言語にする（本文と同じ入力なので翻訳はキャッシュを共有する）
+  const [locale, chosen, interviewConfig] = await Promise.all([
+    getRequestLocale(),
+    hasChosenLocale(),
+    getInterviewConfig(id),
+  ]);
+  let billName = bill.bill_content?.title ?? bill.name;
+  if (chosen && interviewConfig) {
+    const { intro } = await translateTopicIntro(
+      {
+        title: billName,
+        summary: bill.bill_content?.summary ?? "",
+        content: bill.bill_content?.content ?? "",
+        themes: interviewConfig.themes ?? [],
+      },
+      locale
+    );
+    billName = intro.title;
+  }
+  const label = getDictionary(locale).common.aiInterview;
+  const description = `${label} - ${billName}`;
   const defaultOgpUrl = new URL("/ogp.jpg", env.webUrl).toString();
   const shareImageUrl =
     bill.share_thumbnail_url || bill.thumbnail_url || defaultOgpUrl;
 
   return {
-    title: `AIインタビュー - ${billName}`,
+    title: description,
     description: description,
     alternates: {
       canonical: `/bills/${bill.id}/interview`,
     },
     openGraph: {
-      title: `AIインタビュー - ${billName}`,
+      title: description,
       description: description,
       type: "website",
       images: [
@@ -55,7 +75,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `AIインタビュー - ${billName}`,
+      title: description,
       description: description,
       images: [shareImageUrl],
     },

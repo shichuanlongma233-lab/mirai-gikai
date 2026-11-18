@@ -16,7 +16,7 @@ const baseConfig = {
 };
 
 describe("buildPersonaFromBillPrompt", () => {
-  it("法案情報・テーマ・知識ソースがプロンプトに含まれる", () => {
+  it("トピック情報・テーマ・知識ソースがプロンプトに含まれる", () => {
     const result = buildPersonaFromBillPrompt({
       bill: baseBill,
       interviewConfig: baseConfig,
@@ -37,7 +37,7 @@ describe("buildPersonaFromBillPrompt", () => {
       interviewConfig: baseConfig,
       stanceHint: "against",
     });
-    expect(result).toContain("反対");
+    expect(result).toContain("否定的");
     expect(result).toContain('"against"');
     expect(result).toContain("必須");
   });

@@ -8,6 +8,9 @@ export function ReportProblemButton({
   /** 表示する言語の文言（省略時は日本語） */
   t?: Dictionary;
 }) {
+  if (!EXTERNAL_LINKS.REPORT) {
+    return null;
+  }
   return (
     <a
       href={EXTERNAL_LINKS.REPORT}

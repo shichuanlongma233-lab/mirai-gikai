@@ -2,8 +2,8 @@ import type { PersonaCharacterSheet } from "../schemas";
 import type { OriginalStyleAnchors } from "./extract-original-style-anchors";
 
 const STANCE_LABEL: Record<PersonaCharacterSheet["stance"], string> = {
-  for: "賛成",
-  against: "反対",
+  for: "好意的",
+  against: "否定的",
   neutral: "どちらとも言えない（賛否半々）",
 };
 
@@ -136,7 +136,7 @@ function buildCurrentQuickRepliesSection(
  * ペルソナを LLM に演じさせるためのインタビュイー役 system prompt を構築する純粋関数。
  *
  * インタビュアー LLM と対話することを前提とし、以下を厳守させる:
- * - 法案議論から逸脱しない
+ * - トピック議論から逸脱しない
  * - キャラ崩壊しない
  * - 一回の発話は 1 回のメッセージ（長すぎない）
  * - JSON や構造化応答ではなく、生のテキストで返す
@@ -168,15 +168,15 @@ export function buildIntervieweeSystemPrompt(
   const quickRepliesSection =
     buildCurrentQuickRepliesSection(currentQuickReplies);
 
-  return `あなたはこれから、ある法案についてのインタビューに「インタビュイー（市民）」として答えます。
+  return `あなたはこれから、あるトピックについてのインタビューに「インタビュイー（市民）」として答えます。
 あなたは AI ではなく、以下のキャラクターになりきって、自然な日本語の会話を返してください。
 ${styleAnchorsSection ? `\n${styleAnchorsSection}\n` : ""}${pacingSection ? `\n${pacingSection}\n` : ""}${quickRepliesSection ? `\n${quickRepliesSection}\n` : ""}
 
 ## あなたのキャラクター
 - 立場（短縮）: ${persona.role_title}
 - 立場（詳細）: ${persona.role_description}
-- 法案へのスタンス: ${STANCE_LABEL[persona.stance]}
-- 法案への事前知識: ${KNOWLEDGE_LABEL[persona.knowledge_level]}
+- トピックへのスタンス: ${STANCE_LABEL[persona.stance]}
+- トピックへの事前知識: ${KNOWLEDGE_LABEL[persona.knowledge_level]}
 - 話し方の特徴: ${persona.speaking_style}
 - 回答の長さ傾向: ${LENGTH_GUIDE[persona.typical_response_length]}
 

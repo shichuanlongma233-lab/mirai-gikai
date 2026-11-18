@@ -1,6 +1,7 @@
 "use client";
 
 import type { FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { createTag } from "../../server/actions/create-tag";
 
 export function TagForm() {
+  const router = useRouter();
   const inputId = useId();
   const [label, setLabel] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,6 +33,7 @@ export function TagForm() {
       } else {
         toast.success("タグを作成しました");
         setLabel(""); // フォームをクリア
+        router.refresh(); // 一覧に新しいタグを反映する
       }
     } catch (error) {
       console.error("Create tag error:", error);

@@ -344,6 +344,11 @@ export function InterviewConfigForm({
                       </SelectContent>
                     </Select>
                     <FormDescription>
+                      GeminiのAPIキーが設定されている間は、どのモデルを選んでも実際にはGemini（環境変数
+                      GEMINI_MODEL
+                      のモデル）で動きます。表示の料金はそのモデルを使った場合の目安です。
+                    </FormDescription>
+                    <FormDescription>
                       インタビュー対話に使用するAIモデルを選択します。コストは1インタビューあたりの推定値です。
                     </FormDescription>
                     <FormMessage />

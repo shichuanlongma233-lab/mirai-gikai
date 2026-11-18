@@ -2,6 +2,8 @@ import type { Dictionary } from "./ja";
 
 export const zh: Dictionary = {
   common: {
+    aiInterview: "AI访谈",
+    openMenu: "打开菜单",
     processing: "处理中...",
     sending: "发送中...",
     changing: "更改中...",
@@ -9,6 +11,18 @@ export const zh: Dictionary = {
     close: "关闭",
     send: "发送",
     languageLabel: "语言",
+  },
+  footer: {
+    top: "首页",
+    terms: "使用条款",
+    privacy: "隐私政策",
+    developers: "开发者",
+  },
+  home: {
+    title: "TENJO访谈",
+    lead: "AI将请您谈谈对日本文化和商品的真实感受。请选择您感兴趣的话题。",
+    empty: "目前没有正在接受回答的话题。",
+    start: "参加访谈",
   },
   lp: {
     badge: "致海外的朋友们",

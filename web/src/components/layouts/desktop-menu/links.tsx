@@ -48,7 +48,7 @@ export function DesktopMenuLinks() {
           lineHeight: "1.48em",
         }}
       >
-        © 2025 Team Mirai
+        © TENJO KANAZAWA
       </p>
     </div>
   );

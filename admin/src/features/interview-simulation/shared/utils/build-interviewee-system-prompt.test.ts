@@ -30,10 +30,10 @@ describe("buildIntervieweeSystemPrompt", () => {
   it("スタンスが日本語ラベルに変換される", () => {
     expect(
       buildIntervieweeSystemPrompt({ ...basePersona, stance: "for" })
-    ).toContain("賛成");
+    ).toContain("好意的");
     expect(
       buildIntervieweeSystemPrompt({ ...basePersona, stance: "against" })
-    ).toContain("反対");
+    ).toContain("否定的");
     expect(
       buildIntervieweeSystemPrompt({ ...basePersona, stance: "neutral" })
     ).toContain("どちらとも言えない");

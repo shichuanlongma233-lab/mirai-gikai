@@ -3,11 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BillEditForm } from "@/features/bills-edit/client/components/bill-edit-form";
 import { BillTagsForm } from "@/features/bills-edit/client/components/bill-tags-form";
-import { BillVideosForm } from "@/features/bills-edit/client/components/bill-videos-form";
 import { getBillById } from "@/features/bills-edit/server/loaders/get-bill-by-id";
 import { getBillContents } from "@/features/bills-edit/server/loaders/get-bill-contents";
 import { getBillTagIds } from "@/features/bills-edit/server/loaders/get-bill-tag-ids";
-import { getBillVideos } from "@/features/bills-edit/server/loaders/get-bill-videos";
 import { loadDietSessions } from "@/features/diet-sessions/server/loaders/load-diet-sessions";
 import { loadTags } from "@/features/tags/server/loaders/load-tags";
 import { routes } from "@/lib/routes";
@@ -20,14 +18,13 @@ interface BillEditPageProps {
 
 export default async function BillEditPage({ params }: BillEditPageProps) {
   const { id } = await params;
-  const [bill, allTags, selectedTagIds, dietSessions, contents, videos] =
+  const [bill, allTags, selectedTagIds, dietSessions, contents] =
     await Promise.all([
       getBillById(id),
       loadTags(),
       getBillTagIds(id),
       loadDietSessions(),
       getBillContents(id),
-      getBillVideos(id),
     ]);
 
   if (!bill) {
@@ -61,7 +58,6 @@ export default async function BillEditPage({ params }: BillEditPageProps) {
           dietSessions={dietSessions}
           shareImageDefaultTitle={normalTitle || bill.name}
         />
-        <BillVideosForm billId={bill.id} videos={videos} />
         <BillTagsForm
           billId={bill.id}
           allTags={allTags}

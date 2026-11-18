@@ -23,7 +23,7 @@ const reports = new Map<string, CompletedReportListItem>([
 describe("describePersonaSlot", () => {
   it("report ソース（ルックアップに存在する）は roleTitle と stance を表示", () => {
     const slot: PersonaSlotInput = { kind: "report", reportId: "r1" };
-    expect(describePersonaSlot(slot, reports)).toBe("レポート: 教員 / 賛成");
+    expect(describePersonaSlot(slot, reports)).toBe("レポート: 教員 / 好意的");
   });
 
   it("report ソース（ルックアップ未提供）は reportId を短縮表示", () => {
@@ -49,7 +49,7 @@ describe("describePersonaSlot", () => {
 
   it("bill ソース（stanceHint のみ）は stance を表示", () => {
     const slot: PersonaSlotInput = { kind: "bill", stanceHint: "against" };
-    expect(describePersonaSlot(slot)).toBe("自動生成: 反対");
+    expect(describePersonaSlot(slot)).toBe("自動生成: 否定的");
   });
 
   it("bill ソース（role ヒント付き）は stance と role を表示", () => {
@@ -69,6 +69,6 @@ describe("describePersonaSlot", () => {
       stanceHint: "for",
       roleHint: "   ",
     };
-    expect(describePersonaSlot(slot)).toBe("自動生成: 賛成");
+    expect(describePersonaSlot(slot)).toBe("自動生成: 好意的");
   });
 });

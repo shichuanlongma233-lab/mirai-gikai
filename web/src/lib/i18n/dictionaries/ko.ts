@@ -2,6 +2,8 @@ import type { Dictionary } from "./ja";
 
 export const ko: Dictionary = {
   common: {
+    aiInterview: "AI 인터뷰",
+    openMenu: "메뉴 열기",
     processing: "처리 중...",
     sending: "전송 중...",
     changing: "변경 중...",
@@ -9,6 +11,18 @@ export const ko: Dictionary = {
     close: "닫기",
     send: "보내기",
     languageLabel: "언어",
+  },
+  footer: {
+    top: "홈",
+    terms: "이용약관",
+    privacy: "개인정보처리방침",
+    developers: "개발자용",
+  },
+  home: {
+    title: "TENJO 인터뷰",
+    lead: "AI가 일본 문화와 상품에 대한 솔직한 감상을 여쭙니다. 관심 있는 주제를 선택해 주세요.",
+    empty: "현재 응답을 받고 있는 주제가 없습니다.",
+    start: "인터뷰에 답하기",
   },
   lp: {
     badge: "해외의 여러분께",

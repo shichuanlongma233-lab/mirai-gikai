@@ -4,6 +4,8 @@
  */
 export const ja = {
   common: {
+    aiInterview: "AIインタビュー",
+    openMenu: "メニューを開く",
     processing: "処理中...",
     sending: "送信中...",
     changing: "変更中...",
@@ -11,6 +13,18 @@ export const ja = {
     close: "閉じる",
     send: "送信",
     languageLabel: "言語",
+  },
+  footer: {
+    top: "TOP",
+    terms: "利用規約",
+    privacy: "プライバシーポリシー",
+    developers: "開発者向け",
+  },
+  home: {
+    title: "TENJOインタビュー",
+    lead: "日本の文化や商品について、AIがあなたの率直な感想を伺います。気になるトピックを選んでください。",
+    empty: "いま回答を受け付けているトピックはありません。",
+    start: "インタビューに答える",
   },
   lp: {
     badge: "海外の皆さまへ",

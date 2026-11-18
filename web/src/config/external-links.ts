@@ -2,7 +2,8 @@
  * 外部リンク定数
  */
 export const EXTERNAL_LINKS = {
-  REPORT: "https://forms.gle/wJXXMt6cv2ZdiCgg6",
+  /** 不具合報告フォーム。未設定なら「問題を報告」ボタンを出さない（元はチームみらいのフォーム） */
+  REPORT: process.env.NEXT_PUBLIC_REPORT_FORM_URL ?? "",
   ABOUT_NOTE: "https://note.com/team_mirai_jp/n/nd1656aa5f86d",
   DONATION: "https://team-mir.ai/support/donation",
   TEAM_MIRAI_ABOUT: "https://team-mir.ai/about",

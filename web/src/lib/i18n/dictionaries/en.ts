@@ -2,6 +2,8 @@ import type { Dictionary } from "./ja";
 
 export const en: Dictionary = {
   common: {
+    aiInterview: "AI interview",
+    openMenu: "Open menu",
     processing: "Processing...",
     sending: "Sending...",
     changing: "Updating...",
@@ -9,6 +11,18 @@ export const en: Dictionary = {
     close: "Close",
     send: "Send",
     languageLabel: "Language",
+  },
+  footer: {
+    top: "Home",
+    terms: "Terms of Use",
+    privacy: "Privacy Policy",
+    developers: "For developers",
+  },
+  home: {
+    title: "TENJO Interview",
+    lead: "An AI asks for your honest impressions of Japanese culture and products. Choose a topic you are interested in.",
+    empty: "There are no topics open for answers right now.",
+    start: "Answer the interview",
   },
   lp: {
     badge: "For people around the world",

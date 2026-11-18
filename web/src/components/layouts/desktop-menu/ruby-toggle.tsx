@@ -1,6 +1,7 @@
 "use client";
 
 import { Switch } from "@/components/ui/switch";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import { useRubyToggle } from "@/lib/rubyful/use-ruby-toggle";
 
 /**
@@ -8,6 +9,11 @@ import { useRubyToggle } from "@/lib/rubyful/use-ruby-toggle";
  */
 export function DesktopMenuRubyToggle() {
   const { rubyEnabled, handleRubyToggle } = useRubyToggle();
+  const { locale } = useI18n();
+
+  if (locale !== "ja") {
+    return null;
+  }
 
   return (
     <div className="fixed top-[108px] right-6 z-50">

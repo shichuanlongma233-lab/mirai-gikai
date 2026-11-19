@@ -3,6 +3,7 @@ import {
   buildCoveredQuestionsPrompt,
   filterCoveredIds,
   pickCoveredIds,
+  endsWithQuestion,
   resolveNextStage,
 } from "./covered-questions";
 
@@ -58,5 +59,19 @@ describe("resolveNextStage", () => {
     expect(resolveNextStage("summary", "ここまでの内容をまとめます。", "chat")).toBe("summary");
     expect(resolveNextStage("chat", "いかがですか？", "chat")).toBe("chat");
     expect(resolveNextStage("summary_complete", "いいですか？", "summary")).toBe("summary_complete");
+  });
+});
+
+describe("endsWithQuestion", () => {
+  it("句点で終わる質問も拾う", () => {
+    expect(endsWithQuestion("どこが魅力的だと感じられたのでしょうか。")).toBe(true);
+    expect(endsWithQuestion("使ってみたいですか。")).toBe(true);
+    expect(endsWithQuestion("你想买吗。")).toBe(true);
+    expect(endsWithQuestion("어떠세요?")).toBe(true);
+    expect(endsWithQuestion("Would you buy it?")).toBe(true);
+  });
+  it("質問でなければ false", () => {
+    expect(endsWithQuestion("ここまでの内容をまとめます。ありがとうございました。")).toBe(false);
+    expect(endsWithQuestion("Thank you. Let me summarize.")).toBe(false);
   });
 });

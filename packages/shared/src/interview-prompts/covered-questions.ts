@@ -100,9 +100,19 @@ export function resolveNextStage<T extends string>(
   if (
     currentStage === "chat" &&
     nextStage === "summary" &&
-    /[?？]\s*$/.test((text ?? "").trim())
+    endsWithQuestion(text ?? "")
   ) {
     return "chat";
   }
   return nextStage;
+}
+
+/**
+ * 発言が質問で終わっているか。「？」だけでなく、日本語の「〜ですか。」「〜でしょうか。」
+ * 中国語の「吗。」「呢。」のように句点で終わる質問も拾う。
+ */
+export function endsWithQuestion(text: string): boolean {
+  const t = text.trim().replace(/[」』）)\]"'”’\s]+$/u, "");
+  if (/[?？]$/u.test(t)) return true;
+  return /(か|かな|かね)[。.．!！]?$/u.test(t) || /[吗呢嗎][。.．]?$/u.test(t);
 }

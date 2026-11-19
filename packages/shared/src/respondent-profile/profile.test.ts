@@ -33,5 +33,7 @@ describe("countryDisplayName", () => {
   it("言語に合わせて国名を出す", () => {
     expect(countryDisplayName("US", "en", "Other")).toBe("United States");
     expect(countryDisplayName("other", "ja", "その他")).toBe("その他");
+    expect(countryDisplayName("HK", "ja", "その他")).toBe("香港");
+    expect(countryDisplayName("HK", "zh-Hans", "其他")).toBe("香港");
   });
 });

@@ -104,6 +104,11 @@ export function parseProfile(
   };
 }
 
+/** Intl の正式名称が長すぎるもの（例: 「中華人民共和国香港特別行政区」）は短い呼び名にする */
+const SHORT_NAMES: Record<string, Record<string, string>> = {
+  HK: { ja: "香港", en: "Hong Kong", zh: "香港", ko: "홍콩" },
+};
+
 /** 国コードの表示名（例: "US" → 日本語なら「アメリカ合衆国」） */
 export function countryDisplayName(
   code: string,
@@ -111,6 +116,8 @@ export function countryDisplayName(
   otherLabel: string
 ): string {
   if (code === OTHER_COUNTRY) return otherLabel;
+  const short = SHORT_NAMES[code]?.[locale.slice(0, 2)];
+  if (short) return short;
   try {
     return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code;
   } catch {

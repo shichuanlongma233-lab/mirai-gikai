@@ -10,6 +10,7 @@ import {
 import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
 import { translateTopicIntro } from "@/features/interview-config/server/services/translate-topic-intro";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { LanguageButtons } from "@/lib/i18n/language-buttons";
 import { LanguageChooser } from "@/lib/i18n/language-chooser";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import { getRequestLocale, hasChosenLocale } from "@/lib/i18n/server";
@@ -36,6 +37,9 @@ export default async function Home() {
       {!chosen && <LanguageChooser suggested={locale} />}
       <Container>
         <div className="pt-24 pb-10 md:py-16 text-center">
+          <div className="mb-6">
+            <LanguageButtons current={locale} />
+          </div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
             {t.home.title}
           </h1>

@@ -114,4 +114,22 @@ describe("collectAskedQuestionIds", () => {
     const result = collectAskedQuestionIds(messages);
     expect(result).toEqual(new Set(["q2"]));
   });
+
+  it("会話の中で答えが出た質問（covered_question_ids）も済みにする", () => {
+    const messages = [
+      {
+        role: "assistant",
+        content: JSON.stringify({
+          text: "なるほど",
+          question_id: "q1",
+          covered_question_ids: ["q3", "", 5],
+        }),
+      },
+      {
+        role: "user",
+        content: JSON.stringify({ text: "x", covered_question_ids: ["q9"] }),
+      },
+    ];
+    expect(collectAskedQuestionIds(messages)).toEqual(new Set(["q1", "q3"]));
+  });
 });

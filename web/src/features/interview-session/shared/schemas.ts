@@ -31,6 +31,14 @@ export const interviewChatTextSchema = z.object({
   text: z.string(),
   quick_replies: z.array(z.string()).nullable(),
   question_id: z.string().nullable(),
+  // 古い出力や省略にも耐えるよう optional にする（Gemini では省略可の項目になる）
+  covered_question_ids: z
+    .array(z.string())
+    .nullable()
+    .optional()
+    .describe(
+      "まだ聞いていない事前定義質問のうち、回答者のこれまでの発言で実質的に答えが出たもののID。今後その質問はしない。なければnull"
+    ),
   topic_title: z.string().nullable(),
   next_stage: interviewStageSchema.describe(
     "インタビューのステージ遷移判定。chat=インタビュー継続、summary=要約フェーズへ移行"
@@ -63,6 +71,7 @@ export const interviewChatResponseSchema = z.object({
   report: interviewReportSchema.optional().nullable(),
   quick_replies: z.array(z.string()).optional().nullable(),
   question_id: z.string().optional().nullable(),
+  covered_question_ids: z.array(z.string()).optional().nullable(),
   topic_title: z.string().optional().nullable(),
   next_stage: interviewStageSchema.optional(),
 });

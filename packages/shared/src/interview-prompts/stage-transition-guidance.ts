@@ -116,7 +116,7 @@ ${stageGuidance}
 ### 事前定義質問の進捗状況
 - **全体**: ${totalQuestions}問中${completedQuestions}問完了（残り${remainingQuestions}問）
 ${completedQuestionsList ? `\n#### 完了した質問\n${completedQuestionsList}` : ""}
-${remainingQuestionsList ? `\n#### 未回答の質問\n${remainingQuestionsList}` : ""}`;
+${remainingQuestionsList ? `\n#### まだ聞いていない質問\n※ 会話の中ですでに答えが出ているものは聞かずに \`covered_question_ids\` に入れてください\n${remainingQuestionsList}` : ""}`;
 }
 
 /**
@@ -161,5 +161,5 @@ ${stageGuidance}
 ### 事前定義質問の進捗状況
 - **全体**: ${totalQuestions}問中${completedQuestions}問完了（残り${remainingQuestions}問）
 ${completedQuestionsList ? `\n#### 完了した質問\n${completedQuestionsList}` : ""}
-${remainingQuestionsList ? `\n#### 未回答の質問\n${remainingQuestionsList}` : ""}`;
+${remainingQuestionsList ? `\n#### まだ聞いていない質問\n※ 会話の中ですでに答えが出ているものは聞かずに \`covered_question_ids\` に入れてください\n${remainingQuestionsList}` : ""}`;
 }

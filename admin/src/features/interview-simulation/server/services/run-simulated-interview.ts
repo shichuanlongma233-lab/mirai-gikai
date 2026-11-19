@@ -46,6 +46,12 @@ const simInterviewerOutputSchema = z
       .string()
       .nullable()
       .describe("事前定義質問の ID。深掘り等で該当なしなら null"),
+    covered_question_ids: z
+      .array(z.string())
+      .nullable()
+      .describe(
+        "まだ聞いていない事前定義質問のうち、回答者の発言で実質的に答えが出たもののID。なければ null"
+      ),
     next_stage: z
       .enum(["chat", "summary", "summary_complete"])
       .describe("次のステージ。インタビュー継続中は chat"),
@@ -389,6 +395,10 @@ export async function runSimulatedInterview({
 
     if (interviewerOutput.question_id) {
       askedQuestionIds.add(interviewerOutput.question_id);
+    }
+    // 本番と同じく、会話で答えが出た質問は済みにして重ねて聞かない
+    for (const id of interviewerOutput.covered_question_ids ?? []) {
+      askedQuestionIds.add(id);
     }
 
     if (

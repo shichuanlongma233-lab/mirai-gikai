@@ -20,6 +20,11 @@ export interface RespondentInsightRow {
   insight: RespondentInsight;
 }
 
+export interface RespondentProfileRow {
+  country: string | null;
+  ageRange: string | null;
+}
+
 export interface MarketInsights {
   aggregate: MarketInsightsAggregate;
   summary: InsightSummary | null;
@@ -132,6 +137,20 @@ export async function getMarketInsights(
     (r): r is RespondentInsightRow => r !== null
   );
   const insights = respondents.map((r) => r.insight);
+  // 回答者が言語選択の直後に答えた国・年代（集計用）
+  const profileBySession = new Map(
+    withReport.map(({ session }) => [
+      session.id,
+      {
+        country: session.respondent_country ?? null,
+        ageRange: session.respondent_age_range ?? null,
+      },
+    ])
+  );
+  const profiles = respondents.map(
+    (r) =>
+      profileBySession.get(r.sessionId) ?? { country: null, ageRange: null }
+  );
 
   let summary: InsightSummary | null = null;
   if (insights.length > 0) {
@@ -143,7 +162,7 @@ export async function getMarketInsights(
   }
 
   return {
-    aggregate: aggregateInsights(insights, summary),
+    aggregate: aggregateInsights(insights, summary, profiles),
     summary,
     respondents,
     failedCount: withReport.length - respondents.length,

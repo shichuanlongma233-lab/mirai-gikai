@@ -1,5 +1,10 @@
 import "server-only";
 
+import {
+  PROFILE_COOKIE,
+  parseProfile,
+  type RespondentProfile,
+} from "@mirai-gikai/shared/respondent-profile";
 import { cookies, headers } from "next/headers";
 import {
   LOCALE_CHOSEN_COOKIE,
@@ -21,4 +26,10 @@ export async function getRequestLocale(): Promise<Locale> {
 export async function hasChosenLocale(): Promise<boolean> {
   const cookieStore = await cookies();
   return cookieStore.get(LOCALE_CHOSEN_COOKIE)?.value === "1";
+}
+
+/** 回答者がすでに国・年代の質問に答えたか（答えない を選んだ場合も含む） */
+export async function getRespondentProfile(): Promise<RespondentProfile | null> {
+  const cookieStore = await cookies();
+  return parseProfile(cookieStore.get(PROFILE_COOKIE)?.value);
 }

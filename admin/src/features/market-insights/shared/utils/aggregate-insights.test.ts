@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { RespondentInsight } from "../schemas";
-import { aggregateInsights, countThemes, percent } from "./aggregate-insights";
+import {
+  aggregateByProfile,
+  aggregateInsights,
+  countThemes,
+  percent,
+} from "./aggregate-insights";
 
 function insight(over: Partial<RespondentInsight> = {}): RespondentInsight {
   return {
@@ -80,5 +85,42 @@ describe("percent", () => {
   it("分母0なら0", () => {
     expect(percent(1, 0)).toBe(0);
     expect(percent(1, 3)).toBe(33);
+  });
+});
+
+describe("aggregateByProfile", () => {
+  const base = insight({ purchaseIntent: "yes", priceImpression: "fair" });
+  it("国は人数順・年代は若い順、答えていない人は最後", () => {
+    const insights = [
+      base,
+      base,
+      { ...base, overall: "negative" as const },
+      base,
+    ];
+    const { byCountry, byAge } = aggregateByProfile(insights, [
+      { country: "US", ageRange: "30s" },
+      { country: "US", ageRange: "20s" },
+      { country: "GB", ageRange: null },
+      { country: null, ageRange: "60plus" },
+    ]);
+    expect(byCountry.map((r) => [r.key, r.count])).toEqual([
+      ["US", 2],
+      ["GB", 1],
+      ["none", 1],
+    ]);
+    expect(byCountry[0].label).toBe("アメリカ合衆国");
+    expect(byCountry[1].breakdown.overall.negative).toBe(1);
+    expect(byAge.map((r) => r.label)).toEqual([
+      "20代",
+      "30代",
+      "60代以上",
+      "答えていない",
+    ]);
+  });
+  it("プロフィールがなければ全員「答えていない」", () => {
+    const a = aggregateInsights([base], null);
+    expect(a.byCountry).toEqual([
+      expect.objectContaining({ key: "none", count: 1 }),
+    ]);
   });
 });

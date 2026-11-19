@@ -9,7 +9,12 @@ import { getUserReportsByInterviewConfig } from "@/features/interview-report/ser
 import { getLatestInterviewSession } from "@/features/interview-session/server/loaders/get-latest-interview-session";
 import { env } from "@/lib/env";
 import { LanguageChooser } from "@/lib/i18n/language-chooser";
-import { getRequestLocale, hasChosenLocale } from "@/lib/i18n/server";
+import { ProfileChooser } from "@/lib/i18n/profile-chooser";
+import {
+  getRequestLocale,
+  getRespondentProfile,
+  hasChosenLocale,
+} from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -103,9 +108,10 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
     getUserReportsByInterviewConfig(interviewConfig.id),
   ]);
 
-  const [locale, chosen] = await Promise.all([
+  const [locale, chosen, profile] = await Promise.all([
     getRequestLocale(),
     hasChosenLocale(),
+    getRespondentProfile(),
   ]);
 
   // 最初に開いたときは言語選択だけを出す（選ぶ前に翻訳しない）
@@ -135,13 +141,17 @@ export default async function InterviewPage({ params }: InterviewPageProps) {
   );
 
   return (
-    <InterviewLPPage
-      locale={locale}
-      intro={intro}
-      bill={bill}
-      interviewConfig={interviewConfig}
-      sessionInfo={latestSession}
-      userReports={userReports}
-    />
+    <>
+      {/* 言語を選んだ直後に、出身の国・地域と年代を聞く（集計用） */}
+      {!profile && <ProfileChooser locale={locale} />}
+      <InterviewLPPage
+        locale={locale}
+        intro={intro}
+        bill={bill}
+        interviewConfig={interviewConfig}
+        sessionInfo={latestSession}
+        userReports={userReports}
+      />
+    </>
   );
 }

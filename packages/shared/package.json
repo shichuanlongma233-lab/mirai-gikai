@@ -8,6 +8,10 @@
     "test:watch": "vitest"
   },
   "exports": {
+    "./respondent-profile": {
+      "types": "./src/respondent-profile/profile.ts",
+      "default": "./src/respondent-profile/profile.ts"
+    },
     "./youtube": {
       "types": "./src/youtube/youtube.ts",
       "default": "./src/youtube/youtube.ts"

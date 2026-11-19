@@ -4,6 +4,7 @@
  *
  *   node scripts/seed-demo-insights.mjs <envファイル>          … 入れる
  *   node scripts/seed-demo-insights.mjs <envファイル> --delete … 消す
+ *   node scripts/seed-demo-insights.mjs <envファイル> --add-profiles … 入れ済みの架空データに国・年代を付ける
  *
  * envファイルには NEXT_PUBLIC_SUPABASE_URL と SUPABASE_SECRET_KEY が必要。
  * 入れた行は interview_sessions.langfuse_session_id = "seed-demo-insights" で見分ける
@@ -15,7 +16,7 @@ import { readFileSync } from "node:fs";
 const MARK = "seed-demo-insights";
 const [envPath, flag] = process.argv.slice(2);
 if (!envPath) {
-  console.error("使い方: node scripts/seed-demo-insights.mjs <envファイル> [--delete]");
+  console.error("使い方: node scripts/seed-demo-insights.mjs <envファイル> [--delete|--add-profiles]");
   process.exit(1);
 }
 const env = Object.fromEntries(
@@ -163,6 +164,42 @@ async function findConfigId(billId) {
   return pub.id;
 }
 
+// 架空の回答者の国・年代（言語ごとに順番に割り当てる）
+const FAKE_PROFILES = {
+  en: [["US", "30s"], ["GB", "20s"], ["AU", "40s"], ["CA", "50s"], ["US", "20s"], ["SG", "30s"]],
+  zh: [["TW", "40s"], ["CN", "20s"], ["HK", "30s"], ["CN", "50s"]],
+  ko: [["KR", "20s"], ["KR", "30s"], ["KR", "60plus"]],
+  ja: [["JP", "50s"], [null, null]],
+};
+function fakeProfile(lang, i) {
+  const list = FAKE_PROFILES[lang] ?? [[null, null]];
+  const [country, age] = list[i % list.length];
+  return { respondent_country: country, respondent_age_range: age };
+}
+
+async function addProfiles() {
+  let n = 0;
+  for (const [key, items] of Object.entries(DATA)) {
+    const configId = await findConfigId(BILLS[key]);
+    const rows = await rest(
+      "GET",
+      `interview_sessions?langfuse_session_id=eq.${MARK}&interview_config_id=eq.${configId}&select=id&order=started_at.asc`
+    );
+    const counter = {};
+    for (const [i, row] of rows.entries()) {
+      const lang = items[i]?.[0] ?? "ja";
+      counter[lang] = (counter[lang] ?? 0) + 1;
+      await rest(
+        "PATCH",
+        `interview_sessions?id=eq.${row.id}`,
+        fakeProfile(lang, counter[lang] - 1)
+      );
+      n++;
+    }
+  }
+  console.log(`架空データ ${n}件に国・年代を付けました`);
+}
+
 async function del() {
   const rows = await rest(
     "GET",
@@ -188,7 +225,9 @@ async function seed() {
   let n = 0;
   for (const [key, items] of Object.entries(DATA)) {
     const configId = await findConfigId(BILLS[key]);
-    for (const [i, [, stance, summary, qa]] of items.entries()) {
+    const counter = {};
+    for (const [i, [lang, stance, summary, qa]] of items.entries()) {
+      counter[lang] = (counter[lang] ?? 0) + 1;
       const start = new Date(Date.now() - (items.length - i) * 3600_000);
       const sessionId = randomUUID();
       await rest("POST", "interview_sessions", {
@@ -199,6 +238,7 @@ async function seed() {
         started_at: start.toISOString(),
         completed_at: new Date(start.getTime() + 8 * 60_000).toISOString(),
         rating: 4,
+        ...fakeProfile(lang, counter[lang] - 1),
       });
       const messages = qa.flatMap(([q, a], j) => [
         {
@@ -231,7 +271,12 @@ async function seed() {
   console.log(`架空データを ${n}件入れました`);
 }
 
-(flag === "--delete" ? del() : seed()).catch((e) => {
+(flag === "--delete"
+  ? del()
+  : flag === "--add-profiles"
+    ? addProfiles()
+    : seed()
+).catch((e) => {
   console.error(e.message);
   process.exit(1);
 });

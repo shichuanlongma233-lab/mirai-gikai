@@ -832,6 +832,8 @@ export type Database = {
           interview_config_id: string
           langfuse_session_id: string | null
           rating: number | null
+          respondent_age_range: string | null
+          respondent_country: string | null
           started_at: string
           updated_at: string
           user_id: string
@@ -844,6 +846,8 @@ export type Database = {
           interview_config_id: string
           langfuse_session_id?: string | null
           rating?: number | null
+          respondent_age_range?: string | null
+          respondent_country?: string | null
           started_at?: string
           updated_at?: string
           user_id: string
@@ -856,6 +860,8 @@ export type Database = {
           interview_config_id?: string
           langfuse_session_id?: string | null
           rating?: number | null
+          respondent_age_range?: string | null
+          respondent_country?: string | null
           started_at?: string
           updated_at?: string
           user_id?: string

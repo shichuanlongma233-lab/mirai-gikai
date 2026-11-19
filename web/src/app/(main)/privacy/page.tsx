@@ -48,6 +48,14 @@ export default function PrivacyPage() {
                 ),
               },
               {
+                id: "profile",
+                content: (
+                  <Item label="出身の国・地域と年代">
+                    言語を選んだ後に任意でお答えいただくもので、「答えない」も選べます。国や年代ごとの傾向を集計するためだけに使い、回答と一緒に保存します。
+                  </Item>
+                ),
+              },
+              {
                 id: "anonymous-id",
                 content: (
                   <Item label="匿名の識別子">

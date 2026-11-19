@@ -13,7 +13,12 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { LanguageButtons } from "@/lib/i18n/language-buttons";
 import { LanguageChooser } from "@/lib/i18n/language-chooser";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
-import { getRequestLocale, hasChosenLocale } from "@/lib/i18n/server";
+import { ProfileChooser } from "@/lib/i18n/profile-chooser";
+import {
+  getRequestLocale,
+  getRespondentProfile,
+  hasChosenLocale,
+} from "@/lib/i18n/server";
 
 /**
  * トップページ。回答を受け付けているトピック（公開中のインタビュー）を一覧にし、
@@ -21,9 +26,10 @@ import { getRequestLocale, hasChosenLocale } from "@/lib/i18n/server";
  * 初めて開いた人には、先に言語を選んでもらう。
  */
 export default async function Home() {
-  const [locale, chosen] = await Promise.all([
+  const [locale, chosen, profile] = await Promise.all([
     getRequestLocale(),
     hasChosenLocale(),
+    getRespondentProfile(),
   ]);
   const t = getDictionary(locale);
   const bills = await getInterviewOpenBills();
@@ -35,6 +41,7 @@ export default async function Home() {
   return (
     <>
       {!chosen && <LanguageChooser suggested={locale} />}
+      {chosen && !profile && <ProfileChooser locale={locale} />}
       <Container>
         <div className="pt-24 pb-10 md:py-16 text-center">
           <div className="mb-6">

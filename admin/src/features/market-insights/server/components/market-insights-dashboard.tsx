@@ -319,66 +319,29 @@ export function MarketInsightsDashboard({
         </Card>
       </div>
 
-      {/* 5. 言語ごとの違い */}
-      <Card>
-        <CardHeader>
-          <CardTitle>言語ごとの違い</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b text-left text-muted-foreground">
-                  <th className="py-2 pr-4 font-medium">言語</th>
-                  <th className="py-2 pr-4 font-medium">人数</th>
-                  <th className="py-2 pr-4 font-medium">好意的</th>
-                  <th className="py-2 pr-4 font-medium">否定的</th>
-                  <th className="py-2 pr-4 font-medium">買いたい</th>
-                  <th className="py-2 pr-4 font-medium">ギフトにしたい</th>
-                  <th className="py-2 font-medium">価格が高い</th>
-                </tr>
-              </thead>
-              <tbody>
-                {a.byLanguage.map((row) => (
-                  <tr key={row.language} className="border-b last:border-0">
-                    <td className="py-2 pr-4 font-medium">
-                      {LANGUAGE_LABELS[row.language]}
-                    </td>
-                    <td className="py-2 pr-4">{row.count}人</td>
-                    <td className="py-2 pr-4">
-                      {percent(row.breakdown.overall.positive, row.count)}%
-                    </td>
-                    <td className="py-2 pr-4">
-                      {percent(row.breakdown.overall.negative, row.count)}%
-                    </td>
-                    <td className="py-2 pr-4">
-                      {knownPct(
-                        row.breakdown.purchaseIntent.yes,
-                        row.breakdown.purchaseIntent
-                      )}
-                    </td>
-                    <td className="py-2 pr-4">
-                      {knownPct(
-                        row.breakdown.giftIntent.yes,
-                        row.breakdown.giftIntent
-                      )}
-                    </td>
-                    <td className="py-2">
-                      {knownPct(
-                        row.breakdown.priceImpression.expensive,
-                        row.breakdown.priceImpression
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            購入・ギフト・価格は、その話題が出た人のうちの割合です。
-          </p>
-        </CardContent>
-      </Card>
+      {/* 5. 言語・国・年代ごとの違い */}
+      <GroupTable
+        title="言語ごとの違い"
+        keyLabel="言語"
+        rows={a.byLanguage.map((row) => ({
+          key: row.language,
+          label: LANGUAGE_LABELS[row.language],
+          count: row.count,
+          breakdown: row.breakdown,
+        }))}
+      />
+      <GroupTable
+        title="国・地域ごとの違い"
+        keyLabel="出身の国・地域"
+        rows={a.byCountry}
+        emptyNote="国・地域を聞く前に回答した人は「答えていない」に入ります。"
+      />
+      <GroupTable
+        title="年代ごとの違い"
+        keyLabel="年代"
+        rows={a.byAge}
+        emptyNote="年代を聞く前に回答した人は「答えていない」に入ります。"
+      />
 
       {/* 6. 印象的な回答 */}
       {highlights.length > 0 && (
@@ -444,5 +407,84 @@ export function MarketInsightsDashboard({
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+/** 言語・国・年代などのグループごとに、反応・購入意向・価格の違いを並べる表 */
+function GroupTable({
+  title,
+  keyLabel,
+  rows,
+  emptyNote,
+}: {
+  title: string;
+  keyLabel: string;
+  rows: Array<{
+    key: string;
+    label: string;
+    count: number;
+    breakdown: Breakdown;
+  }>;
+  emptyNote?: string;
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b text-left text-muted-foreground">
+                <th className="py-2 pr-4 font-medium">{keyLabel}</th>
+                <th className="py-2 pr-4 font-medium">人数</th>
+                <th className="py-2 pr-4 font-medium">好意的</th>
+                <th className="py-2 pr-4 font-medium">否定的</th>
+                <th className="py-2 pr-4 font-medium">買いたい</th>
+                <th className="py-2 pr-4 font-medium">ギフトにしたい</th>
+                <th className="py-2 font-medium">価格が高い</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.key} className="border-b last:border-0">
+                  <td className="py-2 pr-4 font-medium">{row.label}</td>
+                  <td className="py-2 pr-4">{row.count}人</td>
+                  <td className="py-2 pr-4">
+                    {percent(row.breakdown.overall.positive, row.count)}%
+                  </td>
+                  <td className="py-2 pr-4">
+                    {percent(row.breakdown.overall.negative, row.count)}%
+                  </td>
+                  <td className="py-2 pr-4">
+                    {knownPct(
+                      row.breakdown.purchaseIntent.yes,
+                      row.breakdown.purchaseIntent
+                    )}
+                  </td>
+                  <td className="py-2 pr-4">
+                    {knownPct(
+                      row.breakdown.giftIntent.yes,
+                      row.breakdown.giftIntent
+                    )}
+                  </td>
+                  <td className="py-2">
+                    {knownPct(
+                      row.breakdown.priceImpression.expensive,
+                      row.breakdown.priceImpression
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          購入・ギフト・価格は、その話題が出た人のうちの割合です。
+          {emptyNote ? ` ${emptyNote}` : ""}
+        </p>
+      </CardContent>
+    </Card>
   );
 }

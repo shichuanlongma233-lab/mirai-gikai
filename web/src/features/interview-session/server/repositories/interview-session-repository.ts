@@ -118,6 +118,9 @@ export async function findSessionOwnerById(sessionId: string) {
 export async function createInterviewSessionRecord(params: {
   interviewConfigId: string;
   userId: string;
+  /** 回答者が答えた出身の国・地域と年代（集計用。答えていなければ null） */
+  respondentCountry?: string | null;
+  respondentAgeRange?: string | null;
 }): Promise<InterviewSession> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
@@ -126,6 +129,8 @@ export async function createInterviewSessionRecord(params: {
       interview_config_id: params.interviewConfigId,
       user_id: params.userId,
       started_at: new Date().toISOString(),
+      respondent_country: params.respondentCountry ?? null,
+      respondent_age_range: params.respondentAgeRange ?? null,
     })
     .select()
     .single();

@@ -18,6 +18,8 @@ function buildSession(
     updated_at: "2026-01-01T00:10:00Z",
     langfuse_session_id: null,
     rating: null,
+    respondent_country: null,
+    respondent_age_range: null,
     interview_report: null,
     interview_messages: [],
     ...overrides,

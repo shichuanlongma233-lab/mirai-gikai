@@ -4,6 +4,8 @@ import { getChatSupabaseUser } from "@/features/chat/server/utils/supabase-serve
 import { generateInitialQuestion } from "@/features/interview-session/server/services/generate-initial-question";
 import type { LanguageModel } from "ai";
 import type { Locale } from "@/lib/i18n/locales";
+import { getRespondentProfile } from "@/lib/i18n/server";
+import type { RespondentProfile } from "@mirai-gikai/shared/respondent-profile";
 import type { InterviewMessage, InterviewSession } from "../../shared/types";
 import {
   createInterviewSessionRecord,
@@ -17,6 +19,8 @@ type InitializeInterviewChatDeps = {
   model?: LanguageModel;
   /** 回答者が選んだ言語（最初の質問の言語） */
   locale?: Locale;
+  /** 言語選択の直後に答えてもらった国・年代（テストで差し替え用） */
+  getProfile?: () => Promise<RespondentProfile | null>;
 };
 
 type InitializeInterviewChatResult = {
@@ -49,9 +53,15 @@ export async function initializeInterviewChat(
   // セッション取得または作成
   let session = await findActiveInterviewSession(interviewConfigId, user.id);
   if (!session) {
+    // 国・年代は回答と一緒に記録する（集計用、答えていなければ null）
+    const profile = await (deps?.getProfile ?? getRespondentProfile)().catch(
+      () => null
+    );
     session = await createInterviewSessionRecord({
       interviewConfigId,
       userId: user.id,
+      respondentCountry: profile?.country ?? null,
+      respondentAgeRange: profile?.ageRange ?? null,
     });
   }
 

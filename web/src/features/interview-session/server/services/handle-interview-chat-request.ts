@@ -49,6 +49,10 @@ import { collectAskedQuestionIds } from "../utils/interview-logic";
 import { bulkModeLogic } from "../utils/interview-logic/bulk-mode";
 import { loopModeLogic } from "../utils/interview-logic/loop-mode";
 import { targetedModeLogic } from "../utils/interview-logic/targeted-mode";
+import {
+  detectCoveredQuestions,
+  mergeCoveredIntoContent,
+} from "./detect-covered-questions";
 import { saveInterviewMessage } from "./save-interview-message";
 
 // モードロジックのマップ
@@ -169,6 +173,30 @@ export async function handleInterviewChatRequest({
   // クライアントから受け取ったステージで判定
   const isSummaryPhase = currentStage === "summary";
 
+  // 長めの回答で、まだ聞いていない質問の答えがすでに出ていれば「済み」にする
+  // （同じことを重ねて聞いて回答者を不快にさせないため）
+  const coveredIds = isSummaryPhase
+    ? []
+    : await detectCoveredQuestions({
+        model:
+          deps?.chatModel ??
+          interviewConfig.chat_model ??
+          DEFAULT_INTERVIEW_CHAT_MODEL,
+        remainingQuestions: questions.filter(
+          (q) => !askedQuestionIds.has(q.id)
+        ),
+        messages: dbMessages.map((m) => ({
+          role: m.role,
+          content:
+            m.role === "assistant" ? parseAssistantText(m.content) : m.content,
+        })),
+        lastUserMessage:
+          lastMessage?.role === "user" ? lastMessage.content : undefined,
+      });
+  for (const id of coveredIds) {
+    askedQuestionIds.add(id);
+  }
+
   // 次に聞くべき質問を特定（モードに応じてロジックが異なる）
   const effectiveNextQuestionId = logic.calculateNextQuestionId({
     messages: dbMessages,
@@ -222,6 +250,7 @@ export async function handleInterviewChatRequest({
     chatModel: deps?.chatModel,
     summaryModel: deps?.summaryModel,
     configChatModel: interviewConfig.chat_model,
+    coveredIds,
     telemetry: {
       sessionId: session.id,
       billId,
@@ -247,6 +276,7 @@ async function generateStreamingResponse({
   chatModel,
   summaryModel,
   configChatModel,
+  coveredIds = [],
   telemetry,
 }: {
   systemPrompt: string;
@@ -258,6 +288,7 @@ async function generateStreamingResponse({
   chatModel?: LanguageModel;
   summaryModel?: LanguageModel;
   configChatModel?: string | null;
+  coveredIds?: string[];
   telemetry?: {
     sessionId: string;
     billId: string;
@@ -290,7 +321,7 @@ async function generateStreamingResponse({
         await saveInterviewMessage({
           sessionId,
           role: "assistant",
-          content: event.text,
+          content: mergeCoveredIntoContent(event.text, coveredIds),
         });
       }
     } catch (err) {
@@ -400,4 +431,14 @@ function extractGatewayCost(event: {
   const numericCost = Number(gatewayCost);
 
   return Number.isFinite(numericCost) ? numericCost : undefined;
+}
+
+/** 保存済みのAIの出力(JSON)から本文だけを取り出す */
+function parseAssistantText(content: string): string {
+  try {
+    const parsed = JSON.parse(content);
+    return typeof parsed?.text === "string" ? parsed.text : content;
+  } catch {
+    return content;
+  }
 }

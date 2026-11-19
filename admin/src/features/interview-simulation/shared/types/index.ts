@@ -143,7 +143,7 @@ export type PersonaSlotInput =
       kind: "bill";
       /** 立場ヒント（指定しなければ LLM が決める） */
       stanceHint?: "for" | "against" | "neutral";
-      /** 役割ヒント（例: "射場運用の民間事業者"） */
+      /** 役割ヒント（例: "日本の器が好きなアメリカの30代"） */
       roleHint?: string;
     };
 

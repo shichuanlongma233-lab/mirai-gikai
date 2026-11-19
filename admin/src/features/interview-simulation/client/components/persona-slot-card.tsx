@@ -137,7 +137,7 @@ export function PersonaSlotCard({
               type="text"
               value={slot.roleHint ?? ""}
               onChange={(e) => onUpdate({ ...slot, roleHint: e.target.value })}
-              placeholder="例: 射場運用の民間事業者"
+              placeholder="例: 日本の器が好きなアメリカの30代"
               className="h-8 text-xs"
               disabled={disabled}
             />

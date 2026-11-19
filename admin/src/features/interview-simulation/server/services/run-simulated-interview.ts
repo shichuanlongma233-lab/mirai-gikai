@@ -1,6 +1,12 @@
 import "server-only";
 
 import { buildBulkModeSystemPrompt } from "@mirai-gikai/shared/interview-prompts/bulk-mode";
+import {
+  buildCoveredQuestionsPrompt,
+  COVERED_CHECK_MIN_CHARS,
+  coveredQuestionsSchema,
+  filterCoveredIds,
+} from "@mirai-gikai/shared/interview-prompts/covered-questions";
 import { buildLoopModeSystemPrompt } from "@mirai-gikai/shared/interview-prompts/loop-mode";
 import { buildSummarySystemPrompt } from "@mirai-gikai/shared/interview-prompts/summary";
 import { buildTargetedModeSystemPrompt } from "@mirai-gikai/shared/interview-prompts/targeted-mode";
@@ -463,6 +469,13 @@ export async function runSimulatedInterview({
       };
       transcript.push(intervieweeTurn);
       onTurnComplete?.(turnIndex, intervieweeTurn);
+      // 本番と同じく、長めの回答で答えが出た未質問は「済み」にする
+      await markCoveredQuestions(
+        interviewerModel,
+        promptInputs.questions,
+        askedQuestionIds,
+        transcript
+      );
     } catch (error) {
       // 外部 abort はユーザー操作のキャンセルなのでエラーログに載せない。
       // 呼び出し側 (pipeline) に伝播させて全体を止める
@@ -534,4 +547,44 @@ export async function runSimulatedInterview({
     elapsedMs: Date.now() - startedAt,
     generatedReport,
   };
+}
+
+async function markCoveredQuestions(
+  model: AiModel,
+  questions: Array<{ id: string; question: string }>,
+  askedQuestionIds: Set<string>,
+  transcript: SimulatedTurn[]
+): Promise<void> {
+  const last = transcript[transcript.length - 1];
+  const remaining = questions.filter((q) => !askedQuestionIds.has(q.id));
+  if (
+    !last ||
+    last.role !== "interviewee" ||
+    last.content.length < COVERED_CHECK_MIN_CHARS ||
+    remaining.length === 0
+  ) {
+    return;
+  }
+  try {
+    const { system, user } = buildCoveredQuestionsPrompt({
+      remainingQuestions: remaining,
+      messages: transcript.map((turn) => ({
+        role: turn.role === "interviewee" ? "user" : "assistant",
+        content: turn.content,
+      })),
+    });
+    const { object } = await generateObject({
+      model,
+      schema: coveredQuestionsSchema,
+      system,
+      messages: [{ role: "user", content: user }],
+      maxRetries: 0,
+      abortSignal: AbortSignal.timeout(8000),
+    });
+    for (const id of filterCoveredIds(object.covered_question_ids, remaining)) {
+      askedQuestionIds.add(id);
+    }
+  } catch (error) {
+    console.warn("[Simulation] covered-questions check skipped:", error);
+  }
 }

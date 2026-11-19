@@ -5,7 +5,8 @@ import {
   buildCoveredQuestionsPrompt,
   COVERED_CHECK_MIN_CHARS,
   coveredQuestionsSchema,
-  filterCoveredIds,
+  pickCoveredIds,
+  resolveNextStage,
 } from "@mirai-gikai/shared/interview-prompts/covered-questions";
 import { buildLoopModeSystemPrompt } from "@mirai-gikai/shared/interview-prompts/loop-mode";
 import { buildSummarySystemPrompt } from "@mirai-gikai/shared/interview-prompts/summary";
@@ -383,6 +384,17 @@ export async function runSimulatedInterview({
       break;
     }
 
+    // 質問で終わっているのにまとめへ進もうとした場合は、答えを聞くため chat に戻す（本番と同じ）
+    interviewerOutput = {
+      ...interviewerOutput,
+      next_stage:
+        resolveNextStage(
+          interviewerOutput.next_stage,
+          interviewerOutput.text,
+          "chat"
+        ) ?? "chat",
+    };
+
     const interviewerQuickReplies =
       interviewerOutput.quick_replies &&
       interviewerOutput.quick_replies.length > 0
@@ -402,10 +414,7 @@ export async function runSimulatedInterview({
     if (interviewerOutput.question_id) {
       askedQuestionIds.add(interviewerOutput.question_id);
     }
-    // 本番と同じく、会話で答えが出た質問は済みにして重ねて聞かない
-    for (const id of interviewerOutput.covered_question_ids ?? []) {
-      askedQuestionIds.add(id);
-    }
+    // 本番と同じく、済みにするのは別判定（markCoveredQuestions）で確かめたものだけ
 
     if (
       interviewerOutput.next_stage === "summary" ||
@@ -581,7 +590,7 @@ async function markCoveredQuestions(
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(8000),
     });
-    for (const id of filterCoveredIds(object.covered_question_ids, remaining)) {
+    for (const id of pickCoveredIds(object, remaining)) {
       askedQuestionIds.add(id);
     }
   } catch (error) {

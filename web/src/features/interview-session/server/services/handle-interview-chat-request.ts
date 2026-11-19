@@ -51,7 +51,7 @@ import { loopModeLogic } from "../utils/interview-logic/loop-mode";
 import { targetedModeLogic } from "../utils/interview-logic/targeted-mode";
 import {
   detectCoveredQuestions,
-  mergeCoveredIntoContent,
+  setCoveredInContent,
 } from "./detect-covered-questions";
 import { saveInterviewMessage } from "./save-interview-message";
 
@@ -321,7 +321,7 @@ async function generateStreamingResponse({
         await saveInterviewMessage({
           sessionId,
           role: "assistant",
-          content: mergeCoveredIntoContent(event.text, coveredIds),
+          content: setCoveredInContent(event.text, coveredIds),
         });
       }
     } catch (err) {

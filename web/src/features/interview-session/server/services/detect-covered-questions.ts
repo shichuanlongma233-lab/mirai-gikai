@@ -4,7 +4,7 @@ import {
   buildCoveredQuestionsPrompt,
   COVERED_CHECK_MIN_CHARS,
   coveredQuestionsSchema,
-  filterCoveredIds,
+  pickCoveredIds,
 } from "@mirai-gikai/shared/interview-prompts/covered-questions";
 import { generateObject, type LanguageModel } from "ai";
 
@@ -41,26 +41,29 @@ export async function detectCoveredQuestions(params: {
       maxRetries: 0,
       abortSignal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    return filterCoveredIds(object.covered_question_ids, remainingQuestions);
+    return pickCoveredIds(object, remainingQuestions);
   } catch (error) {
     console.warn("[detectCoveredQuestions] skipped:", error);
     return [];
   }
 }
 
-/** 保存するAIの出力(JSON)に、判定済みの質問IDを足す。JSONでなければそのまま返す */
-export function mergeCoveredIntoContent(
+/**
+ * 保存するAIの出力(JSON)の covered_question_ids を、別判定で確かめた質問IDに置き換える。
+ * インタビュアー本体の自己申告は、条件つきの質問まで済みにしてしまうことがあるため使わない。
+ * JSONでなければそのまま返す。
+ */
+export function setCoveredInContent(
   content: string,
   coveredIds: string[]
 ): string {
-  if (coveredIds.length === 0) return content;
   try {
     const parsed = JSON.parse(content);
     if (typeof parsed !== "object" || parsed === null) return content;
-    const existing = Array.isArray(parsed.covered_question_ids)
-      ? parsed.covered_question_ids
-      : [];
-    parsed.covered_question_ids = [...new Set([...existing, ...coveredIds])];
+    if (coveredIds.length === 0 && !("covered_question_ids" in parsed)) {
+      return content;
+    }
+    parsed.covered_question_ids = coveredIds.length > 0 ? coveredIds : null;
     return JSON.stringify(parsed);
   } catch {
     return content;

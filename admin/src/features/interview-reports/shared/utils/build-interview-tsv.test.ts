@@ -20,6 +20,7 @@ function buildSession(
     rating: null,
     respondent_country: null,
     respondent_age_range: null,
+    answer_memo: null,
     interview_report: null,
     interview_messages: [],
     ...overrides,

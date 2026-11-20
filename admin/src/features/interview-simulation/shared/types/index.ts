@@ -153,6 +153,8 @@ export type PersonaSlotInput =
 export interface MultiSimulationRunRequest {
   /** 対象トピック ID（全スロット共通） */
   billId: string;
+  /** 保存済みの設定。回答メモ方式なら柱をここから読む */
+  configId?: string;
   /** 各スロットのペルソナ定義（1〜MAX_PERSONA_SLOTS） */
   personaSlots: PersonaSlotInput[];
   /** 改善版 = 編集中 config スナップショット（全スロット共通） */

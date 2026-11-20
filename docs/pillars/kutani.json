@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "goal": "九谷焼の豆皿を海外（まずは米国）で売るときの、見せ方・価格・売り場を決める",
+  "audience": "海外在住で、和食器や日本の工芸に少しでも関心がある大人",
+  "durationMinutes": 10,
+  "avoid": ["収入・政治・宗教など個人的なことを聞く", "買うことを前提にした聞き方", "専門用語の説明を長くする"],
+  "pillars": [
+    {
+      "id": "first",
+      "name": "第一印象",
+      "intent": "写真や説明を見て、手に取りたくなるか。何が目を引くか",
+      "points": [
+        {
+          "id": "first.impression",
+          "name": "第一印象",
+          "question": "九谷焼の豆皿を見て、最初にどんな印象を持ちましたか？",
+          "answeredWhen": "見た目（色・柄・形・大きさなど）への感想が1つ以上、具体的にある",
+          "notAnsweredExamples": ["いいね", "きれい（何がかが分からない）"],
+          "followUp": { "max": 1, "ask": "特に目を引いた部分（色・柄・形など）" }
+        },
+        {
+          "id": "first.compare",
+          "name": "似たものとの比べ方",
+          "question": "今まで見たことのある食器や工芸品と比べて、どこが違うと感じますか？",
+          "answeredWhen": "比べた対象か、違うと感じた点が分かる",
+          "required": false,
+          "followUp": { "max": 0 }
+        }
+      ]
+    },
+    {
+      "id": "use",
+      "name": "使い方の想像",
+      "intent": "自分の生活でどう使うか想像できるか（売り場や説明文の見せ方を決める）",
+      "points": [
+        {
+          "id": "use.scene",
+          "name": "使う場面",
+          "question": "もし手元にあったら、どんな場面で使いそうですか？",
+          "answeredWhen": "使う場面（食事・おつまみ・アクセサリー置き・飾るなど）が1つ以上分かる",
+          "notAnsweredExamples": ["いろいろ使えそう"],
+          "followUp": { "max": 1, "ask": "その場面を思い浮かべた理由" }
+        }
+      ]
+    },
+    {
+      "id": "purchase",
+      "name": "購入意向",
+      "intent": "買いたいかどうかと、その理由",
+      "points": [
+        {
+          "id": "purchase.intent",
+          "name": "買いたいか",
+          "question": "この豆皿を自分用に買いたいと思いますか？",
+          "answeredWhen": "買いたい・迷う・買わないのどれかが分かる",
+          "answerType": "choice",
+          "choices": ["買いたい", "迷う", "買わない"],
+          "followUp": { "max": 1, "ask": "そう思った一番の理由" },
+          "overlapsWith": ["gift.intent"]
+        }
+      ]
+    },
+    {
+      "id": "price",
+      "name": "価格",
+      "intent": "1枚の値段をどこに置くか（18〜28ドルを想定）",
+      "askIf": "purchase.intent!=買わない",
+      "points": [
+        {
+          "id": "price.feel",
+          "name": "22ドルの感じ方",
+          "question": "1枚22ドル（約3,300円）だとしたら、どう感じますか？",
+          "answeredWhen": "安い・妥当・高いのどれかが分かる",
+          "answerType": "choice",
+          "choices": ["安い", "ちょうどよい", "少し高い", "高すぎて買わない"],
+          "followUp": { "max": 1, "ask": "そう感じた理由" }
+        },
+        {
+          "id": "price.max",
+          "name": "出せる上限",
+          "question": "1枚いくらまでなら買ってもいいと思いますか？",
+          "answeredWhen": "金額（通貨が分かる形）が分かる",
+          "answerType": "number",
+          "unit": "USD",
+          "required": false,
+          "followUp": { "max": 0 }
+        }
+      ]
+    },
+    {
+      "id": "gift",
+      "name": "贈り物と買う場所",
+      "intent": "贈り物需要があるか、どこで買いたいか（売り場を決める）",
+      "points": [
+        {
+          "id": "gift.intent",
+          "name": "贈り物にするか",
+          "question": "誰かへの贈り物にするとしたら、どんな人に贈りたいですか？",
+          "answeredWhen": "贈りたい相手か、贈らない理由が分かる",
+          "followUp": { "max": 0 }
+        },
+        {
+          "id": "gift.channel",
+          "name": "買いたい場所",
+          "question": "こういう器は、どこで買えるとうれしいですか？",
+          "answeredWhen": "買いたい場所（ネット・専門店・美術館ショップ・旅行先など）が1つ以上分かる",
+          "answerType": "choice",
+          "choices": ["ネット通販", "雑貨・インテリアの店", "美術館のショップ", "日本への旅行中"],
+          "followUp": { "max": 0 }
+        }
+      ]
+    }
+  ]
+}

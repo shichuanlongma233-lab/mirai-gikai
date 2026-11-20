@@ -8,6 +8,10 @@
     "test:watch": "vitest"
   },
   "exports": {
+    "./pillars": {
+      "types": "./src/pillars/index.ts",
+      "default": "./src/pillars/index.ts"
+    },
     "./respondent-profile": {
       "types": "./src/respondent-profile/profile.ts",
       "default": "./src/respondent-profile/profile.ts"

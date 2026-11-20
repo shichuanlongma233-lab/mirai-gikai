@@ -1,6 +1,13 @@
 import "server-only";
 
 import {
+  createMemo,
+  type EngineResult,
+  type PillarSet,
+  runTurn,
+  startInterview,
+} from "@mirai-gikai/shared/pillars";
+import {
   convertToModelMessages,
   type LanguageModel,
   type LanguageModelUsage,
@@ -36,7 +43,7 @@ import type {
 import { DEFAULT_INTERVIEW_CHAT_MODEL } from "@/lib/ai/models";
 import { env } from "@/lib/env";
 import { buildAiLanguageInstruction } from "@/lib/i18n/ai-language-instruction";
-import { DEFAULT_LOCALE } from "@/lib/i18n/locales";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import { logger } from "@/lib/logger";
 import { buildSummaryModelMessages } from "../../shared/utils/build-summary-model-messages";
 import { ensureTrailingUserMessage } from "../../shared/utils/ensure-trailing-user-message";
@@ -53,6 +60,17 @@ import {
   detectCoveredQuestions,
   setCoveredInContent,
 } from "./detect-covered-questions";
+import {
+  buildMaterial,
+  buildMemoSummaryAddition,
+  createEngineDeps,
+  engineResultToContent,
+  getMemoPillars,
+  jsonTextResponse,
+  loadAnswerMemo,
+  resolveEngineModel,
+  saveAnswerMemo,
+} from "./memo-engine";
 import { saveInterviewMessage } from "./save-interview-message";
 
 // モードロジックのマップ
@@ -173,6 +191,25 @@ export async function handleInterviewChatRequest({
   // クライアントから受け取ったステージで判定
   const isSummaryPhase = currentStage === "summary";
 
+  // 回答メモ方式（柱）のインタビューは、別の進め方で1往復進める
+  const memoPillars = getMemoPillars(interviewConfig);
+  if (memoPillars && !isSummaryPhase) {
+    return handleMemoChatTurn({
+      set: memoPillars.set,
+      version: memoPillars.version,
+      interviewConfig,
+      bill,
+      session,
+      dbMessages,
+      lastUserText:
+        lastMessage?.role === "user" ? lastMessage.content.trim() : "",
+      locale,
+      userId,
+      billId,
+      chatModel: deps?.chatModel,
+    });
+  }
+
   // 長めの回答で、まだ聞いていない質問の答えがすでに出ていれば「済み」にする
   // （同じことを重ねて聞いて回答者を不快にさせないため）
   const coveredIds = isSummaryPhase
@@ -235,7 +272,12 @@ export async function handleInterviewChatRequest({
         askedQuestionIds,
         remainingMinutes,
       });
-  const systemPrompt = basePrompt + buildAiLanguageInstruction(locale);
+  // 回答メモ方式なら、まとめは回答メモをもとに作る
+  const memoAddition = isSummaryPhase
+    ? await buildMemoSummaryAddition(interviewConfig, session.id)
+    : "";
+  const systemPrompt =
+    basePrompt + memoAddition + buildAiLanguageInstruction(locale);
 
   logger.debug("System Prompt:", systemPrompt);
 
@@ -431,6 +473,79 @@ function extractGatewayCost(event: {
   const numericCost = Number(gatewayCost);
 
   return Number.isFinite(numericCost) ? numericCost : undefined;
+}
+
+/**
+ * 回答メモ方式の1往復。
+ * 記録係（AI）→ 進行係（ルール）→ 聞き手（AI）→ 最終チェック の結果を、
+ * 従来と同じJSONの形で返す（画面側はそのまま読める）。
+ */
+async function handleMemoChatTurn({
+  set,
+  version,
+  interviewConfig,
+  bill,
+  session,
+  dbMessages,
+  lastUserText,
+  locale,
+  userId,
+  billId,
+  chatModel,
+}: {
+  set: PillarSet;
+  version: number;
+  interviewConfig: InterviewConfig;
+  bill: BillWithContent | null;
+  session: InterviewSession;
+  dbMessages: InterviewMessage[];
+  lastUserText: string;
+  locale: Locale;
+  userId: string;
+  billId: string;
+  chatModel?: LanguageModel;
+}): Promise<Response> {
+  const engineDeps = createEngineDeps({
+    model: resolveEngineModel(interviewConfig, chatModel),
+    userId,
+    sessionId: session.id,
+    billId,
+  });
+  const ctx = { set, locale, material: buildMaterial(bill) };
+  const texts = dbMessages.map((m) => ({
+    role: m.role,
+    content: m.role === "assistant" ? parseAssistantText(m.content) : m.content,
+  }));
+
+  let result: EngineResult;
+  const memo = await loadAnswerMemo(session.id, version);
+  if (!lastUserText) {
+    result = await startInterview(ctx, engineDeps, { pillarVersion: version });
+  } else {
+    const lastAssistant = [...texts]
+      .reverse()
+      .find((m) => m.role === "assistant");
+    result = await runTurn(ctx, engineDeps, {
+      // 最初の質問が従来方式で作られていたなど、メモがなければここから始める
+      memo: memo ?? createMemo(set, new Date(session.started_at), version),
+      userMessage: lastUserText,
+      lastQuestion: lastAssistant?.content ?? "",
+      recent: texts.slice(-4),
+    });
+  }
+
+  const content = engineResultToContent(result);
+  try {
+    await saveInterviewMessage({
+      sessionId: session.id,
+      role: "assistant",
+      content,
+    });
+    await saveAnswerMemo(session.id, result.memo);
+  } catch (err) {
+    console.error("Failed to save memo engine turn:", err);
+  }
+  return jsonTextResponse(content);
 }
 
 /** 保存済みのAIの出力(JSON)から本文だけを取り出す */

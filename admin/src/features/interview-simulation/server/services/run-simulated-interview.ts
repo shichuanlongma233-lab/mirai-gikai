@@ -17,6 +17,17 @@ import type {
   InterviewConfig as PromptInterviewConfig,
   InterviewQuestion as PromptInterviewQuestion,
 } from "@mirai-gikai/shared/interview-prompts/types";
+import {
+  type AnswerMemo,
+  buildMemoSummaryInstruction,
+  type EngineResult,
+  memoToSummaryText,
+  type PillarSet,
+  recorderOutputSchema,
+  runTurn,
+  startInterview,
+  writerOutputSchema,
+} from "@mirai-gikai/shared/pillars";
 import { generateObject, generateText, type ModelMessage } from "ai";
 import { z } from "zod";
 import type { AiModel } from "@/lib/ai/models";
@@ -114,6 +125,8 @@ interface RunSimulatedInterviewParams {
   onTurnComplete?: (turnIndex: number, turn: SimulatedTurn) => void;
   /** クライアント abort 時に LLM 呼び出しも停止させる */
   signal?: AbortSignal;
+  /** 回答メモ方式（柱）で試すときの柱。あれば本番の新方式と同じ進め方で動かす */
+  memoEngine?: { set: PillarSet } | null;
 }
 
 /**
@@ -268,7 +281,24 @@ export async function runSimulatedInterview({
   estimatedDurationMinutes,
   onTurnComplete,
   signal,
+  memoEngine,
 }: RunSimulatedInterviewParams): Promise<SimulationRun> {
+  if (memoEngine) {
+    return runMemoSimulatedInterview({
+      set: memoEngine.set,
+      persona,
+      interviewerModel,
+      intervieweeModel,
+      traceId,
+      kind,
+      styleAnchors,
+      maxTurns,
+      promptInputs,
+      summaryModel,
+      onTurnComplete,
+      signal,
+    });
+  }
   const questionsCount = promptInputs.questions.length;
   const effectiveMaxTurns = deriveTargetMaxTurns(
     maxTurns,
@@ -596,4 +626,238 @@ async function markCoveredQuestions(
   } catch (error) {
     console.warn("[Simulation] covered-questions check skipped:", error);
   }
+}
+
+/** シミュで1往復にかかったとみなす時間（分）。実時間は数秒なので、これで時間の進みを再現する */
+const MEMO_SIM_MINUTES_PER_TURN = 0.6;
+
+/**
+ * 回答メモ方式（柱）のシミュレーション。本番の web と同じ共通エンジン（記録係→進行係→聞き手→最終チェック）を使う。
+ */
+async function runMemoSimulatedInterview({
+  set,
+  persona,
+  interviewerModel,
+  intervieweeModel,
+  traceId,
+  kind,
+  styleAnchors,
+  maxTurns = SIMULATION_MAX_TURNS,
+  promptInputs,
+  summaryModel,
+  onTurnComplete,
+  signal,
+}: Pick<
+  RunSimulatedInterviewParams,
+  | "persona"
+  | "interviewerModel"
+  | "intervieweeModel"
+  | "traceId"
+  | "kind"
+  | "styleAnchors"
+  | "maxTurns"
+  | "promptInputs"
+  | "summaryModel"
+  | "onTurnComplete"
+  | "signal"
+> & { set: PillarSet }): Promise<SimulationRun> {
+  const startedAt = Date.now();
+  const clockStart = new Date();
+  let simTurn = 0;
+  const call =
+    <T>(label: string, schema: z.ZodType<T>) =>
+    async (p: { system: string; prompt: string }): Promise<T> => {
+      const { object } = await withTimeoutRetry(
+        (attemptSignal) =>
+          generateObject({
+            model: interviewerModel,
+            schema,
+            system: p.system,
+            prompt: p.prompt,
+            abortSignal: attemptSignal,
+            experimental_telemetry: {
+              isEnabled: true,
+              functionId: label,
+              metadata: { traceId, kind, turnIndex: String(simTurn) },
+            },
+          }),
+        {
+          externalSignal: signal,
+          timeoutMs: LLM_TIMEOUT_MS.interviewTurn,
+          maxAttempts: LLM_MAX_ATTEMPTS,
+          label,
+        }
+      );
+      return object as T;
+    };
+  const deps = {
+    record: call("sim-memo-recorder", recorderOutputSchema),
+    write: call("sim-memo-writer", writerOutputSchema),
+    now: () =>
+      new Date(
+        clockStart.getTime() + simTurn * MEMO_SIM_MINUTES_PER_TURN * 60000
+      ),
+  };
+  const ctx = {
+    set,
+    locale: "ja" as const,
+    material: [
+      promptInputs.bill?.bill_content?.title,
+      promptInputs.bill?.bill_content?.summary,
+    ]
+      .filter(Boolean)
+      .join("\n")
+      .slice(0, 300),
+  };
+
+  const transcript: SimulatedTurn[] = [];
+  const askedPointIds = new Set<string>();
+  let stopReason: SimulationRun["stopReason"] = "max_turns";
+  let memo: AnswerMemo | null = null;
+  const intervieweeBudget = styleAnchors?.originalIntervieweeTurns;
+  const pointsCount = set.pillars.reduce((n, p) => n + p.points.length, 0);
+
+  for (let turnIndex = 0; turnIndex < maxTurns; turnIndex++) {
+    simTurn = turnIndex;
+    let result: EngineResult;
+    try {
+      if (!memo) {
+        result = await startInterview(ctx, deps);
+      } else {
+        const lastUser = transcript[transcript.length - 1];
+        const lastQ = [...transcript]
+          .reverse()
+          .find((t) => t.role === "interviewer");
+        result = await runTurn(ctx, deps, {
+          memo,
+          userMessage: lastUser?.content ?? "",
+          lastQuestion: lastQ?.content ?? "",
+          recent: transcript.slice(-4).map((t) => ({
+            role: t.role === "interviewer" ? "assistant" : "user",
+            content: t.content,
+          })),
+        });
+      }
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      console.error("[Simulation] memo engine failed:", error);
+      stopReason = "interviewer_error";
+      break;
+    }
+    memo = result.memo;
+    if (result.pointId) askedPointIds.add(result.pointId);
+
+    const interviewerTurn: SimulatedTurn = {
+      role: "interviewer",
+      content: result.text,
+      topic_title: result.pillarName,
+      question_id: result.pointId,
+      next_stage: result.nextStage,
+      quick_replies: result.quickReplies,
+    };
+    transcript.push(interviewerTurn);
+    onTurnComplete?.(turnIndex, interviewerTurn);
+
+    if (result.nextStage === "summary") {
+      stopReason = "summary";
+      break;
+    }
+    if (turnIndex === maxTurns - 1) break;
+
+    const intervieweeTurnNumber =
+      transcript.filter((t) => t.role === "interviewee").length + 1;
+    try {
+      const { text } = await withTimeoutRetry(
+        (attemptSignal) =>
+          generateText({
+            model: intervieweeModel,
+            system: buildIntervieweeSystemPrompt(
+              persona,
+              styleAnchors,
+              { intervieweeTurnNumber, expectedBudget: intervieweeBudget },
+              result.quickReplies
+            ),
+            messages: asIntervieweeMessages(transcript),
+            abortSignal: attemptSignal,
+            experimental_telemetry: {
+              isEnabled: true,
+              functionId: "sim-interviewee",
+              metadata: { traceId, kind, turnIndex: String(turnIndex) },
+            },
+          }),
+        {
+          externalSignal: signal,
+          timeoutMs: LLM_TIMEOUT_MS.interviewTurn,
+          maxAttempts: LLM_MAX_ATTEMPTS,
+          label: "sim-interviewee",
+        }
+      );
+      const intervieweeTurn: SimulatedTurn = {
+        role: "interviewee",
+        content: text.trim(),
+      };
+      transcript.push(intervieweeTurn);
+      onTurnComplete?.(turnIndex, intervieweeTurn);
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      console.error("[Simulation] interviewee LLM failed:", error);
+      stopReason = "interviewee_error";
+      break;
+    }
+  }
+
+  let generatedReport: SimGeneratedReport | null = null;
+  if (stopReason === "summary" || stopReason === "max_turns") {
+    try {
+      const summarySystemPrompt =
+        buildSummarySystemPrompt({
+          bill: promptInputs.bill,
+          interviewConfig: promptInputs.interviewConfig,
+          messages: transcript.map((t) => ({
+            role: t.role === "interviewer" ? "assistant" : "user",
+            content: t.content,
+          })),
+        }) + (memo ? buildMemoSummaryInstruction(set, memo) : "");
+      const { object } = await withTimeoutRetry(
+        (attemptSignal) =>
+          generateObject({
+            model: summaryModel ?? interviewerModel,
+            schema: simGeneratedReportSchema,
+            system: summarySystemPrompt,
+            prompt:
+              "上記の会話履歴をもとに、スキーマに従ってレポートを JSON で生成してください。",
+            abortSignal: attemptSignal,
+            experimental_telemetry: {
+              isEnabled: true,
+              functionId: "sim-summary",
+              metadata: { traceId, kind },
+            },
+          }),
+        {
+          externalSignal: signal,
+          timeoutMs: LLM_TIMEOUT_MS.summary,
+          maxAttempts: LLM_MAX_ATTEMPTS,
+          label: "sim-summary",
+        }
+      );
+      generatedReport = object;
+    } catch (error) {
+      console.warn("[Simulation] summary LLM failed:", error);
+    }
+  }
+
+  return {
+    promptKind: kind,
+    // 画面の「system prompt」欄に、最後の回答メモを出す（何が埋まったかを見るため）
+    interviewerSystemPrompt: memo
+      ? `（回答メモ方式）最後の回答メモ\n\n${memoToSummaryText(set, memo)}`
+      : "（回答メモ方式）",
+    interviewerModel,
+    intervieweeModel,
+    transcript,
+    metrics: computeMetrics(transcript, askedPointIds, pointsCount),
+    stopReason,
+    elapsedMs: Date.now() - startedAt,
+    generatedReport,
+  };
 }

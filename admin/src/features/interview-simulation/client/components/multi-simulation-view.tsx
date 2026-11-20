@@ -167,6 +167,7 @@ export function MultiSimulationView({
 
     const body: MultiSimulationRunRequest = {
       billId,
+      configId,
       personaSlots: slots,
       improvedConfig: snapshot,
       interviewerModel: resolvedInterviewerModel,
@@ -177,6 +178,7 @@ export function MultiSimulationView({
     await run(body);
   }, [
     billId,
+    configId,
     slots,
     getFormValues,
     getCurrentQuestions,

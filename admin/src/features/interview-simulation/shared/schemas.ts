@@ -324,6 +324,8 @@ const promptOverridesPayloadSchema = z
 export const multiSimulationRunRequestSchema = z
   .object({
     billId: z.string().min(1).max(ID_MAX),
+    /** 保存済みの設定。回答メモ方式なら柱をここから読む */
+    configId: z.string().min(1).max(ID_MAX).optional(),
     personaSlots: z
       .array(personaSlotInputSchema)
       .min(1, "ペルソナを 1 件以上選択してください")

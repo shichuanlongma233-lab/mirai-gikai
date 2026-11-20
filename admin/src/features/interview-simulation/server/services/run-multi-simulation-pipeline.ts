@@ -1,3 +1,4 @@
+import type { PillarSet } from "@mirai-gikai/shared/pillars";
 import "server-only";
 
 import { randomUUID } from "node:crypto";
@@ -57,6 +58,8 @@ interface RunMultiSimulationParams {
   onProgress?: (event: MultiSimulationProgressEvent) => void;
   /** 中断シグナル。末端 LLM 呼び出しまで伝播 */
   signal?: AbortSignal;
+  /** 回答メモ方式（柱）で試すときの柱 */
+  memoEngine?: { set: PillarSet } | null;
 }
 
 /**
@@ -246,6 +249,7 @@ export async function runMultiSimulationPipeline(
           },
           estimatedDurationMinutes:
             params.improvedPromptInputs.estimatedDurationMinutes,
+          memoEngine: params.memoEngine ?? null,
           onTurnComplete: emit
             ? (turnIndex, turn) =>
                 emit({ type: "turn", personaIndex, turnIndex, turn })

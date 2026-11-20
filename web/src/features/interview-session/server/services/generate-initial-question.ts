@@ -1,5 +1,6 @@
 import "server-only";
 
+import { startInterview } from "@mirai-gikai/shared/pillars";
 import { generateText, type LanguageModel, Output } from "ai";
 import { getBillByIdAdmin } from "@/features/bills/server/loaders/get-bill-by-id-admin";
 import {
@@ -18,6 +19,14 @@ import type { InterviewMessage } from "../../shared/types";
 import { overrideInitialTopicTitle } from "../../shared/utils/override-initial-topic-title";
 import { createInterviewMessage } from "../repositories/interview-session-repository";
 import { buildInterviewSystemPrompt } from "../utils/build-interview-system-prompt";
+import {
+  buildMaterial,
+  createEngineDeps,
+  engineResultToContent,
+  getMemoPillars,
+  resolveEngineModel,
+  saveAnswerMemo,
+} from "./memo-engine";
 
 type GenerateInitialQuestionParams = {
   sessionId: string;
@@ -56,6 +65,45 @@ export async function generateInitialQuestion({
 
     if (!interviewConfig) {
       throw new Error("Interview config not found");
+    }
+
+    // 回答メモ方式（柱）なら、柱の最初の点から始める
+    const memoPillars = getMemoPillars(interviewConfig);
+    if (memoPillars) {
+      try {
+        const withinLimit = await isWithinDailyCostLimit(
+          userId,
+          env.chat.dailyUserCostLimitUsd
+        );
+        if (!withinLimit) {
+          console.error("Daily cost limit reached for initial question");
+          return null;
+        }
+      } catch (error) {
+        console.error("Cost limit check error:", error);
+        return null;
+      }
+      const result = await startInterview(
+        { set: memoPillars.set, locale, material: buildMaterial(bill) },
+        createEngineDeps({
+          model: resolveEngineModel(interviewConfig, deps?.model),
+          userId,
+          sessionId,
+          billId,
+        }),
+        { pillarVersion: memoPillars.version }
+      );
+      const content = overrideInitialTopicTitle(
+        engineResultToContent(result),
+        getDictionary(locale).chat.introTopic
+      );
+      const message = await createInterviewMessage({
+        sessionId,
+        role: "assistant",
+        content,
+      });
+      await saveAnswerMemo(sessionId, result.memo);
+      return message;
     }
 
     // プロンプトを構築（初期質問なので currentStage は chat、askedQuestionIds は空）

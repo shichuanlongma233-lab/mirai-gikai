@@ -523,7 +523,10 @@ export type Database = {
           id: string
           mode: Database["public"]["Enums"]["interview_mode_enum"]
           name: string
+          pillars: Json | null
+          pillars_version: number
           prompt_overrides: Json | null
+          question_engine: string
           published_at: string | null
           status: Database["public"]["Enums"]["interview_config_status_enum"]
           themes: string[] | null
@@ -538,7 +541,10 @@ export type Database = {
           id?: string
           mode?: Database["public"]["Enums"]["interview_mode_enum"]
           name: string
+          pillars?: Json | null
+          pillars_version?: number
           prompt_overrides?: Json | null
+          question_engine?: string
           published_at?: string | null
           status?: Database["public"]["Enums"]["interview_config_status_enum"]
           themes?: string[] | null
@@ -553,7 +559,10 @@ export type Database = {
           id?: string
           mode?: Database["public"]["Enums"]["interview_mode_enum"]
           name?: string
+          pillars?: Json | null
+          pillars_version?: number
           prompt_overrides?: Json | null
+          question_engine?: string
           published_at?: string | null
           status?: Database["public"]["Enums"]["interview_config_status_enum"]
           themes?: string[] | null
@@ -825,6 +834,7 @@ export type Database = {
       }
       interview_sessions: {
         Row: {
+          answer_memo: Json | null
           archived_at: string | null
           completed_at: string | null
           created_at: string
@@ -839,6 +849,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          answer_memo?: Json | null
           archived_at?: string | null
           completed_at?: string | null
           created_at?: string
@@ -853,6 +864,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          answer_memo?: Json | null
           archived_at?: string | null
           completed_at?: string | null
           created_at?: string

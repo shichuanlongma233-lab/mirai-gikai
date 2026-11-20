@@ -2,6 +2,8 @@ import type {
   PromptBillInput,
   InterviewQuestion as PromptInterviewQuestion,
 } from "@mirai-gikai/shared/interview-prompts/types";
+import { validatePillarSet } from "@mirai-gikai/shared/pillars";
+import { createAdminClient } from "@mirai-gikai/supabase";
 import { requireAdmin } from "@/features/auth/server/lib/auth-server";
 import { runMultiSimulationPipeline } from "@/features/interview-simulation/server/services/run-multi-simulation-pipeline";
 import { multiSimulationRunRequestSchema } from "@/features/interview-simulation/shared/schemas";
@@ -67,6 +69,9 @@ async function buildPipelineParams(params: MultiSimulationRunRequest) {
     }));
 
   const billTitle = billData.billTitle || billData.bill.name || "このトピック";
+  const memoEngine = params.configId
+    ? await loadMemoEngine(params.configId, params.billId)
+    : null;
 
   return {
     ok: true as const,
@@ -94,8 +99,24 @@ async function buildPipelineParams(params: MultiSimulationRunRequest) {
       interviewerModel: params.interviewerModel,
       intervieweeModel: params.intervieweeModel,
       personaModel: params.personaModel,
+      memoEngine,
     },
   };
+}
+
+/** 保存済み設定が回答メモ方式なら、柱を読む（そうでなければ null） */
+async function loadMemoEngine(configId: string, billId: string) {
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from("interview_configs")
+    .select("bill_id, question_engine, pillars")
+    .eq("id", configId)
+    .maybeSingle();
+  if (!data || data.bill_id !== billId || data.question_engine !== "memo") {
+    return null;
+  }
+  const r = validatePillarSet(data.pillars);
+  return r.ok ? { set: r.set } : null;
 }
 
 export async function POST(request: Request) {

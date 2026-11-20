@@ -4,9 +4,11 @@ import { getBillByIdAdmin } from "@/features/bills/server/loaders/get-bill-by-id
 import { validatePreviewToken } from "@/features/bills/server/loaders/validate-preview-token";
 import { InterviewLPPage } from "@/features/interview-config/client/components/interview-lp-page";
 import { getInterviewConfigAdmin } from "@/features/interview-config/server/loaders/get-interview-config-admin";
+import { translateTopicIntro } from "@/features/interview-config/server/services/translate-topic-intro";
 import { getUserReportsByInterviewConfig } from "@/features/interview-report/server/loaders/get-user-reports-by-interview-config";
 import { getLatestInterviewSession } from "@/features/interview-session/server/loaders/get-latest-interview-session";
 import { env } from "@/lib/env";
+import { getRequestLocale } from "@/lib/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -72,10 +74,23 @@ export default async function InterviewPreviewPage({
     getUserReportsByInterviewConfig(interviewConfig.id),
   ]);
 
+  const locale = await getRequestLocale();
+  const { intro } = await translateTopicIntro(
+    {
+      title: bill.bill_content?.title ?? bill.name,
+      summary: bill.bill_content?.summary ?? "",
+      content: bill.bill_content?.content ?? "",
+      themes: interviewConfig.themes ?? [],
+    },
+    locale
+  );
+
   return (
     <>
       <PreviewBanner />
       <InterviewLPPage
+        locale={locale}
+        intro={intro}
         bill={bill}
         interviewConfig={interviewConfig}
         sessionInfo={latestSession}

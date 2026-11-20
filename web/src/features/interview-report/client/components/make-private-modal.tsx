@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface MakePrivateModalProps {
   open: boolean;
@@ -39,24 +40,21 @@ export function MakePrivateModal({
   onConfirm,
   isSubmitting,
 }: MakePrivateModalProps) {
+  const { t } = useI18n();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="py-9">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold text-primary-accent text-center leading-relaxed">
-            インタビュー内容を
+            {t.publicStatus.makePrivateLine1}
             <br />
-            非公開に切り替えますか？
+            {t.publicStatus.makePrivateLine2}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 mt-6">
-          <CheckListItem>
-            非公開にした場合、あなたのご意見が世の中に公開されることはありません。
-          </CheckListItem>
-          <CheckListItem>
-            チームみらい党内での政策検討に最大限活用させていただきます。
-          </CheckListItem>
+          <CheckListItem>{t.publicStatus.makePrivateBody1}</CheckListItem>
+          <CheckListItem>{t.publicStatus.makePrivateBody2}</CheckListItem>
         </div>
 
         <div className="space-y-3 mt-6">
@@ -67,7 +65,7 @@ export function MakePrivateModal({
             className="w-full"
           >
             <Lock className="mr-2 size-5" />
-            {isSubmitting ? "変更中..." : "非公開にする"}
+            {isSubmitting ? t.common.changing : t.publicStatus.makePrivate}
             {!isSubmitting && <ArrowRight className="ml-2 size-5" />}
           </Button>
           <Button
@@ -76,7 +74,7 @@ export function MakePrivateModal({
             disabled={isSubmitting}
             className="w-full text-gray-500"
           >
-            公開のまま戻る
+            {t.publicStatus.keepPublic}
           </Button>
         </div>
       </DialogContent>

@@ -122,7 +122,7 @@ export async function GET(request: Request) {
           </div>
         </div>
 
-        {/* みらい議会バッジ */}
+        {/* サービス名バッジ */}
         <div
           style={{
             position: "absolute",
@@ -149,7 +149,7 @@ export async function GET(request: Request) {
               letterSpacing: "0.03em",
             }}
           >
-            みらい議会
+            TENJOインタビュー
           </span>
         </div>
 
@@ -157,7 +157,7 @@ export async function GET(request: Request) {
         {logoDataUrl && (
           // biome-ignore lint/performance/noImgElement: ignore
           <img
-            alt="チームみらいロゴ"
+            alt="TENJO KANAZAWA ロゴ"
             src={logoDataUrl}
             width={189}
             height={160}

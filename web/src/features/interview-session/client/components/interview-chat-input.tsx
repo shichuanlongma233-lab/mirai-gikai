@@ -11,7 +11,7 @@ import {
   type PromptInputMessage,
   PromptInputTextarea,
 } from "@/components/ai-elements/prompt-input";
-import { useIsDesktop } from "@/hooks/use-is-desktop";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewChatInputProps {
   input: string;
@@ -31,8 +31,8 @@ export function InterviewChatInput({
   isResponding,
   error,
 }: InterviewChatInputProps) {
+  const { t } = useI18n();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const isDesktop = useIsDesktop();
 
   useEffect(() => {
     if (!input && textareaRef.current) {
@@ -62,7 +62,10 @@ export function InterviewChatInput({
             value={input}
             placeholder={placeholder}
             rows={1}
-            submitOnEnter={isDesktop}
+            // 回答者はスマホでもPCでも Enter で送信（Shift+Enter で改行）。
+            // 日本語・中国語・韓国語の変換確定の Enter では送らない（PromptInputTextarea 側で判定）
+            submitOnEnter
+            enterKeyHint="send"
             className="!min-h-0 min-w-0 wrap-anywhere text-sm font-medium leading-[1.5em] tracking-[0.01em] placeholder:text-mirai-text-placeholder placeholder:font-medium placeholder:leading-[1.5em] placeholder:tracking-[0.01em] placeholder:no-underline border-none focus:ring-0 bg-transparent shadow-none !py-2 !px-0"
           />
         </PromptInputBody>
@@ -73,7 +76,7 @@ export function InterviewChatInput({
         >
           <Image
             src="/icons/send-button-icon.svg"
-            alt="送信"
+            alt={t.chat.sendAlt}
             width={40}
             height={40}
             className="w-full h-full"
@@ -82,9 +85,7 @@ export function InterviewChatInput({
       </PromptInput>
       <PromptInputError status={error ? "error" : undefined} error={error} />
       {/* {showHint && <PromptInputHint />} */}
-      <PromptInputHint>
-        個人情報や機密情報は記入しないでください
-      </PromptInputHint>
+      <PromptInputHint>{t.chat.privacyWarning}</PromptInputHint>
     </>
   );
 }

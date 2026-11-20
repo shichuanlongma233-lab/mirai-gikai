@@ -8,6 +8,7 @@ import { getInterviewQuestions } from "@/features/interview-config/server/loader
 import { InterviewChatClient } from "@/features/interview-session/client/components/interview-chat-client";
 import { InterviewSessionErrorView } from "@/features/interview-session/client/components/interview-session-error-view";
 import { initializeInterviewChat } from "@/features/interview-session/server/loaders/initialize-interview-chat";
+import { getRequestLocale } from "@/lib/i18n/server";
 
 interface InterviewChatPageProps {
   params: Promise<{
@@ -40,7 +41,8 @@ export default async function InterviewChatPage({
   try {
     const { session, messages } = await initializeInterviewChat(
       billId,
-      interviewConfig.id
+      interviewConfig.id,
+      { locale: await getRequestLocale() }
     );
 
     return (

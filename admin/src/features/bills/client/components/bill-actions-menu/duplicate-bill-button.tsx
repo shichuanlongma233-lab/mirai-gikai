@@ -29,7 +29,7 @@ export function DuplicateBillButton({
       if (!result.success) {
         toast.error("error" in result ? result.error : "複製に失敗しました");
       } else {
-        toast.success("議案を複製しました");
+        toast.success("トピックを複製しました");
       }
     } catch (error) {
       console.error("Error duplicating bill:", error);

@@ -91,7 +91,7 @@ function StanceBar({
       <div className="flex justify-between text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
           <span className="inline-block h-2 w-2 rounded-full bg-stance-for" />
-          賛成 {forCount}件 ({forPct}%)
+          好意的 {forCount}件 ({forPct}%)
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block h-2 w-2 rounded-full bg-stance-neutral" />
@@ -99,7 +99,7 @@ function StanceBar({
         </span>
         <span className="flex items-center gap-1">
           <span className="inline-block h-2 w-2 rounded-full bg-stance-against" />
-          反対 {againstCount}件 ({againstPct}%)
+          否定的 {againstCount}件 ({againstPct}%)
         </span>
       </div>
     </div>

@@ -15,7 +15,7 @@ const json = (body: unknown, status = 200) =>
     },
   });
 
-/** 進捗（未処理件数 / 全件数）を返す。UI のポーリング用。billId で議案に絞れる。 */
+/** 進捗（未処理件数 / 全件数）を返す。UI のポーリング用。billId でトピックに絞れる。 */
 export async function GET(request: Request) {
   try {
     await requireAdmin();

@@ -60,7 +60,7 @@ export function BillVideosForm({ billId, videos }: BillVideosFormProps) {
       <CardContent>
         <div className="space-y-4">
           <p className="text-sm text-gray-500">
-            議案ページの賛否の下に、議論の種類ごとに1本ずつ表示します。URLとタイトルを空にすると表示されません。
+            トピックページの賛否の下に、議論の種類ごとに1本ずつ表示します。URLとタイトルを空にすると表示されません。
           </p>
 
           {BILL_VIDEO_KINDS.map((kind) => {

@@ -119,8 +119,8 @@ export function PersonaSlotCard({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="auto">自動判定</SelectItem>
-                <SelectItem value="for">賛成</SelectItem>
-                <SelectItem value="against">反対</SelectItem>
+                <SelectItem value="for">好意的</SelectItem>
+                <SelectItem value="against">否定的</SelectItem>
                 <SelectItem value="neutral">中立</SelectItem>
               </SelectContent>
             </Select>
@@ -137,7 +137,7 @@ export function PersonaSlotCard({
               type="text"
               value={slot.roleHint ?? ""}
               onChange={(e) => onUpdate({ ...slot, roleHint: e.target.value })}
-              placeholder="例: 射場運用の民間事業者"
+              placeholder="例: 日本の器が好きなアメリカの30代"
               className="h-8 text-xs"
               disabled={disabled}
             />

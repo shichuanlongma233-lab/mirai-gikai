@@ -58,7 +58,7 @@ export default async function ReportsSearchPage({
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">発言検索</h1>
         <p className="text-gray-600 mt-1">
-          議案「{bill.name}」のインタビューでのユーザー発言を検索
+          トピック「{bill.name}」のインタビューでのユーザー発言を検索
         </p>
       </div>
 

@@ -2,6 +2,7 @@
 
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewErrorDisplayProps {
   error: Error | null | undefined;
@@ -16,6 +17,7 @@ export function InterviewErrorDisplay({
   onRetry,
   isRetrying,
 }: InterviewErrorDisplayProps) {
+  const { t } = useI18n();
   if (!error) return null;
 
   return (
@@ -34,7 +36,7 @@ export function InterviewErrorDisplay({
           variant="outline"
           size="sm"
         >
-          {isRetrying ? "再試行中..." : "もう一度試す"}
+          {isRetrying ? t.chat.retrying : t.chat.retry}
         </Button>
       )}
     </div>

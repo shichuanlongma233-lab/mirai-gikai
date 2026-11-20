@@ -1,169 +1,129 @@
+import { Clock } from "lucide-react";
+import type { Route } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { Container } from "@/components/layouts/container";
-import { About } from "@/components/top/about";
-import { ComingSoonSection } from "@/components/top/coming-soon-section";
-import { TeamMirai } from "@/components/top/team-mirai";
-import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
-import { BillDisclaimer } from "@/features/bills/client/components/bill-detail/bill-disclaimer";
-import { BillSearchOverlay } from "@/features/bills/client/components/bill-search-overlay";
-import { BillsByTagSection } from "@/features/bills/server/components/bills-by-tag-section";
-import { CategoryTabs } from "@/features/bills/server/components/category-tabs";
-import { FeaturedBillSection } from "@/features/bills/server/components/featured-bill-section";
-import { InterviewOpenBillSection } from "@/features/bills/server/components/interview-open-bill-section";
-import { PastSessionList } from "@/features/bills/server/components/past-session-list";
-import { PreviousSessionSection } from "@/features/bills/server/components/previous-session-section";
-import { getFeaturedTags } from "@/features/bills/server/loaders/get-featured-tags";
-import { getSuggestableBills } from "@/features/bills/server/loaders/get-suggestable-bills";
-import { loadHomeData } from "@/features/bills/server/loaders/load-home-data";
-import type { BillWithContent } from "@/features/bills/shared/types";
-import { chatBillName } from "@/features/bills/shared/utils/chat-bill-name";
-import { pickHomeSections } from "@/features/bills/shared/utils/pick-home-sections";
-import { countTagChipItems } from "@/features/bills/shared/utils/tag-chip-items";
-import { HomeChatClient } from "@/features/chat/client/components/home-chat-client";
-import { CurrentDietSession } from "@/features/diet-sessions/client/components/current-diet-session";
-import { getCurrentDietSession } from "@/features/diet-sessions/server/loaders/get-current-diet-session";
-import { getLatestClosedDietSession } from "@/features/diet-sessions/server/loaders/get-latest-closed-diet-session";
-import { getJapanTime } from "@/lib/utils/date";
+import {
+  getInterviewOpenBills,
+  type InterviewOpenBill,
+} from "@/features/bills/server/loaders/get-interview-open-bills";
+import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
+import { translateTopicIntro } from "@/features/interview-config/server/services/translate-topic-intro";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { LanguageButtons } from "@/lib/i18n/language-buttons";
+import { LanguageChooser } from "@/lib/i18n/language-chooser";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
+import { ProfileChooser } from "@/lib/i18n/profile-chooser";
+import {
+  getRequestLocale,
+  getRespondentProfile,
+  hasChosenLocale,
+} from "@/lib/i18n/server";
 
-/** カテゴリタブの「注目」から飛ばす先。 */
-const FEATURED_ANCHOR = "featured";
-
+/**
+ * トップページ。回答を受け付けているトピック（公開中のインタビュー）を一覧にし、
+ * 選ぶとそのインタビューの紹介ページへ進む。
+ * 初めて開いた人には、先に言語を選んでもらう。
+ */
 export default async function Home() {
-  const japanTime = getJapanTime();
-  // ゆくゆくタグ機能がマージされたらBFFに統合する
-  const [
-    {
-      billsByTag,
-      featuredBills,
-      interviewOpenBills,
-      comingSoonBills,
-      previousSessionData,
-      pastSessions,
-    },
-    currentSession,
-    latestClosedSession,
-    currentDifficulty,
-    suggestableBills,
-    featuredTags,
-  ] = await Promise.all([
-    loadHomeData(),
-    getCurrentDietSession(japanTime),
-    getLatestClosedDietSession(japanTime),
-    getDifficultyLevel(),
-    getSuggestableBills(),
-    getFeaturedTags(),
+  const [locale, chosen, profile] = await Promise.all([
+    getRequestLocale(),
+    hasChosenLocale(),
+    getRespondentProfile(),
   ]);
-
-  const inSession = currentSession !== null;
-
-  const { tagGroups, shownBills, featuredBillIds } = pickHomeSections({
-    billsByTag,
-    featuredBills,
-    interviewOpenBills,
-    inSession,
-  });
-
-  // モーダルの件数は全会期の公開議案から数える。チップの飛び先が /bills で、
-  // あちらも全会期を数えるため、押す前と後で数字が変わらない。
-  // 候補用に取得済みの配列をそのまま使うので、集計のためのクエリは増えない。
-  const searchTagChips = countTagChipItems(featuredTags, suggestableBills);
-
-  const toBillChatContext = (bill: BillWithContent) => {
-    return {
-      name: chatBillName(bill),
-      summary: bill.bill_content?.summary,
-      tags: bill.tags?.map((tag) => tag.label) || [],
-      isFeatured: featuredBillIds.has(bill.id),
-    };
-  };
+  const t = getDictionary(locale);
+  const bills = await getInterviewOpenBills();
+  // 言語を選ぶ前は翻訳しない（選んだ後に、その言語で出し直す）
+  const topics = await Promise.all(
+    bills.map((bill) => toTopicCard(bill, chosen ? locale : DEFAULT_LOCALE))
+  );
 
   return (
     <>
-      {/* 本日の国会セクション */}
-      <CurrentDietSession
-        session={currentSession}
-        closedSession={latestClosedSession}
-        now={japanTime}
-      />
-
+      {!chosen && <LanguageChooser suggested={locale} />}
+      {chosen && !profile && <ProfileChooser locale={locale} />}
       <Container>
-        <div className="pt-4">
-          <CategoryTabs
-            billsByTag={billsByTag}
-            featuredAnchor={inSession ? FEATURED_ANCHOR : undefined}
-          />
-        </div>
-        {/* 検索の入口。キーワードとテーマの両方をモーダルに並べる */}
-        <div className="flex justify-end pt-2">
-          <BillSearchOverlay tags={searchTagChips} bills={suggestableBills} />
+        <div className="pt-24 pb-10 md:py-16 text-center">
+          <div className="mb-6">
+            <LanguageButtons current={locale} />
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            {t.home.title}
+          </h1>
+          <p className="mt-3 text-gray-600 leading-relaxed">{t.home.lead}</p>
+
+          {topics.length === 0 ? (
+            <p className="mt-10 text-gray-500">{t.home.empty}</p>
+          ) : (
+            <>
+              <h2 className="mt-10 text-sm font-bold text-gray-500">
+                {t.home.listTitle(topics.length)}
+              </h2>
+              <ul className="mt-3 grid gap-4 text-left md:grid-cols-2">
+                {topics.map((topic) => (
+                  <li key={topic.id}>
+                    <Link
+                      href={getInterviewLPLink(topic.id) as Route}
+                      className="flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-primary hover:shadow"
+                    >
+                      {topic.thumbnailUrl && (
+                        <div className="relative aspect-[16/9] w-full bg-gray-100">
+                          <Image
+                            src={topic.thumbnailUrl}
+                            alt=""
+                            fill
+                            sizes="(min-width: 768px) 50vw, 100vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex flex-1 flex-col p-5">
+                        <h3 className="text-lg font-bold text-gray-900">
+                          {topic.title}
+                        </h3>
+                        {topic.summary && (
+                          <p className="mt-2 text-sm text-gray-600 line-clamp-3">
+                            {topic.summary}
+                          </p>
+                        )}
+                        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+                          {topic.estimatedDuration !== null ? (
+                            <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+                              <Clock className="size-3.5" aria-hidden />
+                              {t.duration.minutes(topic.estimatedDuration)}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                          <span className="text-sm font-bold text-primary">
+                            {t.home.start} →
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       </Container>
-
-      {/* 議案一覧セクション */}
-      <Container className="">
-        <div className="py-10">
-          <main className="flex flex-col gap-16">
-            {/*
-              AIインタビュー受付中セクション。意見を出せる法案を最初に見せる。
-              会期では絞らない（閉会中でも受付中なら案内する）ため、注目と違って
-              inSession で出し分けない。
-            */}
-            <InterviewOpenBillSection bills={interviewOpenBills} />
-
-            {/*
-              注目の法案は会期中だけ出す。閉会中に「注目」を掲げても、審議が
-              動いていない期間の情報を強調することになる。
-              なお getFeaturedBills はアクティブ会期が無いと全件スコープに
-              落ちるので、データ側だけでは空にならない。
-            */}
-            {inSession && (
-              <section id={FEATURED_ANCHOR}>
-                <FeaturedBillSection bills={featuredBills} />
-              </section>
-            )}
-
-            {/* タグ別議案一覧セクション（タグに紐づく議案を全件出す） */}
-            <BillsByTagSection billsByTag={tagGroups} />
-
-            {/* Coming soonセクション */}
-            <ComingSoonSection bills={comingSoonBills} />
-          </main>
-        </div>
-      </Container>
-
-      {/* 前回の国会セクション（Archive） */}
-      {(previousSessionData || pastSessions.length > 0) && (
-        <div className="bg-mirai-surface-muted py-10">
-          <Container>
-            <div className="flex flex-col gap-10">
-              {previousSessionData && (
-                <PreviousSessionSection
-                  session={previousSessionData.session}
-                  bills={previousSessionData.bills}
-                  totalBillCount={previousSessionData.totalBillCount}
-                />
-              )}
-              <PastSessionList sessions={pastSessions} />
-            </div>
-          </Container>
-        </div>
-      )}
-
-      <Container>
-        {/* みらい議会とは セクション */}
-        <About />
-
-        {/* チームみらいについて セクション */}
-        <TeamMirai />
-
-        {/* 免責事項 */}
-        <BillDisclaimer />
-      </Container>
-
-      {/* チャット機能 */}
-      <HomeChatClient
-        currentDifficulty={currentDifficulty}
-        bills={shownBills.map(toBillChatContext)}
-      />
     </>
   );
+}
+
+async function toTopicCard(bill: InterviewOpenBill, locale: Locale) {
+  const title = bill.bill_content?.title || bill.name;
+  const summary = bill.bill_content?.summary || "";
+  const { intro } = await translateTopicIntro(
+    { title, summary, content: "", themes: [] },
+    locale
+  );
+  return {
+    id: bill.id,
+    title: intro.title,
+    summary: intro.summary,
+    thumbnailUrl: bill.thumbnail_url,
+    estimatedDuration: bill.estimatedDuration,
+  };
 }

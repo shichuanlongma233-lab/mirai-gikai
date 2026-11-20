@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import { routes } from "@/lib/routes";
 import { registerExpert } from "../../server/actions/register-expert";
 import { expertRegistrationSchema } from "../../shared/utils/expert-registration-validation";
@@ -26,6 +27,7 @@ export function ExpertRegistrationModal({
   onOpenChange,
   onRegistered,
 }: ExpertRegistrationModalProps) {
+  const { t } = useI18n();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [name, setName] = useState("");
@@ -69,10 +71,10 @@ export function ExpertRegistrationModal({
         setIsSuccess(true);
         onRegistered();
       } else {
-        setErrors({ form: response.error || "登録に失敗しました" });
+        setErrors({ form: response.error || t.expert.failed });
       }
     } catch {
-      setErrors({ form: "登録に失敗しました" });
+      setErrors({ form: t.expert.failed });
     } finally {
       setIsSubmitting(false);
     }
@@ -96,15 +98,13 @@ export function ExpertRegistrationModal({
         <DialogContent className="max-w-md py-9">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-primary-accent text-center leading-relaxed">
-              登録ありがとうございました。
+              {t.expert.thanks}
             </DialogTitle>
           </DialogHeader>
-          <p className="text-sm font-medium text-gray-800">
-            政策検討のために、有識者としてチームみらいから連絡をする可能性があります。登録情報は公開されません。
-          </p>
+          <p className="text-sm font-medium text-gray-800">{t.expert.notice}</p>
           <div className="mt-6">
             <Button onClick={handleClose} className="w-full">
-              閉じる
+              {t.expert.close}
             </Button>
           </div>
         </DialogContent>
@@ -117,12 +117,12 @@ export function ExpertRegistrationModal({
       <DialogContent className="max-w-md py-9">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold text-primary-accent text-center leading-relaxed">
-            有識者リストに登録する
+            {t.expert.register}
           </DialogTitle>
         </DialogHeader>
 
         <p className="text-sm text-gray-800 mt-2 font-medium">
-          政策検討のために、有識者としてチームみらいから連絡をする可能性があります。登録情報は公開されません。
+          {t.expert.notice}
         </p>
 
         <div className="flex flex-col gap-3 mt-2">
@@ -131,7 +131,7 @@ export function ExpertRegistrationModal({
               htmlFor="expert-name"
               className="text-sm font-medium text-gray-800"
             >
-              お名前
+              {t.expert.name}
             </label>
             <Input
               id="expert-name"
@@ -150,7 +150,7 @@ export function ExpertRegistrationModal({
               htmlFor="expert-affiliation"
               className="text-sm font-medium text-gray-800"
             >
-              ご所属・肩書
+              {t.expert.affiliation}
             </label>
             <Input
               id="expert-affiliation"
@@ -169,7 +169,7 @@ export function ExpertRegistrationModal({
               htmlFor="expert-email"
               className="text-sm font-medium text-gray-800"
             >
-              メールアドレス
+              {t.expert.email}
             </label>
             <Input
               id="expert-email"
@@ -198,9 +198,9 @@ export function ExpertRegistrationModal({
                 target="_blank"
                 className="underline"
               >
-                プライバシーポリシー
+                {t.expert.privacy}
               </Link>
-              に同意する
+              {t.expert.agreeSuffix}
             </label>
           </div>
           {errors.privacyAgreed && (
@@ -218,7 +218,7 @@ export function ExpertRegistrationModal({
             disabled={isSubmitting}
             className="w-full"
           >
-            {isSubmitting ? "登録中..." : "有識者リストに登録する"}
+            {isSubmitting ? t.expert.submitting : t.expert.register}
             {!isSubmitting && <ArrowRight className="size-5" />}
           </Button>
           <Button
@@ -227,7 +227,7 @@ export function ExpertRegistrationModal({
             disabled={isSubmitting}
             className="w-full text-gray-500"
           >
-            キャンセルする
+            {t.expert.cancel}
           </Button>
         </div>
       </DialogContent>

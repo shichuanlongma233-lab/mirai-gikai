@@ -29,7 +29,7 @@ type BackfillStatus = {
 };
 
 const POLL_INTERVAL_MS = 5000;
-// 「全議案」を表す Select のセンチネル値（Radix は空文字の value を許さないため）。
+// 「全トピック」を表す Select のセンチネル値（Radix は空文字の value を許さないため）。
 const ALL_BILLS = "__all__";
 // 「既定モデル（OPINION_BACKFILL_MODEL）」を表すセンチネル値。
 const DEFAULT_MODEL = "__default__";
@@ -46,7 +46,7 @@ export function OpinionBackfillRunner({ bills }: { bills: BillOption[] }) {
 
   const billId = billValue === ALL_BILLS ? undefined : billValue;
   const model = modelValue === DEFAULT_MODEL ? undefined : modelValue;
-  // 「全部」は議案指定時のみ許可（全議案 × 全部は高コストなので不可）。
+  // 「全部」はトピック指定時のみ許可（全トピック × 全部は高コストなので不可）。
   const allScopeDisabled = !billId;
 
   const fetchStatus = useCallback(async (): Promise<BackfillStatus | null> => {
@@ -70,7 +70,7 @@ export function OpinionBackfillRunner({ bills }: { bills: BillOption[] }) {
     setIsRunning(false);
   }, []);
 
-  // 議案を「全議案」に戻したら、許可されない「全部」を pending に戻す。
+  // トピックを「全トピック」に戻したら、許可されない「全部」を pending に戻す。
   const handleBillChange = useCallback(
     (value: string) => {
       setBillValue(value);
@@ -81,7 +81,7 @@ export function OpinionBackfillRunner({ bills }: { bills: BillOption[] }) {
     [scope]
   );
 
-  // 議案変更時に進捗を取り直す（実行中ポーリング中は触らない）。
+  // トピック変更時に進捗を取り直す（実行中ポーリング中は触らない）。
   useEffect(() => {
     if (isRunning) return;
     fetchStatus().catch((e) => setError(e.message));
@@ -130,17 +130,17 @@ export function OpinionBackfillRunner({ bills }: { bills: BillOption[] }) {
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
-          <Label htmlFor="backfill-bill">対象議案</Label>
+          <Label htmlFor="backfill-bill">対象トピック</Label>
           <Select
             value={billValue}
             onValueChange={handleBillChange}
             disabled={isRunning}
           >
             <SelectTrigger id="backfill-bill">
-              <SelectValue placeholder="議案を選択" />
+              <SelectValue placeholder="トピックを選択" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL_BILLS}>全議案</SelectItem>
+              <SelectItem value={ALL_BILLS}>全トピック</SelectItem>
               {bills.map((bill) => (
                 <SelectItem key={bill.id} value={bill.id}>
                   {bill.name}
@@ -169,7 +169,7 @@ export function OpinionBackfillRunner({ bills }: { bills: BillOption[] }) {
           </Select>
           {allScopeDisabled && (
             <p className="text-xs text-muted-foreground">
-              ※「全部」は議案を指定したときのみ選択できます。
+              ※「全部」はトピックを指定したときのみ選択できます。
             </p>
           )}
         </div>

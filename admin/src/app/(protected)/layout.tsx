@@ -1,4 +1,5 @@
-import { Home, User } from "lucide-react";
+import { User } from "lucide-react";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { LogoutButton } from "@/features/auth/client/components/logout-button";
 import { getCurrentAdmin } from "@/features/auth/server/lib/auth-server";
@@ -18,11 +19,16 @@ export default async function MainLayout({
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Home className="h-5 w-5 text-white" />
-                </div>
+                <Image
+                  src="/icons/pwa/icon_android_192.png"
+                  alt="TENJO"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                  priority
+                />
                 <h1 className="text-xl font-semibold text-gray-900">
-                  みらい議会 Admin
+                  TENJOインタビュー 管理画面
                 </h1>
               </div>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { resolveNextStage } from "@mirai-gikai/shared/interview-prompts/covered-questions";
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PromptInputMessage } from "@/components/ai-elements/prompt-input";
@@ -80,8 +81,14 @@ export function useInterviewChat({
           quick_replies,
           question_id,
           topic_title,
-          next_stage,
+          next_stage: rawNextStage,
         } = finishedObject;
+        // 質問で終わっているのにまとめへ進もうとした場合は、答えを聞くため chat に戻す
+        const next_stage = resolveNextStage(
+          rawNextStage,
+          text,
+          stageRef.current
+        );
         const topicTitle = topic_title ?? null;
 
         // 既出の questionId を検出して無効化（深掘り時に前の質問IDが残る問題を防止）

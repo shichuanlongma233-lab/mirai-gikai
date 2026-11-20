@@ -1,6 +1,7 @@
 import { Bot, UserRound } from "lucide-react";
 import { getMessageDisplayText } from "../utils/get-message-display-text";
 import { splitByQuote } from "../utils/split-by-quote";
+import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
 
 interface ChatLogSectionProps {
   messages: ChatLogMessage[];
@@ -11,6 +12,8 @@ interface ChatLogSectionProps {
    * 同じ文言を含む無関係なメッセージはハイライトしない。
    */
   highlightMessageId?: string;
+  /** 表示する言語の文言（省略時は日本語） */
+  t?: Dictionary;
 }
 
 interface ChatLogMessage {
@@ -42,6 +45,7 @@ export function ChatLogSection({
   messages,
   highlightQuote,
   highlightMessageId,
+  t = getDictionary("ja"),
 }: ChatLogSectionProps) {
   if (messages.length === 0) {
     return null;
@@ -54,7 +58,7 @@ export function ChatLogSection({
 
   return (
     <section id="chat-log" className="flex flex-col gap-4 scroll-mt-24">
-      <h2 className="text-xl font-bold text-gray-800">🎤すべての会話ログ</h2>
+      <h2 className="text-xl font-bold text-gray-800">{t.report.chatLog}</h2>
       <div className="bg-white rounded-2xl p-6">
         <div className="flex flex-col gap-4">
           {messages.map((message) => (

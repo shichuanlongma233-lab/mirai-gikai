@@ -198,7 +198,7 @@ export function TopicFromDocumentForm() {
               id="instructions"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              placeholder="例: 子育て世帯の声を重点的に聞きたい／質問は6問にしてほしい"
+              placeholder="例: 20〜30代の欧米の人の感想を重点的に聞きたい／価格の質問を必ず入れてほしい／質問は6問にしてほしい"
               rows={3}
               disabled={isGenerating}
             />
@@ -440,7 +440,7 @@ export function TopicFromDocumentForm() {
                 : "この内容でトピックとインタビューを作成"}
             </Button>
             <p className="text-sm text-gray-600">
-              トピックは下書き、インタビューは非公開で作成されます。作成後にインタビュー設定画面へ移動します。
+              トピックは下書きで作成されます。トピック一覧で公開ステータスを「公開中」にすると、回答者がインタビューに答えられるようになります。作成後にインタビュー設定画面へ移動します。
             </p>
           </div>
         </>

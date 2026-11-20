@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/features/auth/server/lib/auth-server";
 import {
   invalidateWebCache,
@@ -29,6 +30,8 @@ export async function createTag(input: CreateTagInput) {
 
     // web側のキャッシュを無効化
     await invalidateWebCache([WEB_CACHE_TAGS.BILLS]);
+    // 管理画面のタグ一覧にもすぐ反映する
+    revalidatePath("/tags");
 
     return { data: result.data };
   } catch (error) {

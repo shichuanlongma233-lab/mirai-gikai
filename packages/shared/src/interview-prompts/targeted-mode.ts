@@ -34,7 +34,7 @@ export const TARGETED_MODE_DEFAULT_SECTIONS: PromptSections = {
 - **フォローアップ指針は、回答を得た後のフォローアップの指針です。** 最初の質問に混ぜず、ユーザーの回答を受けてから活用してください。
 - **「なぜ」の多用を避ける**: 「なぜそう思うのですか？」ではなく「どのような背景で」「何がきっかけで」など柔らかい表現を使う
 - **「一つだけ」「一番」の多用を避ける**: 「一つだけ教えてください」「一番大きな理由は？」のような限定的な聞き方はパターン化しやすい。代わりに「どのあたりが」「どういった点で」「いくつか挙げるとすれば」など、回答の幅を狭めない表現を使う
-- 法案に関する質問のみに集中してください`,
+- このトピックに関する質問のみに集中してください`,
   expertiseDetection: COMMON_EXPERTISE_DETECTION,
   deepDiveTechniques: COMMON_DEEP_DIVE_TECHNIQUES,
   stopCriteria: COMMON_STOP_CRITERIA,
@@ -111,6 +111,7 @@ export function buildTargetedModeSystemPrompt(
   });
 
   return `あなたは半構造化デプスインタビューを実施する熟練のインタビュアーです。
+このインタビューは、日本の文化・商品・サービスを海外に届けるための市場調査として、海外の方に率直な感想や考えを伺うものです。
 あなたの目標は、インタビュイーから深い洞察を引き出すことです。
 
 ${sections.responsibilities}
@@ -120,12 +121,12 @@ ${TARGETED_MODE_REQUIRED_RULES}
 
 ${BILL_CLARIFICATION_GUIDANCE}
 
-## 法案に関する知識
-- 法案名: ${billName}
-- 法案タイトル: ${billTitle}
-- 法案要約: ${billSummary}
+## トピックに関する知識
+- トピック名: ${billName}
+- 記事タイトル: ${billTitle}
+- 要約: ${billSummary}
 
-法案詳細:
+トピック詳細:
 <bill_detail>
 ${billContent}
 </bill_detail>
@@ -144,7 +145,7 @@ ${sections.expertiseDetection}
 以下の質問を会話の流れに応じて適切なタイミングで使用してください。質問は順番通りに使う必要はなく、会話の流れに応じて選んでください。
 各質問には「対象者」が記載されています。インタビュイーが該当しない質問はスキップしてください（詳細は「対象者条件に基づくスキップ判定」を参照）。
 
-${questionsText || "（賛成か、反対か）"}
+${questionsText || "（このトピックについての率直な感想）"}
 
 ## インタビューモード: **対象者指定モード** (Targeted Mode)
 現在は、1つのテーマについて多角的に掘り下げていくフェーズです。Loop Mode の都度深掘りに加え、対象者条件によるスキップ判定を行います。
@@ -182,7 +183,7 @@ ${QUICK_REPLY_GUIDANCE}
 
 ## トピックタイトルについて
 - 事前定義質問をこれから行う場合は、\`topic_title\` フィールドにその質問のテーマを短く（20文字以内）で記載してください
-- 例: 「業務への影響」「家計への影響」「医療制度の変化」
+- 例: 「第一印象」「使う場面」「価格の感じ方」
 - 深掘り質問など、事前定義質問以外の質問をする場合は \`topic_title\` を含めないでください
 
 ${stageTransitionGuidance}

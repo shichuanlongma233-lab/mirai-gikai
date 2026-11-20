@@ -6,7 +6,8 @@ import {
   Conversation,
   ConversationContent,
 } from "@/components/ai-elements/conversation";
-import { getBillDetailLink } from "@/features/interview-config/shared/utils/interview-links";
+import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 import { isLoopFamilyMode } from "../../shared/utils/is-loop-family-mode";
 import { useInterviewChat } from "../hooks/use-interview-chat";
 import { useInterviewRating } from "../hooks/use-interview-rating";
@@ -53,6 +54,7 @@ export function InterviewChatClient({
   hasRated,
   previewToken,
 }: InterviewChatClientProps) {
+  const { t } = useI18n();
   const {
     input,
     setInput,
@@ -93,7 +95,7 @@ export function InterviewChatClient({
     hasRated,
   });
 
-  const billDetailLink = getBillDetailLink(billId, previewToken);
+  const billDetailLink = getInterviewLPLink(billId, previewToken);
 
   const showProgressBar = isLoopFamilyMode(mode) && progress !== null;
   const timerMinutes =
@@ -135,7 +137,7 @@ export function InterviewChatClient({
   const handleEndInterviewTimeUp = () => {
     setTimeUpDismissed(true);
     handleSubmit({
-      text: "目安時間になりました。レポート作成に進みたいです。",
+      text: t.chat.timeUpMessage,
     });
   };
 
@@ -177,11 +179,9 @@ export function InterviewChatClient({
             {messages.length === 0 && !object && (
               <div className="flex flex-col gap-4">
                 <p className="text-sm font-bold leading-[1.8] text-mirai-text">
-                  法案についてのAIインタビューを開始します。
+                  {t.chat.introTitle}
                 </p>
-                <p className="text-sm text-gray-600">
-                  あなたの意見や経験をお聞かせください。
-                </p>
+                <p className="text-sm text-gray-600">{t.chat.introBody}</p>
               </div>
             )}
 
@@ -239,7 +239,7 @@ export function InterviewChatClient({
 
             {/* ローディング表示 */}
             {isLoading && !object && (
-              <span className="text-sm text-gray-500">考え中...</span>
+              <span className="text-sm text-gray-500">{t.chat.thinking}</span>
             )}
 
             {/* エラー表示 */}
@@ -310,7 +310,7 @@ export function InterviewChatClient({
               input={input}
               onInputChange={setInput}
               onSubmit={handleChatSubmit}
-              placeholder="AIの質問に回答する"
+              placeholder={t.chat.placeholder}
               isResponding={isLoading}
             />
           )}

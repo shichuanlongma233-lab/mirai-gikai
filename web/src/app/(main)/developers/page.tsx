@@ -1,53 +1,35 @@
-import {
-  ArrowUpRight,
-  BookOpen,
-  ChevronRight,
-  Database,
-  Github,
-  ScrollText,
-} from "lucide-react";
+import { ArrowUpRight, BookOpen, ChevronRight, Github } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/layouts/container";
 import { EXTERNAL_LINKS } from "@/config/external-links";
-import { routes } from "@/lib/routes";
 
 export const metadata: Metadata = {
-  title: "開発者向け | みらい議会",
-  description:
-    "みらい議会のオープンデータAPIなど、開発者・研究者向けの情報をまとめています。",
+  title: "開発者向け | TENJOインタビュー",
+  description: "TENJOインタビューのソースコードとライセンスについて。",
 };
 
 const links = [
   {
-    href: routes.developersOpenDataApi(),
-    icon: Database,
-    title: "オープンデータAPI",
-    description: "AIインタビューの回答データを取得できるAPIのリファレンス。",
-    external: false,
-  },
-  {
-    href: routes.interviewDataTerms(),
-    icon: ScrollText,
-    title: "みらい議会AIインタビューデータ利用規約",
-    description:
-      "オープンデータとして提供されるインタビューデータの利用条件。APIで取得したデータを利用・再配布する際にご参照ください。",
-    external: false,
-  },
-  {
     href: EXTERNAL_LINKS.GITHUB_REPO,
     icon: Github,
-    title: "GitHubリポジトリ",
+    title: "ソースコード（GitHub）",
+    description: "このサービスで動いているソースコードです（AGPL-3.0）。",
+    external: true,
+  },
+  {
+    href: EXTERNAL_LINKS.UPSTREAM_REPO,
+    icon: Github,
+    title: "フォーク元：みらい議会",
     description:
-      "みらい議会のソースコード。フォークして自由にご活用いただけます。",
+      "チームみらいが公開している「みらい議会」のソースコード。TENJOインタビューはこれをフォークして作っています。",
     external: true,
   },
   {
     href: EXTERNAL_LINKS.FORK_GUIDELINES_NOTE,
     icon: BookOpen,
     title: "自主制作ガイドライン",
-    description:
-      "フォーク・改変に関するガイドライン。ソースコードをご活用される際や、改変される際にご参照ください。",
+    description: "フォーク・改変に関するフォーク元のガイドライン。",
     external: true,
   },
 ];
@@ -64,7 +46,7 @@ function LinkRowBody({
   description,
   external,
 }: {
-  icon: typeof Database;
+  icon: typeof Github;
   title: string;
   description: string;
   external: boolean;
@@ -102,7 +84,7 @@ export default function DevelopersPage() {
           </header>
 
           <p className="text-[15px] leading-loose tracking-wide text-mirai-text-subtle">
-            みらい議会では、AIインタビューに寄せられた法案への意見を、誰でも分析・活用できるオープンデータとして公開しています。
+            TENJOインタビューは、チームみらいが公開している「みらい議会」をフォークして作ったサービスです。これは政党チームみらいが運営しているものではありません。
           </p>
 
           <div className="flex flex-col border-t border-neutral-200">

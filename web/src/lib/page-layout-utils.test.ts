@@ -8,8 +8,8 @@ import {
 } from "./page-layout-utils";
 
 describe("isMainPage", () => {
-  it("returns true for the top page", () => {
-    expect(isMainPage("/")).toBe(true);
+  it("returns false for the top page (centered, no chat sidebar)", () => {
+    expect(isMainPage("/")).toBe(false);
   });
 
   it("returns true for a bill detail page", () => {

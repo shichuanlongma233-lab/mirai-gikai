@@ -70,7 +70,7 @@ export async function exportInterviewConfigFile(
 }
 
 /**
- * 書き出したファイルから、指定した法案にインタビュー設定を作る。
+ * 書き出したファイルから、指定したトピックにインタビュー設定を作る。
  * 複製と同じく非公開で作成する。
  */
 export async function importInterviewConfigFile(

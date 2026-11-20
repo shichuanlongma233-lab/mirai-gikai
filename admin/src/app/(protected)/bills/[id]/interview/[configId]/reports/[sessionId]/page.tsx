@@ -4,6 +4,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getBillById } from "@/features/bills-edit/server/loaders/get-bill-by-id";
+import { getInterviewConfigById } from "@/features/interview-config/server/loaders/get-interview-config";
+import { AnswerMemoCard } from "@/features/interview-reports/server/components/answer-memo-card";
 import { SessionDetail } from "@/features/interview-reports/server/components/session-detail";
 import { getInterviewSessionDetail } from "@/features/interview-reports/server/loaders/get-interview-session-detail";
 import { routes } from "@/lib/routes";
@@ -26,9 +28,10 @@ export default async function ReportDetailPage({
   const { id, configId, sessionId } = await params;
   const { highlight } = await searchParams;
   const highlightQuery = (highlight ?? "").trim();
-  const [bill, session] = await Promise.all([
+  const [bill, session, config] = await Promise.all([
     getBillById(id),
     getInterviewSessionDetail(sessionId),
+    getInterviewConfigById(configId),
   ]);
 
   if (!bill) {
@@ -54,9 +57,14 @@ export default async function ReportDetailPage({
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">セッション詳細</h1>
         <p className="text-gray-600 mt-1">
-          議案「{bill.name}」のインタビューセッション
+          トピック「{bill.name}」のインタビューセッション
         </p>
       </div>
+
+      <AnswerMemoCard
+        pillars={config?.pillars ?? null}
+        answerMemo={session.answer_memo ?? null}
+      />
 
       <SessionDetail
         session={session}

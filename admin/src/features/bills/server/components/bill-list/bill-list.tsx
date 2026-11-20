@@ -17,32 +17,11 @@ import { PreviewButton } from "../../../client/components/bill-list/preview-butt
 import { PublishStatusBadge } from "../../../client/components/bill-list/publish-status-badge";
 import { SortableTableHead } from "@/components/ui/sortable-table-head";
 import { ViewButton } from "../../../client/components/bill-list/view-button";
-import { BILL_STATUS_CONFIG } from "../../../shared/constants/bill-config";
 import type {
   BillSortConfig,
-  BillStatus,
   BillWithDietSession,
 } from "../../../shared/types";
-import { getBillStatusLabel } from "../../../shared/types";
 import { getBills } from "../../loaders/get-bills";
-
-function StatusBadge({
-  status,
-  originatingHouse,
-}: {
-  status: BillStatus;
-  originatingHouse: BillWithDietSession["originating_house"];
-}) {
-  const config = BILL_STATUS_CONFIG[status];
-  const Icon = config.icon;
-
-  return (
-    <div className="inline-flex items-center gap-1.5 py-1 rounded-full text-sm font-bold">
-      <Icon className="h-4 w-4" />
-      <span>{getBillStatusLabel(status, originatingHouse)}</span>
-    </div>
-  );
-}
 
 export async function BillList({ sortConfig }: { sortConfig: BillSortConfig }) {
   const bills = await getBills(sortConfig);
@@ -50,7 +29,7 @@ export async function BillList({ sortConfig }: { sortConfig: BillSortConfig }) {
   return (
     <div>
       <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="text-sm text-gray-600">{bills.length}件の議案</div>
+        <div className="text-sm text-gray-600">{bills.length}件のトピック</div>
         <div className="flex gap-2">
           <Link href={routes.billNewFromDocument()}>
             <Button variant="outline">
@@ -71,8 +50,7 @@ export async function BillList({ sortConfig }: { sortConfig: BillSortConfig }) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>議案名</TableHead>
-              <TableHead>国会会期</TableHead>
+              <TableHead>トピック名</TableHead>
               <SortableTableHead
                 field="publish_status_order"
                 currentField={sortConfig.field}
@@ -81,18 +59,11 @@ export async function BillList({ sortConfig }: { sortConfig: BillSortConfig }) {
                 公開ステータス
               </SortableTableHead>
               <SortableTableHead
-                field="status_order"
-                currentField={sortConfig.field}
-                currentOrder={sortConfig.order}
-              >
-                審議ステータス
-              </SortableTableHead>
-              <SortableTableHead
                 field="submitted_date"
                 currentField={sortConfig.field}
                 currentOrder={sortConfig.order}
               >
-                法案提出日
+                登録日
               </SortableTableHead>
               <TableHead className="w-[50px]" />
             </TableRow>
@@ -119,9 +90,6 @@ function BillRow({ bill }: { bill: BillWithDietSession }) {
           {bill.name}
         </Link>
       </TableCell>
-      <TableCell className="text-gray-600">
-        {bill.diet_sessions?.name ?? "-"}
-      </TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
           <PublishStatusBadge
@@ -136,12 +104,6 @@ function BillRow({ bill }: { bill: BillWithDietSession }) {
             <ViewButton billId={bill.id} />
           )}
         </div>
-      </TableCell>
-      <TableCell>
-        <StatusBadge
-          status={bill.status}
-          originatingHouse={bill.originating_house}
-        />
       </TableCell>
       <TableCell className="text-gray-600">
         {bill.submitted_date

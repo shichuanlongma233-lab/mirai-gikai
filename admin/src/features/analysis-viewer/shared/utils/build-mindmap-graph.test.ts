@@ -46,7 +46,7 @@ function bigTopic(
 }
 
 describe("buildMindmapGraph", () => {
-  it("議案を根に置き、大トピックと中トピックを枝にする（意見はノードにしない）", () => {
+  it("トピックを根に置き、大トピックと中トピックを枝にする（意見はノードにしない）", () => {
     const graph = buildMindmapGraph(
       [
         bigTopic("b1", [

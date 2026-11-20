@@ -39,17 +39,15 @@ export function HeaderClient({ difficultyLevel }: HeaderClientProps) {
               aria-label="ホーム"
             >
               <Image
-                src="/img/logo.svg"
-                alt="みらい議会"
-                width={42}
+                src="/icons/pwa/icon_android_192.png"
+                alt="TENJO"
+                width={36}
                 height={36}
+                className="rounded-lg"
               />
-              <Image
-                src="/img/service-logo.svg"
-                alt="みらい議会"
-                width={115}
-                height={21}
-              />
+              <span className="text-lg font-bold tracking-wide text-gray-900">
+                TENJOインタビュー
+              </span>
             </Link>
           </div>
 

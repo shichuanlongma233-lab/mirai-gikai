@@ -37,10 +37,10 @@ export const personaSchema = z.object({
     ),
   stance: z
     .enum(["for", "against", "neutral"])
-    .describe("法案へのスタンス。元レポートと一致させる"),
+    .describe("トピックへのスタンス。元レポートと一致させる"),
   knowledge_level: z
     .enum(["beginner", "intermediate", "expert"])
-    .describe("法案に関する事前知識レベル。会話の語彙から推定"),
+    .describe("トピックに関する事前知識レベル。会話の語彙から推定"),
   speaking_style: z
     .string()
     .describe(
@@ -54,7 +54,9 @@ export const personaSchema = z.object({
   key_concerns: z
     .array(z.string())
     .min(1)
-    .describe("このペルソナが法案について特に気にしている論点。3〜5 件目安"),
+    .describe(
+      "このペルソナがトピックについて特に気にしている論点。3〜5 件目安"
+    ),
   typical_response_length: z
     .enum(["short", "medium", "long"])
     .describe(
@@ -69,7 +71,7 @@ export const personaSchema = z.object({
     .array(z.string())
     .min(1)
     .describe(
-      "このペルソナが今回の法案に関して政治家へ最終的に伝えたい核心メッセージを 3〜5 件目安の箇条書きで（1 項目ずつ簡潔に 1 文）。" +
+      "このペルソナが今回のトピックについて、その商品・文化を届けようとしている日本の事業者へ最終的に伝えたい核心メッセージを 3〜5 件目安の箇条書きで（1 項目ずつ簡潔に 1 文）。" +
         "後段の満足度評価が「項目ごとに引き出せたか」を判定するため、項目は意味的に独立させる。" +
         "抽象論ではなく、スタンスの根拠＋具体的な懸念/要望を含むこと。"
     ),
@@ -176,12 +178,12 @@ export const diverseRolesPlanSchema = z.object({
         stance: z
           .enum(["for", "against", "neutral"])
           .describe(
-            "この当事者像が法案に対して取りそうな自然なスタンス。役割と矛盾しない範囲で"
+            "この当事者像がトピックに対して取りそうな自然なスタンス。役割と矛盾しない範囲で"
           ),
         rationale: z
           .string()
           .describe(
-            "なぜこの当事者をインタビュー対象に選んだか、法案との接点を 1〜2 文で"
+            "なぜこの当事者をインタビュー対象に選んだか、トピックとの接点を 1〜2 文で"
           ),
       })
     )
@@ -206,7 +208,7 @@ export const simGeneratedReportSchema = z
     stance: z
       .enum(["for", "against", "neutral"])
       .nullable()
-      .describe("法案へのスタンス"),
+      .describe("トピックへのスタンス"),
     role: z
       .enum([
         "subject_expert",
@@ -322,6 +324,8 @@ const promptOverridesPayloadSchema = z
 export const multiSimulationRunRequestSchema = z
   .object({
     billId: z.string().min(1).max(ID_MAX),
+    /** 保存済みの設定。回答メモ方式なら柱をここから読む */
+    configId: z.string().min(1).max(ID_MAX).optional(),
     personaSlots: z
       .array(personaSlotInputSchema)
       .min(1, "ペルソナを 1 件以上選択してください")

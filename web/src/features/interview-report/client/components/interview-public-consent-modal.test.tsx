@@ -19,17 +19,15 @@ function renderModal(overrides: { isSubmitting?: boolean } = {}) {
 }
 
 describe("InterviewPublicConsentModal", () => {
-  it("オープンデータ提供の告知とデータ利用規約リンクを表示する", () => {
+  it("オープンデータ提供の告知とデータ利用規約リンクを出さない", () => {
     renderModal();
 
+    expect(screen.queryByText(/オープンデータ/)).not.toBeInTheDocument();
     expect(
-      screen.getByText(/第三者にオープンデータとして提供されることがあります/)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", {
-        name: "みらい議会AIインタビューデータ利用規約",
+      screen.queryByRole("link", {
+        name: "AIインタビューデータ利用規約",
       })
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
   });
 
   it("公開許可で onSubmit(true)、非公開で onSubmit(false) を呼ぶ", async () => {

@@ -42,13 +42,13 @@ export type InterviewReportStance = (typeof interviewReportStances)[number];
  * スタンスのラベルマッピング
  */
 export const stanceLabels: Record<InterviewReportStance, string> = {
-  for: "賛成",
-  against: "反対",
+  for: "好意的",
+  against: "否定的",
   neutral: "中立",
-  conditional_for: "条件付き賛成",
-  conditional_against: "条件付き反対",
+  conditional_for: "条件付きで好意的",
+  conditional_against: "条件付きで否定的",
   considering: "検討中",
-  continued_deliberation: "継続審議",
+  continued_deliberation: "保留",
 };
 
 const ALL_OPTION = { value: "all", label: "すべて" } as const;

@@ -15,6 +15,6 @@ export async function verifyConfigBelongsToBill(
     .single();
 
   if (error || !data) {
-    throw new Error("指定されたインタビュー設定はこの議案に属していません");
+    throw new Error("指定されたインタビュー設定はこのトピックに属していません");
   }
 }

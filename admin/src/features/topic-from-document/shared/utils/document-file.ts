@@ -8,7 +8,7 @@ export const MAX_DOCUMENT_FILE_SIZE = 10 * 1024 * 1024;
 /** LLM に渡す資料本文の最大文字数。超えた分は切り捨てる */
 export const MAX_DOCUMENT_TEXT_LENGTH = 120_000;
 
-/** 議案のナレッジソースとして保存できる最大文字数 */
+/** トピックのナレッジソースとして保存できる最大文字数 */
 export const MAX_KNOWLEDGE_SOURCE_LENGTH = 40_000;
 
 export type DocumentKind = "pdf" | "text";

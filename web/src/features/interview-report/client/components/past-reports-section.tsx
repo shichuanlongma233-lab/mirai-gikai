@@ -1,12 +1,16 @@
+"use client";
+
 import { getInterviewReportCompleteLink } from "@/features/interview-config/shared/utils/interview-links";
 import type { ReportCardData } from "../../shared/components/report-card";
 import { ReportCard } from "../../shared/components/report-card";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface PastReportsSectionProps {
   reports: ReportCardData[];
 }
 
 export function PastReportsSection({ reports }: PastReportsSectionProps) {
+  const { t } = useI18n();
   if (reports.length === 0) {
     return null;
   }
@@ -14,7 +18,7 @@ export function PastReportsSection({ reports }: PastReportsSectionProps) {
   return (
     <div className="flex flex-col gap-4 w-full max-w-[370px]">
       <h2 className="text-[15px] font-bold leading-[28px] text-black">
-        過去のレポート
+        {t.lp.pastReports}
       </h2>
       <div className="flex flex-col gap-4">
         {reports.map((report) => (

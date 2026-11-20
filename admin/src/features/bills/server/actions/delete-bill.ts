@@ -9,7 +9,7 @@ export async function deleteBill(id: string) {
   try {
     await requireAdmin();
 
-    // 議案を削除
+    // トピックを削除
     await deleteBillById(id);
 
     // キャッシュをリフレッシュ
@@ -17,7 +17,7 @@ export async function deleteBill(id: string) {
   } catch (error) {
     console.error("Delete bill error:", error);
     throw new Error(
-      getErrorMessage(error, "議案の削除中にエラーが発生しました")
+      getErrorMessage(error, "トピックの削除中にエラーが発生しました")
     );
   }
 }

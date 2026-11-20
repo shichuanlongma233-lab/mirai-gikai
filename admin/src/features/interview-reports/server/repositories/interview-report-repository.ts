@@ -610,8 +610,8 @@ export type InterviewMetricsByBillRow = {
 };
 
 /**
- * 議案ごとのAIインタビュー実施数・完了数・完了率・総回答時間（1時間以上のセッション除外版を含む）を取得する。
- * billId を指定すると単一議案に絞り込み、省略すると設定を持つ全議案を返す。
+ * トピックごとのAIインタビュー実施数・完了数・完了率・総回答時間（1時間以上のセッション除外版を含む）を取得する。
+ * billId を指定すると単一トピックに絞り込み、省略すると設定を持つ全トピックを返す。
  */
 export async function findInterviewMetricsByBill(
   billId?: string

@@ -23,7 +23,7 @@ import { untrustedJsonResult } from "../utils/untrusted-json-result";
  * 返却型に含めない**。web 公開ページの「公開（§8 固定）」表示とは別経路。
  *
  * 返す本文（立場説明・要約・会話ログ・意見・トピック）はいずれも公開サイトの匿名利用者の
- * 自由記述に由来する。同じ MCP サーバーには議案コンテンツやスタンスを書き換えるツールも
+ * 自由記述に由来する。同じ MCP サーバーにはトピックコンテンツやスタンスを書き換えるツールも
  * 登録されているため、本文中の「〜を更新して」がエージェントへの指示と解釈されないよう、
  * データ本体は `untrustedJsonResult` で境界マーカー付きで返す（値自体は加工しない）。
  */
@@ -50,9 +50,9 @@ export function registerTopicAnalysisTools(server: McpServer): void {
     {
       title: "トピック分析を取得（内部向け）",
       description:
-        "指定議案の最新トピック分析（公開・非公開を問わず最新版）を返す。トピックごとの意見件数・属性内訳（当事者/事業者/専門家/市民）・期待/懸念の集計と意見（タイトル・本文・引用）を含む。既定では全意見が対象。任意フィルタ（公開フラグ・モデレーション状態）で絞り込める。版が無い場合は status=not_ready。user_id・email 等の直接識別子は含まない。",
+        "指定トピックの最新トピック分析（公開・非公開を問わず最新版）を返す。トピックごとの意見件数・属性内訳（当事者/事業者/専門家/市民）・期待/懸念の集計と意見（タイトル・本文・引用）を含む。既定では全意見が対象。任意フィルタ（公開フラグ・モデレーション状態）で絞り込める。版が無い場合は status=not_ready。user_id・email 等の直接識別子は含まない。",
       inputSchema: {
-        billId: z.string().uuid().describe("対象議案のID"),
+        billId: z.string().uuid().describe("対象トピックのID"),
         ...filterInput,
       },
     },
@@ -70,9 +70,9 @@ export function registerTopicAnalysisTools(server: McpServer): void {
     {
       title: "インタビュー回答一覧を取得（内部向け）",
       description:
-        "指定議案のAIインタビュー回答（回答者1人=1件）を新しい順で返す。各件は立場区分・肩書・賛否（期待/懸念）・要約を含む。既定では公開・非公開を問わず全件。任意フィルタ（公開フラグ・モデレーション状態）で絞り込める。user_id・email 等の直接識別子は含まない。",
+        "指定トピックのAIインタビュー回答（回答者1人=1件）を新しい順で返す。各件は立場区分・肩書・賛否（期待/懸念）・要約を含む。既定では公開・非公開を問わず全件。任意フィルタ（公開フラグ・モデレーション状態）で絞り込める。user_id・email 等の直接識別子は含まない。",
       inputSchema: {
-        billId: z.string().uuid().describe("対象議案のID"),
+        billId: z.string().uuid().describe("対象トピックのID"),
         ...filterInput,
       },
     },

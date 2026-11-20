@@ -130,7 +130,7 @@ function Header({ billName }: { billName: string }) {
   return (
     <>
       <h1 className="mb-1 text-2xl font-bold">意見分析ビューア</h1>
-      <p className="mb-1 text-sm text-gray-600">議案: {billName}</p>
+      <p className="mb-1 text-sm text-gray-600">トピック: {billName}</p>
       <p className="mb-4 text-sm text-gray-500">
         公開に同意された意見をもとに、論点を大トピック・中トピックの2階層で見る。
         絞り込みの「専門家」は肩書ではなく、発言が専門知識を根拠にしているかで判定する。

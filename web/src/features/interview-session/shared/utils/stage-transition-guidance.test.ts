@@ -22,7 +22,7 @@ describe("buildBulkModeStageGuidance", () => {
     expect(result).toContain("3問中1問完了（残り2問）");
     expect(result).toContain("完了した質問");
     expect(result).toContain("[ID: q1]");
-    expect(result).toContain("未回答の質問");
+    expect(result).toContain("まだ聞いていない質問");
     expect(result).toContain("[ID: q2]");
     expect(result).toContain("[ID: q3]");
     expect(result).toContain("一括回答優先モード専用ルール");
@@ -37,7 +37,7 @@ describe("buildBulkModeStageGuidance", () => {
 
     expect(result).toContain("3問中3問完了（残り0問）");
     expect(result).toContain("完了した質問");
-    expect(result).not.toContain("未回答の質問");
+    expect(result).not.toContain("まだ聞いていない質問");
   });
 
   it("chatステージ: 質問なしの場合", () => {
@@ -49,7 +49,7 @@ describe("buildBulkModeStageGuidance", () => {
 
     expect(result).toContain("0問中0問完了（残り0問）");
     expect(result).not.toContain("完了した質問");
-    expect(result).not.toContain("未回答の質問");
+    expect(result).not.toContain("まだ聞いていない質問");
   });
 
   it("chatステージ: askedQuestionIdsにquestions外のIDが含まれても負にならない", () => {
@@ -94,7 +94,7 @@ describe("buildBulkModeStageGuidance", () => {
 
     expect(result).toContain("3問中0問完了（残り3問）");
     expect(result).not.toContain("完了した質問");
-    expect(result).toContain("未回答の質問");
+    expect(result).toContain("まだ聞いていない質問");
   });
 });
 

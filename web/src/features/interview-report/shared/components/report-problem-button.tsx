@@ -1,7 +1,16 @@
 import Image from "next/image";
 import { EXTERNAL_LINKS } from "@/config/external-links";
+import { type Dictionary, getDictionary } from "@/lib/i18n/get-dictionary";
 
-export function ReportProblemButton() {
+export function ReportProblemButton({
+  t = getDictionary("ja"),
+}: {
+  /** 表示する言語の文言（省略時は日本語） */
+  t?: Dictionary;
+}) {
+  if (!EXTERNAL_LINKS.REPORT) {
+    return null;
+  }
   return (
     <a
       href={EXTERNAL_LINKS.REPORT}
@@ -11,12 +20,12 @@ export function ReportProblemButton() {
     >
       <Image
         src="/icons/report-error.svg"
-        alt="報告アイコン"
+        alt={t.report.reportProblemAlt}
         width={20}
         height={20}
         className="shrink-0"
       />
-      問題を報告する
+      {t.report.reportProblem}
     </a>
   );
 }

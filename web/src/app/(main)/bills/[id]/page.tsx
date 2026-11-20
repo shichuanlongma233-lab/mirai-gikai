@@ -1,77 +1,16 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { getDifficultyLevel } from "@/features/bill-difficulty/server/loaders/get-difficulty-level";
-import { BillDetailLayout } from "@/features/bills/server/components/bill-detail/bill-detail-layout";
-import { getBillById } from "@/features/bills/server/loaders/get-bill-by-id";
-import { resolveBillShareImageUrl } from "@/features/bills/shared/utils/bill-share-image";
-import { env } from "@/lib/env";
-import { routes } from "@/lib/routes";
+import type { Route } from "next";
+import { redirect } from "next/navigation";
+import { getInterviewLPLink } from "@/features/interview-config/shared/utils/interview-links";
 
 interface BillDetailPageProps {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: BillDetailPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const bill = await getBillById(id);
-
-  if (!bill) {
-    return {
-      title: "議案が見つかりません",
-    };
-  }
-
-  // bill_contentのsummaryがあればそれを使用、なければデフォルト値を使用
-  const description = bill.bill_content?.summary || "議案の詳細情報";
-  const shareImageUrl = resolveBillShareImageUrl(bill, env.webUrl);
-
-  return {
-    title: bill.name,
-    description: description,
-    alternates: {
-      canonical: routes.billDetail(bill.id),
-    },
-    openGraph: {
-      title: bill.name,
-      description: description,
-      type: "article",
-      publishedTime: bill.submitted_date ?? undefined,
-      modifiedTime: bill.updated_at,
-      images: [
-        {
-          url: shareImageUrl,
-          alt: `${bill.name} のOGPイメージ`,
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: bill.name,
-      description: description,
-      images: [shareImageUrl],
-    },
-  };
-}
-
+/**
+ * トピック詳細（元の法案詳細ページ）は審議状況など議会向けの表示が多いため使わず、
+ * インタビューの紹介ページへ案内する。
+ */
 export default async function BillDetailPage({ params }: BillDetailPageProps) {
   const { id } = await params;
-  const [billWithContent, currentDifficulty] = await Promise.all([
-    getBillById(id),
-    getDifficultyLevel(),
-  ]);
-
-  if (!billWithContent) {
-    notFound();
-  }
-
-  return (
-    <BillDetailLayout
-      bill={billWithContent}
-      currentDifficulty={currentDifficulty}
-    />
-  );
+  redirect(getInterviewLPLink(id) as Route);
 }

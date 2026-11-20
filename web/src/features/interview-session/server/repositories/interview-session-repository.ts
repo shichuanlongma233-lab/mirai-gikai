@@ -118,6 +118,9 @@ export async function findSessionOwnerById(sessionId: string) {
 export async function createInterviewSessionRecord(params: {
   interviewConfigId: string;
   userId: string;
+  /** 回答者が答えた出身の国・地域と年代（集計用。答えていなければ null） */
+  respondentCountry?: string | null;
+  respondentAgeRange?: string | null;
 }): Promise<InterviewSession> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
@@ -126,6 +129,8 @@ export async function createInterviewSessionRecord(params: {
       interview_config_id: params.interviewConfigId,
       user_id: params.userId,
       started_at: new Date().toISOString(),
+      respondent_country: params.respondentCountry ?? null,
+      respondent_age_range: params.respondentAgeRange ?? null,
     })
     .select()
     .single();
@@ -169,6 +174,46 @@ export async function updateInterviewSessionCompleted(
   if (error) {
     throw new Error(`Failed to complete interview session: ${error.message}`);
   }
+}
+
+/**
+ * 回答メモ（回答メモ方式の聞きたい点ごとの回答状況）を保存
+ */
+export async function updateInterviewSessionAnswerMemo(
+  sessionId: string,
+  memo: unknown
+): Promise<void> {
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("interview_sessions")
+    .update({
+      answer_memo:
+        memo as Database["public"]["Tables"]["interview_sessions"]["Update"]["answer_memo"],
+    })
+    .eq("id", sessionId);
+
+  if (error) {
+    throw new Error(`Failed to save answer memo: ${error.message}`);
+  }
+}
+
+/**
+ * 回答メモを取得（ない場合は null）
+ */
+export async function findInterviewSessionAnswerMemo(
+  sessionId: string
+): Promise<unknown> {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("interview_sessions")
+    .select("answer_memo")
+    .eq("id", sessionId)
+    .single();
+
+  if (error) {
+    throw new Error(`Failed to fetch answer memo: ${error.message}`);
+  }
+  return data?.answer_memo ?? null;
 }
 
 // ========================================

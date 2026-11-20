@@ -6,7 +6,9 @@ export default async function BillCreatePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">議案新規作成</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        トピック新規作成
+      </h1>
       <BillCreateForm dietSessions={dietSessions} />
     </div>
   );

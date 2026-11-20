@@ -13,7 +13,7 @@ import {
 import { saveBillVideos } from "../repositories/bill-edit-repository";
 
 /**
- * 議案の動画を議論の種類ごとに保存する（空にした種類は削除する）
+ * トピックの動画を議論の種類ごとに保存する（空にした種類は削除する）
  */
 export async function updateBillVideos(
   billId: string,

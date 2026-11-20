@@ -8,8 +8,7 @@
 
 /** メインページ（TOP、法案一覧、法案詳細）かどうかを判定 */
 export function isMainPage(pathname: string): boolean {
-  // トップページ
-  if (pathname === "/") return true;
+  // トップ（公開中インタビューの一覧）はチャット欄を持たないので中央に置く
   // 法案一覧ページ
   if (pathname === "/bills") return true;
   // 法案詳細ページ（/bills/[id]）- サブパスは除外

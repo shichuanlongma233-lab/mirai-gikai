@@ -20,7 +20,7 @@ export interface CompletedReportListItem {
   reportId: string;
   /** このレポートが属する config ID。UI で「現在の config のみ」フィルタに使う */
   configId: string;
-  /** config 名。法案全体から選ぶとき、どの config のインタビューか判別する */
+  /** config 名。トピック全体から選ぶとき、どの config のインタビューか判別する */
   configName: string | null;
   roleTitle: string | null;
   role: string | null;
@@ -143,7 +143,7 @@ export type PersonaSlotInput =
       kind: "bill";
       /** 立場ヒント（指定しなければ LLM が決める） */
       stanceHint?: "for" | "against" | "neutral";
-      /** 役割ヒント（例: "射場運用の民間事業者"） */
+      /** 役割ヒント（例: "日本の器が好きなアメリカの30代"） */
       roleHint?: string;
     };
 
@@ -151,8 +151,10 @@ export type PersonaSlotInput =
  * 複数ペルソナシミュ API (/api/interview-simulation/run-multi) のリクエストボディ
  */
 export interface MultiSimulationRunRequest {
-  /** 対象法案 ID（全スロット共通） */
+  /** 対象トピック ID（全スロット共通） */
   billId: string;
+  /** 保存済みの設定。回答メモ方式なら柱をここから読む */
+  configId?: string;
   /** 各スロットのペルソナ定義（1〜MAX_PERSONA_SLOTS） */
   personaSlots: PersonaSlotInput[];
   /** 改善版 = 編集中 config スナップショット（全スロット共通） */

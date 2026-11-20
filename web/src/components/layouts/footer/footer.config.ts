@@ -1,13 +1,17 @@
 import { EXTERNAL_LINKS } from "@/config/external-links";
 import { routes } from "@/lib/routes";
 
+export type FooterLabelKey = "top" | "terms" | "privacy" | "developers";
+
 export type FooterLink = {
+  key: FooterLabelKey;
   label: string;
   href: string;
   external?: boolean;
 };
 
 export type FooterPolicyLink = {
+  key: FooterLabelKey;
   label: string;
   href: string;
   external?: boolean;
@@ -15,41 +19,25 @@ export type FooterPolicyLink = {
 
 export const primaryLinks: FooterLink[] = [
   {
+    key: "top",
     label: "TOP",
     href: routes.home(),
-  },
-  {
-    label: "みらい議会とは",
-    href: EXTERNAL_LINKS.ABOUT_NOTE,
-    external: true,
-  },
-  {
-    label: "チームみらいについて",
-    href: EXTERNAL_LINKS.TEAM_MIRAI_ABOUT,
-    external: true,
-  },
-  {
-    label: "寄附で応援する",
-    href: EXTERNAL_LINKS.DONATION,
-    external: true,
   },
 ];
 
 export const policyLinks: FooterPolicyLink[] = [
   {
-    label: "よくあるご質問",
-    href: EXTERNAL_LINKS.FAQ,
-    external: true,
-  },
-  {
+    key: "terms",
     label: "利用規約",
     href: routes.terms(),
   },
   {
+    key: "privacy",
     label: "プライバシーポリシー",
     href: routes.privacy(),
   },
   {
+    key: "developers",
     label: "開発者向け",
     href: routes.developers(),
   },

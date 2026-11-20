@@ -17,10 +17,11 @@ export const routes = {
   dietSessions: () => "/diet-sessions" as const,
   experts: () => "/experts" as const,
   interviews: () => "/interviews" as const,
+  insights: () => "/insights" as const,
   interviewOpinionBackfill: () => "/interview-opinion-backfill" as const,
   userTopicAnalysisAll: () => "/user-topic-analysis" as const,
 
-  // ── 議案配下 ──────────────────────────────────────
+  // ── トピック配下 ──────────────────────────────────────
   billEdit: (billId: string) => `/bills/${billId}/edit` as const,
   billContentsEdit: (billId: string) =>
     `/bills/${billId}/contents/edit` as const,
@@ -47,6 +48,8 @@ export const routes = {
     `/bills/${billId}/interview/${configId}/reports/${sessionId}` as const,
 
   // トピック解析（インタビュー設定配下）
+  billInsights: (billId: string, configId: string) =>
+    `/bills/${billId}/interview/${configId}/insights` as const,
   billTopicAnalysis: (billId: string, configId: string) =>
     `/bills/${billId}/interview/${configId}/topic-analysis` as const,
   billTopicAnalysisDetail: (

@@ -1,8 +1,8 @@
 import type { CompletedReportListItem, PersonaSlotInput } from "../types";
 
 const STANCE_LABEL: Record<"for" | "against" | "neutral", string> = {
-  for: "賛成",
-  against: "反対",
+  for: "好意的",
+  against: "否定的",
   neutral: "中立",
 };
 

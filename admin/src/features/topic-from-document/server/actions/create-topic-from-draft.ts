@@ -26,8 +26,8 @@ export type CreateTopicFromDraftResult =
 const DEFAULT_ESTIMATED_DURATION = 10;
 
 /**
- * 資料から生成した下書きを、議案（非公開の下書き）・記事・インタビュー設定（非公開）として保存する。
- * 途中で失敗したら、作成した議案ごと削除して元に戻す。
+ * 資料から生成した下書きを、トピック（非公開の下書き）・記事・インタビュー設定（非公開）として保存する。
+ * 途中で失敗したら、作成したトピックごと削除して元に戻す。
  */
 export async function createTopicFromDraft(
   input: CreateTopicFromDraftInput
@@ -60,7 +60,9 @@ export async function createTopicFromDraft(
       {
         bill_id: bill.id,
         name: draft.config_name,
-        status: "closed",
+        // トピックは下書きで作るので、インタビューを公開にしても回答者には見えない。
+        // トピックを「公開中」にするだけで回答を受け付けられるようにする。
+        status: "public",
         mode: "loop",
         themes: draft.themes.length > 0 ? draft.themes : null,
         chat_model: null,

@@ -23,6 +23,7 @@ import type {
 import { ConfigGenerationChat } from "./config-generation-chat";
 import { InterviewConfigForm } from "./interview-config-form";
 import { InterviewQuestionList } from "./interview-question-list";
+import { PillarsPanel } from "./pillars-panel";
 
 interface InterviewConfigEditClientProps {
   billId: string;
@@ -219,6 +220,16 @@ export function InterviewConfigEditClient({
               aiGeneratedQuestions.length > 0 && (
                 <AiQuestionsPreview questions={aiGeneratedQuestions} />
               )
+            )}
+            {configId && (
+              <PillarsPanel
+                configId={configId}
+                savedPillars={initialConfig?.pillars ?? null}
+                savedVersion={initialConfig?.pillars_version ?? 0}
+                engine={
+                  initialConfig?.question_engine === "memo" ? "memo" : "classic"
+                }
+              />
             )}
           </div>
 

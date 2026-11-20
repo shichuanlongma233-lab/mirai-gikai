@@ -16,7 +16,7 @@ export type TopicDraftGenerationResponse =
   | {
       success: true;
       draft: TopicDraft;
-      /** 議案のナレッジソースに入れる資料本文（上限で切り詰め済み） */
+      /** トピックのナレッジソースに入れる資料本文（上限で切り詰め済み） */
       knowledgeSource: string;
       /** 資料が長く、一部を切り捨てて生成したか */
       truncated: boolean;

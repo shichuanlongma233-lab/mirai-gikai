@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { routes } from "@/lib/routes";
-import { BarChart3, Sparkles } from "lucide-react";
+import { BarChart3, LayoutDashboard } from "lucide-react";
 import type { InterviewConfigWithBill } from "@/features/interview-config/server/repositories/interview-config-repository";
 import { getModeLabel } from "@/features/interview-config/shared/utils/get-mode-label";
 
@@ -40,7 +40,7 @@ export function AllInterviewConfigList({
             <TableHeader>
               <TableRow>
                 <TableHead>設定名</TableHead>
-                <TableHead>議案</TableHead>
+                <TableHead>トピック</TableHead>
                 <TableHead>モード</TableHead>
                 <TableHead>ステータス</TableHead>
                 <TableHead>セッション数</TableHead>
@@ -101,14 +101,14 @@ export function AllInterviewConfigList({
                       >
                         <Link
                           href={
-                            routes.billReports(
+                            routes.billInsights(
                               config.bill_id,
                               config.id
                             ) as Route
                           }
                         >
-                          <BarChart3 className="h-4 w-4" />
-                          レポート
+                          <LayoutDashboard className="h-4 w-4" />
+                          集計
                         </Link>
                       </Button>
                       <Button
@@ -119,14 +119,14 @@ export function AllInterviewConfigList({
                       >
                         <Link
                           href={
-                            routes.billTopicAnalysis(
+                            routes.billReports(
                               config.bill_id,
                               config.id
                             ) as Route
                           }
                         >
-                          <Sparkles className="h-4 w-4" />
-                          トピック解析
+                          <BarChart3 className="h-4 w-4" />
+                          レポート
                         </Link>
                       </Button>
                     </div>

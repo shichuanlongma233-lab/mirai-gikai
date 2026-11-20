@@ -11,6 +11,7 @@ import { NewInterviewButton } from "@/features/interview-session/client/componen
 import { RestartInterviewButton } from "@/features/interview-session/client/components/restart-interview-button";
 import type { LatestInterviewSession } from "@/features/interview-session/server/loaders/get-latest-interview-session";
 import { InterviewConsentModal } from "./interview-consent-modal";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface InterviewActionButtonsProps {
   billId: string;
@@ -23,6 +24,7 @@ export function InterviewActionButtons({
   sessionInfo,
   previewToken,
 }: InterviewActionButtonsProps) {
+  const { t } = useI18n();
   const [showConsentModal, setShowConsentModal] = useState(false);
   const isActive = sessionInfo?.status === "active";
   const isCompleted = sessionInfo?.status === "completed";
@@ -50,7 +52,7 @@ export function InterviewActionButtons({
               height={24}
               className="object-contain"
             />
-            <span>AIインタビューを再開する</span>
+            <span>{t.lp.resume}</span>
             <ArrowRight className="size-5" />
           </Link>
         </Button>
@@ -77,7 +79,7 @@ export function InterviewActionButtons({
           height={24}
           className="object-contain"
         />
-        <span>AIインタビューをはじめる</span>
+        <span>{t.lp.start}</span>
         <ArrowRight className="size-5" />
       </Button>
 

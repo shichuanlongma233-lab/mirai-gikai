@@ -6,9 +6,9 @@ import {
   Download,
   FileUp,
   FolderInput,
+  LayoutDashboard,
   Pencil,
   Plus,
-  Sparkles,
   Trash2,
 } from "lucide-react";
 import type { Route } from "next";
@@ -102,6 +102,8 @@ export function InterviewConfigList({
       const result = await duplicateInterviewConfig(configId);
       if (result.success) {
         toast.success("インタビュー設定を複製しました");
+        // 戻ったときの一覧に複製が出るよう、キャッシュを更新してから移動する
+        router.refresh();
         router.push(routes.billInterviewEdit(billId, result.data.id) as Route);
       } else {
         toast.error(result.error || "複製に失敗しました");
@@ -278,21 +280,19 @@ export function InterviewConfigList({
                     <TableCell>
                       <div className="flex items-center gap-1">
                         <Link
+                          href={routes.billInsights(billId, config.id) as Route}
+                        >
+                          <Button variant="ghost" size="sm" className="gap-1">
+                            <LayoutDashboard className="h-4 w-4" />
+                            集計
+                          </Button>
+                        </Link>
+                        <Link
                           href={routes.billReports(billId, config.id) as Route}
                         >
                           <Button variant="ghost" size="sm" className="gap-1">
                             <BarChart3 className="h-4 w-4" />
                             レポート
-                          </Button>
-                        </Link>
-                        <Link
-                          href={
-                            routes.billTopicAnalysis(billId, config.id) as Route
-                          }
-                        >
-                          <Button variant="ghost" size="sm" className="gap-1">
-                            <Sparkles className="h-4 w-4" />
-                            トピック解析
                           </Button>
                         </Link>
                       </div>
@@ -340,13 +340,13 @@ export function InterviewConfigList({
                             <Button
                               variant="ghost"
                               size="icon"
-                              aria-label="他法案へ複製"
+                              aria-label="他トピックへ複製"
                               onClick={() => setCopyToBillTarget(config)}
                             >
                               <FolderInput className="h-4 w-4" />
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent>他法案へ複製</TooltipContent>
+                          <TooltipContent>他トピックへ複製</TooltipContent>
                         </Tooltip>
                         <Tooltip>
                           <TooltipTrigger asChild>

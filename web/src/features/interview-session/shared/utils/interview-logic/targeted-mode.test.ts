@@ -96,9 +96,9 @@ describe("buildTargetedModeSystemPrompt", () => {
       bill: null,
     });
 
-    expect(result).toContain("- 法案名: \n");
-    expect(result).toContain("- 法案タイトル: \n");
-    expect(result).toContain("- 法案要約: \n");
+    expect(result).toContain("- トピック名: \n");
+    expect(result).toContain("- 記事タイトル: \n");
+    expect(result).toContain("- 要約: \n");
   });
 
   it("テーマがプロンプトに含まれる", () => {
@@ -200,13 +200,13 @@ describe("buildTargetedModeSystemPrompt", () => {
     expect(result).toContain("フォローアップ指針は最優先で守る");
   });
 
-  it("質問が空の場合「（賛成か、反対か）」がフォールバックとして含まれる", () => {
+  it("質問が空の場合「（このトピックについての率直な感想）」がフォールバックとして含まれる", () => {
     const result = buildTargetedModeSystemPrompt({
       ...baseParams,
       questions: [],
     });
 
-    expect(result).toContain("（賛成か、反対か）");
+    expect(result).toContain("（このトピックについての率直な感想）");
   });
 
   it("深掘りテクニックが含まれる", () => {

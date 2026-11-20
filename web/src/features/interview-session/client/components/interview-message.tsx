@@ -7,6 +7,7 @@ import { UserMessage } from "@/features/chat/client/components/user-message";
 import { InterviewSummary } from "@/features/interview-session/client/components/interview-summary";
 import { rehypeOpenLinksInNewTab } from "@/lib/markdown/rehype-open-links-in-new-tab";
 import type { InterviewReportViewData } from "../../shared/schemas";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 type RehypePlugins = ComponentProps<typeof SystemMessage>["rehypePlugins"];
 
@@ -25,6 +26,7 @@ export function InterviewMessage({
   footer,
   openLinksInNewTab = false,
 }: InterviewMessageProps) {
+  const { t } = useI18n();
   const rehypePlugins: RehypePlugins = useMemo(
     () => (openLinksInNewTab ? [rehypeOpenLinksInNewTab] : undefined),
     [openLinksInNewTab]
@@ -54,9 +56,7 @@ export function InterviewMessage({
         {report && (
           <div className="mt-2">
             <InterviewSummary report={report} />
-            <p className="text-sm font-medium mt-2">
-              こちらの内容で問題ありませんか？違和感がある箇所があれば指摘してください。
-            </p>
+            <p className="text-sm font-medium mt-2">{t.chat.reportConfirm}</p>
           </div>
         )}
       </div>

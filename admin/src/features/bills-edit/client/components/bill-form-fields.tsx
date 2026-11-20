@@ -91,116 +91,151 @@ export function BillFormFields({
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>議案名 *</FormLabel>
+            <FormLabel>トピック名 *</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>
             <FormDescription>
-              議案の正式名称を入力してください（最大200文字）
+              管理用のトピック名を入力してください（最大200文字）
             </FormDescription>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField
-          control={control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>ステータス *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="ステータスを選択" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {BILL_STATUS_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                現在の審議状況を選択してください
-              </FormDescription>
-              {shouldAutoCloseInterviewOnBillStatus(field.value) && (
-                <p className="text-sm text-amber-700 bg-amber-50 p-3 rounded flex items-start gap-2">
-                  <AlertTriangle className="size-4 mt-0.5 shrink-0" />
-                  <span>
-                    保存すると、この議案に紐づく公開中のインタビューは自動でクローズされます。
-                  </span>
-                </p>
-              )}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <div className="hidden">
+        <div className="hidden">
+          <FormField
+            control={control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>ステータス *</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="ステータスを選択" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {BILL_STATUS_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  現在の審議状況を選択してください
+                </FormDescription>
+                {shouldAutoCloseInterviewOnBillStatus(field.value) && (
+                  <p className="text-sm text-amber-700 bg-amber-50 p-3 rounded flex items-start gap-2">
+                    <AlertTriangle className="size-4 mt-0.5 shrink-0" />
+                    <span>
+                      保存すると、このトピックに紐づく公開中のインタビューは自動でクローズされます。
+                    </span>
+                  </p>
+                )}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <FormField
-          control={control}
-          name="originating_house"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>提出院 *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="提出院を選択" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {ORIGINATING_HOUSE_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                議案を提出した議院を選択してください
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="hidden">
+          <FormField
+            control={control}
+            name="originating_house"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>提出院 *</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="提出院を選択" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {ORIGINATING_HOUSE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  トピックを提出した議院を選択してください
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
+        <div className="hidden">
+          <FormField
+            control={control}
+            name="proposal_type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>トピックの種類</FormLabel>
+                <Select
+                  onValueChange={(value) =>
+                    field.onChange(
+                      PROPOSAL_TYPE_OPTIONS.find((o) => o.value === value)
+                        ?.value ?? null
+                    )
+                  }
+                  value={field.value ?? PROPOSAL_TYPE_UNSET_VALUE}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value={PROPOSAL_TYPE_UNSET_VALUE}>
+                      未設定
+                    </SelectItem>
+                    {PROPOSAL_TYPE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormDescription>
+                  内閣が提出した閣法か、議員が提出した議員立法かを選択してください。未設定の場合は公開サイトや速報画像に表示しません
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
+
+      <div className="hidden">
         <FormField
           control={control}
-          name="proposal_type"
+          name="status_note"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>法案の種類</FormLabel>
-              <Select
-                onValueChange={(value) =>
-                  field.onChange(
-                    PROPOSAL_TYPE_OPTIONS.find((o) => o.value === value)
-                      ?.value ?? null
-                  )
-                }
-                value={field.value ?? PROPOSAL_TYPE_UNSET_VALUE}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value={PROPOSAL_TYPE_UNSET_VALUE}>
-                    未設定
-                  </SelectItem>
-                  {PROPOSAL_TYPE_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormLabel>ステータス備考</FormLabel>
+              <FormControl>
+                <Textarea
+                  {...field}
+                  value={field.value || ""}
+                  className="min-h-[100px]"
+                />
+              </FormControl>
               <FormDescription>
-                内閣が提出した閣法か、議員が提出した議員立法かを選択してください。未設定の場合は公開サイトや速報画像に表示しません
+                審議状況の詳細や補足情報を入力してください（最大500文字）
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -208,41 +243,24 @@ export function BillFormFields({
         />
       </div>
 
-      <FormField
-        control={control}
-        name="status_note"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>ステータス備考</FormLabel>
-            <FormControl>
-              <Textarea
-                {...field}
-                value={field.value || ""}
-                className="min-h-[100px]"
-              />
-            </FormControl>
-            <FormDescription>
-              審議状況の詳細や補足情報を入力してください（最大500文字）
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={control}
-        name="submitted_date"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>法案提出日 *</FormLabel>
-            <FormControl>
-              <Input type="date" {...field} />
-            </FormControl>
-            <FormDescription>法案の提出日を設定してください</FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="hidden">
+        <FormField
+          control={control}
+          name="submitted_date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>登録日 *</FormLabel>
+              <FormControl>
+                <Input type="date" {...field} />
+              </FormControl>
+              <FormDescription>
+                トピックの提出日を設定してください
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={control}
@@ -258,7 +276,7 @@ export function BillFormFields({
               />
             </FormControl>
             <FormDescription>
-              議案のサムネイル画像を設定してください（任意）
+              トピックのサムネイル画像を設定してください（任意）
             </FormDescription>
             <FormMessage />
           </FormItem>
@@ -294,26 +312,28 @@ export function BillFormFields({
         )}
       />
 
-      <FormField
-        control={control}
-        name="shugiin_url"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>衆議院URL</FormLabel>
-            <FormControl>
-              <Input
-                {...field}
-                value={field.value || ""}
-                placeholder="https://www.shugiin.go.jp/..."
-              />
-            </FormControl>
-            <FormDescription>
-              衆議院の議案ページURLを入力してください（「これから掲載される法案」表示時に外部リンクとして使用）
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="hidden">
+        <FormField
+          control={control}
+          name="shugiin_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>衆議院URL</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  value={field.value || ""}
+                  placeholder="https://www.shugiin.go.jp/..."
+                />
+              </FormControl>
+              <FormDescription>
+                衆議院のトピックページURLを入力してください（「これから掲載されるトピック」表示時に外部リンクとして使用）
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={control}
@@ -325,7 +345,7 @@ export function BillFormFields({
               <Input
                 {...field}
                 value={field.value || ""}
-                placeholder="221-kaku-1-mof-法案名"
+                placeholder="japanese-tableware"
               />
             </FormControl>
             <FormDescription>
@@ -336,36 +356,38 @@ export function BillFormFields({
         )}
       />
 
-      <FormField
-        control={control}
-        name="diet_session_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>国会会期</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              value={field.value ?? undefined}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="国会会期を選択" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {dietSessions.map((session) => (
-                  <SelectItem key={session.id} value={session.id}>
-                    {session.name}（{session.start_date}〜{session.end_date}）
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormDescription>
-              議案が提出された国会会期を選択してください
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="hidden">
+        <FormField
+          control={control}
+          name="diet_session_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>国会会期</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value ?? undefined}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="国会会期を選択" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {dietSessions.map((session) => (
+                    <SelectItem key={session.id} value={session.id}>
+                      {session.name}（{session.start_date}〜{session.end_date}）
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                トピックが提出された国会会期を選択してください
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={control}
@@ -379,7 +401,7 @@ export function BillFormFields({
               />
             </FormControl>
             <div className="space-y-1 leading-none">
-              <FormLabel>注目の議案</FormLabel>
+              <FormLabel>注目のトピック</FormLabel>
               <FormDescription>
                 トップページなどで優先的に表示されます
               </FormDescription>
@@ -447,7 +469,7 @@ export function BillFormFields({
               <Textarea
                 {...field}
                 value={field.value ?? ""}
-                placeholder="議案の補足情報やチームみらいの仮説などを入力"
+                placeholder="トピックの補足情報や、調査で確かめたい仮説などを入力"
                 className="min-h-[200px] resize-y"
               />
             </FormControl>
@@ -470,7 +492,7 @@ export function BillFormFields({
             <div className="space-y-1 leading-none">
               <FormLabel>AIチャットでもナレッジソースを使用する</FormLabel>
               <FormDescription>
-                ONにすると、議案ページのAIチャットのシステムプロンプトに上のナレッジソースが追加されます。AIインタビューでは常に使用されます。
+                ONにすると、トピックページのAIチャットのシステムプロンプトに上のナレッジソースが追加されます。AIインタビューでは常に使用されます。
               </FormDescription>
             </div>
           </FormItem>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 interface TimeUpPromptProps {
   onEndInterview: () => void;
@@ -16,14 +17,15 @@ export function TimeUpPrompt({
   onContinue,
   disabled,
 }: TimeUpPromptProps) {
+  const { t } = useI18n();
   return (
     <div className="mx-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
       <p className="mb-3 text-sm font-medium text-gray-700">
-        目安時間を超過しましたが、インタビューを続けてもよいですか？
+        {t.timeUp.message}
       </p>
       <div className="flex gap-2">
         <Button size="sm" onClick={onContinue} disabled={disabled}>
-          インタビューを続ける
+          {t.timeUp.continue}
         </Button>
         <Button
           variant="outline"
@@ -31,7 +33,7 @@ export function TimeUpPrompt({
           onClick={onEndInterview}
           disabled={disabled}
         >
-          終了してレポートを作成
+          {t.timeUp.end}
         </Button>
       </div>
     </div>

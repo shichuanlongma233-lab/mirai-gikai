@@ -7,10 +7,10 @@ import { submitInterviewFeedback } from "../../server/actions/submit-interview-f
 import { submitInterviewRating } from "../../server/actions/submit-interview-rating";
 import {
   FEEDBACK_RATING_THRESHOLD,
-  FEEDBACK_TAG_LABELS,
   FEEDBACK_TAGS,
   type FeedbackTag,
 } from "../../shared/constants/feedback-tags";
+import { useI18n } from "@/lib/i18n/i18n-provider";
 
 type WidgetPhase = "rating" | "feedback" | "thankyou";
 
@@ -25,13 +25,14 @@ function RatingPhase({
   selectedRating: number | null;
   onRate: (rating: number) => void;
 }) {
+  const { t } = useI18n();
   return (
     <>
       <p className="text-[13px] font-medium leading-none text-primary-accent text-center">
-        AIインタビュー改善のためのアンケート
+        {t.rating.title}
       </p>
       <p className="text-[13px] font-medium leading-none text-mirai-text text-center">
-        AIはあなたの考えを十分に引き出せていますか
+        {t.rating.question}
       </p>
       <div className="flex justify-center">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -40,7 +41,7 @@ function RatingPhase({
             variant="ghost"
             onClick={() => onRate(star)}
             className="h-auto p-0 hover:bg-transparent"
-            aria-label={`${star}つ星`}
+            aria-label={t.rating.star(star)}
           >
             <Star
               className={`size-6 ${
@@ -65,10 +66,11 @@ function FeedbackPhase({
   onToggleTag: (tag: FeedbackTag) => void;
   onSubmit: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <>
       <p className="text-[13px] font-medium leading-none text-mirai-text text-center">
-        気になった点を教えてください
+        {t.rating.feedbackQuestion}
       </p>
       <div className="flex flex-wrap gap-2">
         {FEEDBACK_TAGS.map((tag) => (
@@ -82,7 +84,7 @@ function FeedbackPhase({
                 : "border-primary bg-white text-primary-accent"
             }`}
           >
-            {FEEDBACK_TAG_LABELS[tag]}
+            {t.rating.tags[tag]}
           </Button>
         ))}
       </div>
@@ -93,7 +95,7 @@ function FeedbackPhase({
           disabled={selectedTags.size === 0}
           className="h-auto p-0 text-[13px] font-medium text-primary-accent hover:bg-transparent disabled:opacity-40"
         >
-          送信
+          {t.common.send}
           <ArrowRight size={14} />
         </Button>
       </div>
@@ -102,9 +104,10 @@ function FeedbackPhase({
 }
 
 function ThankYouPhase() {
+  const { t } = useI18n();
   return (
     <p className="text-[13px] font-medium leading-none text-mirai-text text-center">
-      回答ありがとうございました！
+      {t.rating.thanks}
     </p>
   );
 }
@@ -127,6 +130,7 @@ export function InterviewRatingWidget({
   sessionId,
   onDismiss,
 }: InterviewRatingWidgetProps) {
+  const { t } = useI18n();
   const [phase, setPhase] = useState<WidgetPhase>("rating");
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [selectedTags, setSelectedTags] = useState<Set<FeedbackTag>>(new Set());
@@ -208,7 +212,7 @@ export function InterviewRatingWidget({
         size="icon"
         onClick={phase === "feedback" ? handleDismissToThankYou : onDismiss}
         className="absolute right-2 top-2 h-[22px] w-[22px] p-0 text-mirai-text-close hover:bg-transparent hover:text-gray-500"
-        aria-label="閉じる"
+        aria-label={t.common.close}
       >
         <X size={11} strokeWidth={2} />
       </Button>

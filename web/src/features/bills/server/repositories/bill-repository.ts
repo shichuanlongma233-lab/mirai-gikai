@@ -525,7 +525,8 @@ export async function findBillsWithPublicInterview(
         )
       ),
       interview_configs!inner (
-        id
+        id,
+        estimated_duration
       )
     `
     )

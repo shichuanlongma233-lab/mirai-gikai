@@ -1,3 +1,4 @@
+import type { PillarSet } from "@mirai-gikai/shared/pillars";
 import "server-only";
 
 import { randomUUID } from "node:crypto";
@@ -43,7 +44,7 @@ interface ImprovedPromptInputs {
 }
 
 interface RunMultiSimulationParams {
-  /** 対象法案 ID。report スロットが別法案のレポートを指していないか検証するのに使う */
+  /** 対象トピック ID。report スロットが別トピックのレポートを指していないか検証するのに使う */
   billId: string;
   personaSlots: PersonaSlotInput[];
   /** 全スロット共通の改善版 config */
@@ -57,12 +58,14 @@ interface RunMultiSimulationParams {
   onProgress?: (event: MultiSimulationProgressEvent) => void;
   /** 中断シグナル。末端 LLM 呼び出しまで伝播 */
   signal?: AbortSignal;
+  /** 回答メモ方式（柱）で試すときの柱 */
+  memoEngine?: { set: PillarSet } | null;
 }
 
 /**
  * 1 スロット分の実行コンテキスト（persona + 元レポート + style anchors）を用意する。
  * - report スロット: DB からレポート詳細を取得 → persona 抽出 + style anchors 抽出
- * - bill スロット: 法案内容から persona を LLM 生成（style anchors なし）
+ * - bill スロット: トピック内容から persona を LLM 生成（style anchors なし）
  */
 async function prepareSlotContext(
   slot: PersonaSlotInput,
@@ -81,9 +84,9 @@ async function prepareSlotContext(
       );
     }
     // 指定された billId と、report から辿った bill_id が一致しているか検証。
-    // 不一致 = UI の想定外 or 別法案のレポート混入なので拒否する。
+    // 不一致 = UI の想定外 or 別トピックのレポート混入なので拒否する。
     if (detail.snapshot.billId !== params.billId) {
-      throw new Error("選択されたレポートが対象法案と一致しません");
+      throw new Error("選択されたレポートが対象トピックと一致しません");
     }
     emitStatus("ペルソナ抽出中...");
     const persona = await generatePersona({
@@ -246,6 +249,7 @@ export async function runMultiSimulationPipeline(
           },
           estimatedDurationMinutes:
             params.improvedPromptInputs.estimatedDurationMinutes,
+          memoEngine: params.memoEngine ?? null,
           onTurnComplete: emit
             ? (turnIndex, turn) =>
                 emit({ type: "turn", personaIndex, turnIndex, turn })

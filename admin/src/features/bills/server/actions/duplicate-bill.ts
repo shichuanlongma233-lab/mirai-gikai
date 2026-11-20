@@ -15,19 +15,19 @@ import {
 } from "../repositories/bill-repository";
 
 /**
- * 議案を複製する
- * 元の議案とそのコンテンツを複製し、新しい議案として作成する
+ * トピックを複製する
+ * 元のトピックとそのコンテンツを複製し、新しいトピックとして作成する
  */
 export async function duplicateBill(billId: string) {
   await requireAdmin();
 
-  // 元の議案を取得
+  // 元のトピックを取得
   const originalBill = await _fetchOriginalBill(billId);
   if (!originalBill.success) {
     return originalBill;
   }
 
-  // 新しい議案を作成
+  // 新しいトピックを作成
   const newBill = await _createDuplicateBill(originalBill.data);
   if (!newBill.success) {
     return newBill;
@@ -44,7 +44,7 @@ export async function duplicateBill(billId: string) {
 }
 
 /**
- * 元の議案を取得
+ * 元のトピックを取得
  */
 async function _fetchOriginalBill(billId: string) {
   try {
@@ -54,13 +54,13 @@ async function _fetchOriginalBill(billId: string) {
     console.error("Error fetching original bill:", error);
     return {
       success: false as const,
-      error: "元の議案が見つかりません",
+      error: "元のトピックが見つかりません",
     };
   }
 }
 
 /**
- * 複製した議案を作成
+ * 複製したトピックを作成
  */
 async function _createDuplicateBill(originalBill: Bill) {
   const insertData = prepareBillForDuplication(originalBill);
@@ -72,13 +72,13 @@ async function _createDuplicateBill(originalBill: Bill) {
     console.error("Error creating new bill:", error);
     return {
       success: false as const,
-      error: "新しい議案の作成に失敗しました",
+      error: "新しいトピックの作成に失敗しました",
     };
   }
 }
 
 /**
- * 議案のコンテンツを複製
+ * トピックのコンテンツを複製
  */
 async function _duplicateContents(originalBillId: string, newBillId: string) {
   try {

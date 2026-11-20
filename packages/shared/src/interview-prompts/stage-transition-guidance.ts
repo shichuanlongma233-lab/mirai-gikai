@@ -44,6 +44,12 @@ export function buildTimeManagementGuidance({
 - 残り時間に余裕があり質問が少ない場合: より深い掘り下げが可能です`;
 }
 
+/**
+ * summary へ移る回で新しい質問をしないためのルール
+ * （質問したまま要約に進むと、回答者がその質問に答えられないため）
+ */
+const SUMMARY_TURN_RULE = `- **next_stage を "summary" にする回では、新しい質問をしないでください**。回答へのお礼を伝え、「ここまでの内容をまとめます」と伝えるだけにしてください。まだ聞きたいことがある場合は、next_stage を "chat" のままにして質問してください`;
+
 function calculateProgress(
   questions: { id: string }[],
   askedQuestionIds: Set<string>
@@ -97,7 +103,8 @@ export function buildBulkModeStageGuidance({
   - 事前定義質問がまだ残っている場合は、必ず next_stage を "chat" にしてください
   - 事前定義質問をすべて完了した後も、深掘りが十分でない場合は next_stage を "chat" にしてください
   - 事前定義質問をすべて完了し、十分な深掘りを行った後に初めて "summary" への移行を検討してください
-  - ユーザーが終了を希望した場合も "summary" に移行してください`;
+  - ユーザーが終了を希望した場合も "summary" に移行してください
+${SUMMARY_TURN_RULE}`;
   } else if (currentStage === "summary") {
     stageGuidance = `- 現在のステージ: **summary**（要約フェーズ）
 - ユーザーがレポート内容に同意し、完了すべきと判断した場合は next_stage を "summary_complete" にしてください
@@ -116,7 +123,7 @@ ${stageGuidance}
 ### 事前定義質問の進捗状況
 - **全体**: ${totalQuestions}問中${completedQuestions}問完了（残り${remainingQuestions}問）
 ${completedQuestionsList ? `\n#### 完了した質問\n${completedQuestionsList}` : ""}
-${remainingQuestionsList ? `\n#### 未回答の質問\n${remainingQuestionsList}` : ""}`;
+${remainingQuestionsList ? `\n#### まだ聞いていない質問\n※ 会話の中ですでに答えが出ているものは聞かずに \`covered_question_ids\` に入れてください\n${remainingQuestionsList}` : ""}`;
 }
 
 /**
@@ -139,10 +146,11 @@ export function buildLoopModeStageGuidance({
     stageGuidance = `- 現在のステージ: **chat**（インタビュー中）
 - インタビューを継続する場合は next_stage を "chat" にしてください
 - 要約フェーズに移行すべきと判断した場合は next_stage を "summary" にしてください
-- 事前定義質問を概ね完了し、十分な深掘りを行った場合に "summary" への移行を検討してください
-- ユーザーが終了を希望した場合も "summary" に移行してください
-- これ以上の深掘りが難しい場合も "summary" に移行してください
-- **重要（都度深掘りモード）**: 事前定義質問の消化を急がないでください。現在のテーマについて十分な深掘り（2〜3回のフォローアップ）が完了するまで、次の事前定義質問に移らないでください。以下の進捗状況は参考情報であり、全問消化よりも各テーマの深掘りを優先してください`;
+- 「まだ聞いていない質問」が残っている間は、必ず next_stage を "chat" にしてください。残っている質問は、深掘りが一段落したら順に聞いてください
+- 事前定義質問をすべて完了し、十分な深掘りを行った場合に "summary" への移行を検討してください
+- ユーザーが終了を希望した場合は、質問が残っていても "summary" に移行してください
+- **重要（都度深掘りモード）**: 事前定義質問の消化を急がないでください。現在のテーマについて十分な深掘り（2〜3回のフォローアップ）が完了するまで、次の事前定義質問に移らないでください。ただし、事前定義質問を聞かないまま終わらせてはいけません
+${SUMMARY_TURN_RULE}`;
   } else if (currentStage === "summary") {
     stageGuidance = `- 現在のステージ: **summary**（要約フェーズ）
 - ユーザーがレポート内容に同意し、完了すべきと判断した場合は next_stage を "summary_complete" にしてください
@@ -161,5 +169,5 @@ ${stageGuidance}
 ### 事前定義質問の進捗状況
 - **全体**: ${totalQuestions}問中${completedQuestions}問完了（残り${remainingQuestions}問）
 ${completedQuestionsList ? `\n#### 完了した質問\n${completedQuestionsList}` : ""}
-${remainingQuestionsList ? `\n#### 未回答の質問\n${remainingQuestionsList}` : ""}`;
+${remainingQuestionsList ? `\n#### まだ聞いていない質問\n※ 会話の中ですでに答えが出ているものは聞かずに \`covered_question_ids\` に入れてください\n${remainingQuestionsList}` : ""}`;
 }
